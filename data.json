@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "lastUpdated": "2026-06-17",
+  "lastUpdated": "2026-06-18",
   "entries": [
     {
       "author": "Fabio Akita",
@@ -33,6 +33,454 @@
       "title": "Dicas e Toolkit de IA do Akita: ai-jail, ai-memory, ai-usagebar – AkitaOnRails.com",
       "type": "conteudo",
       "url": "https://www.akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/"
+    },
+    {
+      "author": "Donna Weber, Maíra Meyer Bregalda, Marcelo Amaral de Moraes",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:27:26.783Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "8c2551a6-9e2a-4f73-a204-f3cbcd9025d3",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "inteligência artificial",
+        "desenvolvimento",
+        "experiência do cliente",
+        "metodologia"
+      ],
+      "title": "Onboarding orquestrado: A metodologia inovadora para fazer seus novos clientes mais bem-sucedidos, lucrativos e fiéis desde o início",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Onboarding-orquestrado-metodologia-bem-sucedidos-lucrativos/dp/6559282716"
+    },
+    {
+      "author": "David H. Maister, Robert M. Galford, Charles H. Green, Thais Cotts Ferreira de Lima",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:28:06.630Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "f1fc1bee-ce9a-4f00-9f1f-989d88733b26",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "consultoria",
+        "relacionamento",
+        "confiança"
+      ],
+      "title": "O conselheiro confiável: edição de aniversário de 20 anos",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/conselheiro-confi%C3%A1vel-edi%C3%A7%C3%A3o-anivers%C3%A1rio-anos/dp/6555207310"
+    },
+    {
+      "author": "Robert McKee",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:28:48.674Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "dd9b1b17-35d5-4f2e-b85d-1f7e7bcda5f3",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "storytelling",
+        "marketing",
+        "negócios"
+      ],
+      "title": "Storynomics - Como o poder das histórias pode impulsionar seu negócio no mundo moderno.",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Storynomics-Robert-McKee/dp/6599521339"
+    },
+    {
+      "author": "Breno Paquelet, Helena Hennemann, Foresti Design",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:29:43.827Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "a81df57b-5d55-4a4c-93a7-6f311ca7ae93",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "negociação",
+        "comunicação",
+        "relações pessoais"
+      ],
+      "title": "Negocie sem medo: Os cinco pilares para construir acordos com confiança",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Negocie-sem-medo-construir-confian%C3%A7a-ebook/dp/B0BF8FDSDJ"
+    },
+    {
+      "author": "Will Guidara, Vanessa Schreiner",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:31:12.902Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "5e600278-375b-4b3a-a852-2f166c9236e8",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "liderança",
+        "hospitalidade",
+        "gestão"
+      ],
+      "title": "Hospitalidade irracional: o extraordinário poder de dar às pessoas mais do que elas esperam",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Hospitalidade-Irracional-Extraordin%C3%A1rio-Pessoas-Esperam/dp/8550821012"
+    },
+    {
+      "author": "Elliot Aronson, Joshua Aronson, Marcello Borges, Saul Steinberg, Angelo Bottino, Eduardo Moreira",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:32:16.141Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "68e47d29-fabc-49b9-8330-69cbe1019792",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "comportamento humano",
+        "psicologia social",
+        "cultura",
+        "preconceito"
+      ],
+      "title": "O animal social",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/animal-social-Elliot-Aronson/dp/8576576007"
+    },
+    {
+      "author": "Carmine Gallo",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:32:43.331Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "36f4dab5-8108-4f0a-ad18-35cea17dbc88",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "histórias",
+        "comunicação",
+        "liderança"
+      ],
+      "title": "Storytelling: aprenda a contar histórias com Steve Jobs, Papa Francisco, Churchill e outras lendas da liderança",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Storytelling-Hist%C3%B3rias-Francisco-Churchill-Lideran%C3%A7a/dp/8550810258"
+    },
+    {
+      "author": "Malcolm Gladwell, Ivo Korytowski",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:33:24.678Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "cec34ef0-87b1-454f-a73a-d0cfb6c580ce",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "inteligência artificial",
+        "sucesso",
+        "cultura"
+      ],
+      "title": "Fora de série - Outliers: Descubra por que algumas pessoas têm sucesso e outras não",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Fora-s%C3%A9rie-Outliers-Malcolm-Gladwell/dp/8575424483"
+    },
+    {
+      "author": "Maya Ackerman",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:35:50.585Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "b2585863-a095-4135-bf82-3609429d81a2",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "inteligência artificial",
+        "desenvolvimento",
+        "arte",
+        "criatividade"
+      ],
+      "title": "Creative Machines: AI, Art & Us (English Edition)",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Creative-Machines-AI-Art-English-ebook/dp/B0FSYPB6WM"
+    },
+    {
+      "author": "Liz Pelly",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:36:27.968Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "c594dfcf-e32e-4ece-a89e-fa73a2bf6a4b",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "inteligência artificial",
+        "programação",
+        "música",
+        "streaming"
+      ],
+      "title": "Mood Machine: The Rise of Spotify and the Costs of the Perfect Playlist",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Mood-Machine-Spotify-Perfect-Playlist/dp/1668083515"
+    },
+    {
+      "author": "Dave Hoover, Adewale Oshineye",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:36:56.804Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "33ed4753-e4d7-4129-9b55-782d138c16d0",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "programação",
+        "desenvolvimento",
+        "soft skills",
+        "carreira"
+      ],
+      "title": "Apprenticeship Patterns: Guidance for the Aspiring Software Craftsman",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Apprenticeship-Patterns-Dave-Hoover/dp/0596518382"
+    },
+    {
+      "author": "Karen Hao",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:37:20.299Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "568b2f0f-a44b-4c9d-b93a-d3abe8d87729",
+      "links": [],
+      "notes": "",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "inteligência artificial",
+        "desenvolvimento",
+        "tecnologia",
+        "novas tendências"
+      ],
+      "title": "Empire of AI: Dreams and Nightmares in Sam Altman's OpenAI (English Edition)",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Empire-AI-Nightmares-Altmans-English-ebook/dp/B0DQSQKMY4"
+    },
+    {
+      "author": "Virginia Woolf, Thaís Paiva, Stephanie Fernandes",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:38:37.362Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "806cc820-869e-4c3d-8186-9f425ea68949",
+      "links": [],
+      "notes": "Mrs. Dalloway me mostrou como um dia comum pode ter profundidade e complexidade, explorando temas como vida e morte",
+      "pitch": "",
+      "rating": 5,
+      "source": "Amazon",
+      "status": "consumido",
+      "subtype": "livro",
+      "tags": [
+        "literatura",
+        "livros",
+        "virginia woolf",
+        "romance"
+      ],
+      "title": "Mrs. Dalloway",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Mrs-Dalloway-Virginia-Woolf-ebook/dp/B0CDFH3Q6W"
+    },
+    {
+      "author": "Nassim Nicholas Taleb, Renato Marques, Eduardo Foresti",
+      "changelog": [],
+      "createdAt": "2026-06-18T00:39:28.960Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "ca130d07-fef2-4d93-bd02-0189e2adf8b7",
+      "links": [],
+      "notes": "'Antifrágil',como o caos pode ser uma fonte de crescimento. Taleb transforma a incerteza em um elemento positivo da vida",
+      "pitch": "",
+      "rating": 0,
+      "source": "Amazon",
+      "status": "consumido",
+      "subtype": "livro",
+      "tags": [
+        "desenvolvimento",
+        "inteligência artificial",
+        "filosofia",
+        "caos"
+      ],
+      "title": "Antifrágil (Nova edição): Coisas que se beneficiam com o caos",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Antifr%C3%A1gil-Nova-edi%C3%A7%C3%A3o-Coisas-beneficiam/dp/8547001085"
     }
   ]
 }
