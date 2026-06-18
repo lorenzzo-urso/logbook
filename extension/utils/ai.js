@@ -28,7 +28,7 @@ Responda APENAS com JSON válido, sem markdown:
 {
   "subtype": "artigo|notícia|livro|curso|treinamento|vídeo",
   "tags": ["tag1", "tag2"],
-  "notes_draft": "rascunho em pt-BR, 1ª pessoa, máx 200 chars, o que foi relevante/aprendi",
+  "notes_draft": "rascunho em pt-BR, tom objetivo e neutro (sem primeira pessoa), máx 200 chars, o que é relevante neste conteúdo e por que importa",
   "connections": ["id_entrada_relacionada"],
   "connection_reasons": {"id": "por que se relaciona"}
 }

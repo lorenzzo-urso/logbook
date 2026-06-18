@@ -34,8 +34,7 @@ async function initCapture() {
       source:  scraped.siteName,
       subtype: scraped.detectedType,
       image:   scraped.image || '',
-      // Books default to "quero ler" rather than "consumido"
-      status:  scraped.isBook ? 'quero ler' : 'consumido',
+      status:  'quero ler',
       _body:   scraped.bodyText,
       _desc:   scraped.description,
     });
@@ -186,11 +185,10 @@ function renderConnections(ids, reasons) {
   if (!relevant.length) return;
 
   for (const { id, entry } of relevant) {
-    selectedConnections.add(id);
     const el = document.createElement('div');
     el.className = 'conn-item';
     el.innerHTML = `
-      <input type="checkbox" id="conn-${id}" checked>
+      <input type="checkbox" id="conn-${id}">
       <div>
         <div class="conn-title">${entry.title.slice(0, 55)}</div>
         <div class="conn-reason">${reasons[id] || ''}</div>
