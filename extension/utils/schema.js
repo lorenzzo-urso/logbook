@@ -8,6 +8,7 @@ export function createEntry(overrides = {}) {
     url: '',
     author: '',
     source: '',
+    image: '',
     tags: [],
     status: 'consumido',
     rating: null,

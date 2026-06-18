@@ -33,6 +33,7 @@ async function initCapture() {
       author:  scraped.author,
       source:  scraped.siteName,
       subtype: scraped.detectedType,
+      image:   scraped.image || '',
       // Books default to "quero ler" rather than "consumido"
       status:  scraped.isBook ? 'quero ler' : 'consumido',
       _body:   scraped.bodyText,
@@ -550,6 +551,10 @@ function scrapePage() {
       }
     });
 
+    const image = meta('og:image')
+      || document.querySelector('#imgTagWrappingLink img, #landingImage')?.src
+      || '';
+
     return {
       title,
       description,
@@ -558,6 +563,7 @@ function scrapePage() {
       publisher,
       year,
       url,
+      image,
       detectedType: 'livro',
       bodyText: description,
       isBook: true,
@@ -573,7 +579,7 @@ function scrapePage() {
     const description = document.querySelector('[data-testid="description"] .DetailsLayoutRightParagraph, #description span:last-child')?.innerText?.trim()
       || meta('description');
 
-    return { title, description, author, siteName: 'Goodreads', url, detectedType: 'livro', bodyText: description, isBook: true };
+    return { title, description, author, image: meta('og:image'), siteName: 'Goodreads', url, detectedType: 'livro', bodyText: description, isBook: true };
   }
 
   // ── Skoob ────────────────────────────────────────────────────────────────
@@ -585,7 +591,7 @@ function scrapePage() {
     const description = document.querySelector('[itemprop="description"], .sinopse')?.innerText?.trim()
       || meta('description');
 
-    return { title, description, author, siteName: 'Skoob', url, detectedType: 'livro', bodyText: description, isBook: true };
+    return { title, description, author, image: meta('og:image'), siteName: 'Skoob', url, detectedType: 'livro', bodyText: description, isBook: true };
   }
 
   // ── Google Books ─────────────────────────────────────────────────────────
@@ -596,7 +602,7 @@ function scrapePage() {
     const author = ld?.author?.name || txt(document.querySelector('[itemprop="author"]'));
     const description = ld?.description || meta('description');
 
-    return { title, description, author, siteName: 'Google Books', url, detectedType: 'livro', bodyText: description, isBook: true };
+    return { title, description, author, image: meta('og:image'), siteName: 'Google Books', url, detectedType: 'livro', bodyText: description, isBook: true };
   }
 
   // ── Generic detection ────────────────────────────────────────────────────
@@ -613,6 +619,7 @@ function scrapePage() {
     description: meta('description') || ld?.description || '',
     author:      meta('author') || ld?.author?.name || '',
     siteName:    meta('og:site_name') || document.domain,
+    image:       meta('og:image') || meta('twitter:image') || '',
     url,
     detectedType,
     bodyText:    (document.body?.innerText || '').slice(0, 3000),
