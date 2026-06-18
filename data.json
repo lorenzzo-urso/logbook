@@ -759,6 +759,41 @@
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Alcan%C3%A7ando-excel%C3%AAncia-vendas-Spin-selling/dp/8550823384",
       "image": "https://images-na.ssl-images-amazon.com/images/P/8550823384.01.LZZZZZZZ.jpg"
+    },
+    {
+      "id": "2cc3657b-9d5e-42e0-aff6-3bf2de3490ee",
+      "type": "conteudo",
+      "subtype": "artigo",
+      "title": "Native Active Perception as Reasoning for Omni-Modal Understanding",
+      "url": "https://arxiv.org/abs/2606.19341v1",
+      "author": "Xing, Zhenghao, Xu, Ruiyang, Wang, Yuxuan, He, Jinzheng et al.",
+      "source": "arxiv.org",
+      "image": "/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "tags": [
+        "video understanding",
+        "active perception",
+        "reinforcement learning",
+        "pomdp",
+        "audio-visual"
+      ],
+      "status": "consumido",
+      "rating": 5,
+      "notes": "O artigo apresenta o OmniAgent, um agente nativo omni-modal que reformula a compreensão de vídeos como um ciclo iterativo de Observação-Pensamento-Ação baseado em POMDP. Ele permite a destilação seletiva de pistas áudio-visuais em uma memória textual persistente, melhorando a eficiência do processamento e a performance em benchmarks de vídeo.",
+      "pitch": "",
+      "description": "",
+      "links": [],
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "start": null,
+        "end": null,
+        "idea": null,
+        "started": null,
+        "launched": null
+      },
+      "changelog": [],
+      "createdAt": "2026-06-18T20:13:36.856287+00:00",
+      "captureVia": "discord"
     }
   ]
 }
