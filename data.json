@@ -759,6 +759,41 @@
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Alcan%C3%A7ando-excel%C3%AAncia-vendas-Spin-selling/dp/8550823384",
       "image": "https://images-na.ssl-images-amazon.com/images/P/8550823384.01.LZZZZZZZ.jpg"
+    },
+    {
+      "author": "Fabio Akita",
+      "changelog": [],
+      "createdAt": "2026-06-18T13:58:23.471Z",
+      "dates": {
+        "captured": "2026-06-18",
+        "consumed": "2026-06-18",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "6d048b93-49c2-4156-a0a0-3d56b72c02c9",
+      "image": "",
+      "links": [
+        "c03901f8-1fd3-4d51-b596-ce65452acc88"
+      ],
+      "notes": "Explora como utilizar IA para acelerar o desenvolvimento de aplicações em uma semana, destacando processos e resultados eficazes.",
+      "pitch": "",
+      "rating": 0,
+      "source": "akitaonrails.com",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "inteligência artificial",
+        "programação",
+        "desenvolvimento",
+        "metodologia"
+      ],
+      "title": "Do Zero à Pós-Produção em 1 Semana - Como usar IA em Projetos de Verdade | Bastidores do The M.Akita Chronicles – AkitaOnRails.com",
+      "type": "conteudo",
+      "url": "https://www.akitaonrails.com/2026/02/20/do-zero-a-pos-producao-em-1-semana-como-usar-ia-em-projetos-de-verdade-bastidores-do-the-m-akita-chronicles/"
     }
   ]
 }
