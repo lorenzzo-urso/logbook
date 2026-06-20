@@ -827,6 +827,39 @@
       "title": "Encryption, spyware, and now Mythos: History shows why cyber export control doesn't work | TechCrunch",
       "type": "conteudo",
       "url": "https://techcrunch.com/2026/06/19/encryption-spyware-and-now-mythos-history-shows-why-cyber-export-control-doesnt-work/"
+    },
+    {
+      "author": "Ruizhong Qiu, Yinglong Xia, Dongqi Fu, Hanqing Zeng, Ren Chen, Xiangjun Fan, Hong Li, Hong Yan, Hanghang Tong",
+      "changelog": [],
+      "createdAt": "2026-06-20T01:50:31.425Z",
+      "dates": {
+        "captured": "2026-06-20",
+        "consumed": "2026-06-20",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "af8c7c04-2770-48d0-a70f-46eec94a6279",
+      "image": "/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "links": [],
+      "notes": "Este artigo aborda a estruturação e tokenização de contextos de interesse do usuário para recomendações gerativas, um tema relevante para melhorar sistemas de recomendação.",
+      "pitch": "",
+      "rating": 5,
+      "source": "arXiv.org",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "inteligência artificial",
+        "tecnologia",
+        "novas tendências",
+        "recomendações"
+      ],
+      "title": "[2606.20554v1] Structuring and Tokenizing Distributed User Interest Context for Generative Recommendation",
+      "type": "conteudo",
+      "url": "https://arxiv.org/abs/2606.20554"
     }
   ]
 }
