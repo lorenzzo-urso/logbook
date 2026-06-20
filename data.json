@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "lastUpdated": "2026-06-18",
+  "lastUpdated": "2026-06-20",
   "entries": [
     {
       "author": "Fabio Akita",
@@ -794,6 +794,39 @@
       "changelog": [],
       "createdAt": "2026-06-18T20:13:36.856287+00:00",
       "captureVia": "discord"
+    },
+    {
+      "author": "Lorenzo Franceschi-Bicchierai",
+      "changelog": [],
+      "createdAt": "2026-06-20T01:46:54.025Z",
+      "dates": {
+        "captured": "2026-06-20",
+        "consumed": "2026-06-20",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "9cb6fed2-5c3f-4a6c-9253-231c083b7f87",
+      "image": "https://techcrunch.com/wp-content/uploads/2026/06/donald-trump-open-mouth.jpg?resize=1200,800",
+      "links": [],
+      "notes": "O artigo discute a eficácia limitada das restrições de exportação em tecnologia cibernética, com foco no modelo de IA Mythos da Anthropic e sua importância na segurança nacional.",
+      "pitch": "",
+      "rating": 0,
+      "source": "TechCrunch",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "inteligência artificial",
+        "tecnologia",
+        "governo",
+        "segurança"
+      ],
+      "title": "Encryption, spyware, and now Mythos: History shows why cyber export control doesn't work | TechCrunch",
+      "type": "conteudo",
+      "url": "https://techcrunch.com/2026/06/19/encryption-spyware-and-now-mythos-history-shows-why-cyber-export-control-doesnt-work/"
     }
   ]
 }
