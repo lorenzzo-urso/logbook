@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "lastUpdated": "2026-06-20",
+  "lastUpdated": "2026-06-28",
   "entries": [
     {
       "author": "Fabio Akita",
@@ -860,6 +860,39 @@
       "title": "[2606.20554v1] Structuring and Tokenizing Distributed User Interest Context for Generative Recommendation",
       "type": "conteudo",
       "url": "https://arxiv.org/abs/2606.20554"
+    },
+    {
+      "author": "Joshua Engels, Callum McDougall, Bilal Chughtai, Janos Kramar, Senthoran Rajamanoharan, Cindy Wu, Arthur Conmy, Asic Q Chen, Jean Tarbouriech, Min Ma, Brendan O'Donoghue, João Gabriel Lopes de Oliveira, Rohin Shah, Neel Nanda",
+      "changelog": [],
+      "createdAt": "2026-06-28T03:58:39.309Z",
+      "dates": {
+        "captured": "2026-06-28",
+        "consumed": "2026-06-28",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "description": "",
+      "id": "ff057b2d-2808-4bc3-aef2-97a7b76362b0",
+      "image": "/static/browse/0.3.4/images/arxiv-logo-fb.png",
+      "links": [],
+      "notes": "O artigo investiga a transparência do modelo DiffusionGemma na IA, destacando a importância de entender suas decisões para melhorar a confiança e evitar abusos.",
+      "pitch": "",
+      "rating": 5,
+      "source": "arXiv.org",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "inteligência artificial",
+        "desenvolvimento",
+        "tecnologia",
+        "novas tendências"
+      ],
+      "title": "[2606.20560v1] How Transparent is DiffusionGemma?",
+      "type": "conteudo",
+      "url": "https://arxiv.org/abs/2606.20560"
     }
   ]
 }
