@@ -22,6 +22,15 @@ assert.equal(normUrl('não é url'), 'não é url');     // não explode em lixo
 
 assert.equal(normTag('  IA '), 'ia');
 
+// A normalização de URL existe em dois runtimes; divergir quebra o dedupe da
+// captura por issue sem ninguém perceber.
+const normPy = (u) => execFileSync('python3', ['-c',
+  'import sys;sys.path.insert(0,"tools");from issue_to_entry import norm_url;print(norm_url(sys.argv[1]),end="")',
+  u], { cwd: root, encoding: 'utf8' });
+for (const u of ['https://X.com/a/', 'https://x.com/a?utm_source=n&p=1', 'https://x.com/a#b']) {
+  assert.equal(normPy(u), normUrl(u), `normUrl divergente para ${u}`);
+}
+
 // ── schema: nada de data de consumo inventada ────────────────────────────────
 const e = createEntry();
 assert.equal(e.dates.consumed, null);
@@ -60,6 +69,13 @@ try {
   assert.ok(feed.match(/<item>/g).length <= 30);
   const first = feed.slice(feed.indexOf('<item>'), feed.indexOf('</item>'));
   assert.ok(first.includes('post:teste-selftest'), 'feed não está ordenado por data desc');
+
+  // ── página estática do artigo: rota em hash não carrega meta tag ──────────
+  const pagina = readFileSync(join(root, 'p/teste-selftest/index.html'), 'utf8');
+  assert.ok(pagina.includes('<meta property="og:title" content="Teste">'), 'og:title ausente');
+  assert.ok(pagina.includes('rel="canonical"'), 'canonical ausente');
+  assert.ok(pagina.includes('<strong>negrito</strong>'), 'corpo não foi pré-renderizado');
+  assert.ok(pagina.includes(cited.title.slice(0, 20)), 'referência sem título na página');
 } finally {
   rmSync(tmp);
   execFileSync('python3', [join(root, 'tools/build_posts.py')], { cwd: root });

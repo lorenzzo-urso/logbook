@@ -37,13 +37,22 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 ├── vendor/             # React 18 de produção (UMD), sem CDN
 ├── posts/*.md          # Seus artigos (markdown + front matter)
 ├── posts.json          # Gerado por ./build.sh — não edite
+├── p/<slug>/           # Página real de cada artigo (SEO e preview de link)
+├── og/<slug>.png       # Imagem de compartilhamento, gerada na build
+├── archive/<id>.md     # Texto do material salvo no dia da captura
 ├── data.json           # Todas as entradas (gerenciado pela extensão)
+├── aliases.json        # Sinônimos de tag ("ia" → "inteligência artificial")
 ├── feed.xml            # RSS de artigos + materiais
-├── build.sh            # JSX → app.js + regenera o feed
+├── build.sh            # JSX → app.js, artigos, imagens e feed
 ├── tools/
-│   ├── build_posts.py  # posts/*.md → posts.json (markdown vira HTML na build)
+│   ├── build_posts.py  # posts/*.md → posts.json + páginas + og:image
 │   ├── gen_feed.py     # Gerador do RSS
-│   └── selftest.mjs    # Checagem de dedupe, posts e feed
+│   ├── import_kindle.py# My Clippings.txt → entradas com trechos
+│   ├── import_csv.py   # Export do Goodreads/Skoob → entradas
+│   ├── issue_to_entry.py # Issue rotulada `captura` → entrada (usado pela Action)
+│   ├── status_report.py  # Corpo da issue semanal
+│   ├── check_links.py    # Caça links quebrados (mensal)
+│   └── selftest.mjs      # Checagem de dedupe, posts, feed e páginas
 └── extension/
     ├── manifest.json
     ├── background.js
@@ -141,6 +150,26 @@ Capturar duas vezes a mesma URL não duplica: o push ignora o que já está no `
 ### Adicionar livro manualmente
 Clique em 📚 no header da extensão para abrir o formulário de livro sem precisar de uma URL.
 
+### Guardar trechos
+
+No campo **Trechos** da extensão, um por linha. Terminando com `— p. 42` a localização é separada do texto. Os trechos aparecem na ficha do material e alimentam o rascunho de artigo.
+
+### Capturar várias URLs de uma vez
+
+Botão **⿻** no header: cole uma URL por linha, escolha status e tags comuns. Sem abrir cada página não dá para raspar título, então fica a URL — você ajusta depois pelo 🗂.
+
+### Rascunho de artigo com IA
+
+Botão **✦**: marque os materiais que embasam o texto, opcionalmente diga o ângulo, e a IA devolve um `.md` em `posts/` já com título, tags e `refs` preenchidos, marcado como `draft: true`. É ponto de partida, não texto pronto — ele inclui uma seção "A desenvolver" com as lacunas.
+
+Usa a mesma chave configurada em ⚙.
+
+### Entradas privadas
+
+A caixa **Privado** na captura faz a entrada **nunca** ir para o repositório: ela fica no armazenamento local da extensão, e a fila mostra quantas existem, com botão **Exportar**.
+
+Isso é uma limitação honesta, não uma escolha: num repositório público, qualquer coisa commitada é pública — inclusive no histórico. Se você precisa de notas privadas de verdade, o caminho é outro repositório, privado.
+
 ### Marcar como lido / editar uma entrada publicada
 Clique em 🗂 no header → busque pelo título → **✎**. Dá para mudar status, nota, avaliação, tags e a data de consumo; **Salvar no GitHub** grava direto no `data.json`. É por aqui que um "quero ler" vira "consumido" — sem isso a fila nunca anda.
 
@@ -174,18 +203,37 @@ O markdown vira HTML durante a build (`npx marked`), então o site não carrega 
 
 Escritos entram no feed RSS junto com os materiais, ordenados pela mesma linha do tempo.
 
-### Capturar pelo celular
+### Capturar pelo celular (sem token no aparelho)
 
-A extensão é Chrome desktop. Para capturar do iPhone, um Atalho (app Atalhos) resolve sem código:
+A extensão é Chrome desktop. No celular, a captura vai por **issue**: você abre uma issue com o rótulo `captura` e uma Action escreve no `data.json` e fecha a issue. Nenhum token fica no telefone.
 
-1. Novo atalho → ação **Obter conteúdo da URL**
-2. URL: `https://api.github.com/repos/SEU-USUARIO/logbook/contents/data.json`
-3. Método `GET`, cabeçalho `Authorization: Bearer SEU_TOKEN` → guarde `content` e `sha`
-4. Segunda ação: decodifique o base64, insira a entrada nova no array `entries`, recodifique
-5. `PUT` na mesma URL com `{"message": "add via celular", "content": ..., "sha": ...}`
-6. Marque **Mostrar na Folha de Compartilhamento**
+O caminho manual: no repositório → **Issues → New issue → Capturar link**, cola a URL, envia. Funciona do navegador do celular.
 
-Aí é só compartilhar qualquer página do Safari para o atalho. Alternativa mais preguiçosa: mandar o link para si mesmo e capturar depois no desktop.
+Para virar um toque só, crie um Atalho no iOS (app Atalhos) que recebe URLs da folha de compartilhamento e abre:
+
+```
+https://github.com/SEU-USUARIO/logbook/issues/new?labels=captura&template=captura.yml&title=captura:%20&url-do-atalho
+```
+
+Basta o atalho concatenar a URL compartilhada no fim do título. O formulário abre já preenchido; você confirma e pronto.
+
+A Action só aceita issue aberta pelo dono do repositório — issue de terceiro é ignorada.
+
+### Trazer o histórico que já existe
+
+```bash
+python3 tools/import_kindle.py "/Volumes/Kindle/documents/My Clippings.txt" --dry-run
+```
+
+Cada livro vira uma entrada e cada grifo vira um **trecho** (`quotes`). Casa com livros que já estão no logbook por prefixo de título, então rodar de novo não duplica.
+
+```bash
+python3 tools/import_csv.py goodreads_library_export.csv --dry-run
+```
+
+Aceita o export do Goodreads e o do Skoob (detecta pelas colunas). Dedupe por título+autor. Use `--so-lidos` para trazer só o que já foi lido.
+
+Os dois escrevem no `data.json` local — rode `--dry-run` primeiro, confira o diff, depois commite.
 
 ---
 
@@ -209,10 +257,33 @@ A extensão reconhece automaticamente:
 
 ---
 
+## Rotinas automáticas
+
+| Quando | O quê |
+|---|---|
+| Issue com rótulo `captura` | Vira entrada no `data.json` e a issue fecha sozinha |
+| `data.json` ou `posts/` mudam | Regenera feed, `posts.json`, páginas em `p/` e imagens `og/` |
+| Segunda, 08:00 | Abre uma issue com o estado do logbook: o que entrou, o que parou, o que está esperando há mais tempo |
+| Dia 1º, 09:00 | Testa todas as URLs e abre issue com as quebradas (se todas falharem, entende como problema de rede e não abre) |
+
+As duas últimas podem ser disparadas à mão em **Actions → manutenção → Run workflow**.
+
+## Tags: sinônimos
+
+`aliases.json` mapeia sinônimo → tag canônica, aplicado na leitura do site (o `data.json` não é reescrito):
+
+```json
+{ "ia": "inteligência artificial", "dev": "desenvolvimento" }
+```
+
+Tag com uma entrada só não vira "tema" — fica na lista **Outras tags**. Mesma regra para autores.
+
 ## Limitações
 
-- O site é **público** — qualquer um com o link vê as entradas
+- O site é **público** — qualquer um com o link vê as entradas, e o histórico do git guarda o que já foi commitado
 - O token PAT fica em `chrome.storage.local` (não sincroniza para outros dispositivos)
+- `./build.sh` e o workflow precisam de rede na primeira execução (`npx` baixa `marked` e `resvg`); sem isso a build segue, só não gera as imagens `og/`
+- O HTML dos artigos não é sanitizado — é o seu próprio markdown. Não cole HTML de terceiros dentro de um post
 - Escrita concorrente no `data.json` tenta de novo uma vez em caso de conflito; na segunda falha, o erro aparece e nada é perdido
 - Sem busca no servidor: o site carrega o `data.json` inteiro. Suficiente até uns poucos milhares de entradas
 

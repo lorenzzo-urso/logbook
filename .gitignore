@@ -28,3 +28,7 @@ desktop.ini
 node_modules/
 npm-debug.log*
 yarn-error.log*
+
+# Cache do Python (o selftest importa tools/ como módulo)
+__pycache__/
+*.pyc
