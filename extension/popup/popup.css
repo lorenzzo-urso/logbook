@@ -314,3 +314,8 @@ hr { border: none; border-top: 1px solid var(--border); }
 
 /* ── Divider ── */
 .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+.hint { font-size: 10px; color: var(--fg-dim); font-weight: 400; text-transform: none; letter-spacing: 0; }
+label.inline { display: flex; justify-content: flex-start; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; cursor: pointer; }
+label.inline input { margin: 0; }
+#draft-list .q-item { cursor: pointer; }

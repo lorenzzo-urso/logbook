@@ -12,6 +12,8 @@
   <div class="logo">Log<span>Book</span></div>
   <div class="header-actions">
     <button class="icon-btn" id="btn-book" title="Adicionar livro manualmente">📚</button>
+    <button class="icon-btn" id="btn-bulk" title="Captura em lote">⿻</button>
+    <button class="icon-btn" id="btn-draft" title="Rascunho de artigo com IA">✦</button>
     <button class="icon-btn" id="btn-queue">
       Fila <span class="badge hidden" id="badge-count">0</span>
     </button>
@@ -100,9 +102,18 @@
       <textarea id="f-desc" rows="3" placeholder="Qual problema resolve? Contexto do projeto..."></textarea>
     </div>
 
+    <div class="field">
+      <label>Trechos <span class="hint">um por linha — vira citação no artigo</span></label>
+      <textarea id="f-quotes" rows="3" placeholder="Cole aqui as frases que você quer guardar"></textarea>
+    </div>
+
     <div class="field hidden" id="field-connections">
       <label>Conexões sugeridas</label>
       <div class="connections-list" id="f-connections"></div>
+    </div>
+
+    <div class="field">
+      <label class="inline"><input type="checkbox" id="f-private"> Privado (não publica no site)</label>
     </div>
   </div>
 
@@ -121,6 +132,10 @@
     <button class="btn-push" id="btn-push" disabled>↑ Push GitHub</button>
   </div>
   <div class="queue-list" id="queue-list"></div>
+  <div class="hidden" id="private-row" style="display:flex;align-items:center;gap:8px;margin-top:8px">
+    <span class="hint" id="private-label"></span>
+    <button class="btn-ghost" id="btn-export-private" style="margin-left:auto">Exportar</button>
+  </div>
   <div id="push-toast"></div>
   <div class="actions" style="margin-top:12px">
     <button class="btn-ghost" id="btn-back-queue">← Voltar</button>
@@ -230,6 +245,52 @@
   <div id="manage-toast"></div>
   <div class="actions" style="margin-top:12px">
     <button class="btn-ghost" id="btn-back-manage">← Voltar</button>
+  </div>
+</div>
+
+<!-- ── Captura em lote ──────────────────────────────────────────────────── -->
+<div class="view hidden" id="view-bulk">
+  <div class="queue-header"><span class="count">Várias URLs de uma vez</span></div>
+  <div class="form">
+    <div class="field">
+      <label>URLs <span class="hint">uma por linha</span></label>
+      <textarea id="bulk-urls" rows="8" placeholder="https://...&#10;https://..."></textarea>
+    </div>
+    <div class="field">
+      <label>Status de todas</label>
+      <select id="bulk-status">
+        <option value="quero ler">Quero ler</option>
+        <option value="consumido">Consumido</option>
+        <option value="em andamento">Em andamento</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Tags de todas</label>
+      <input type="text" id="bulk-tags" placeholder="opcional">
+    </div>
+  </div>
+  <div id="bulk-toast"></div>
+  <div class="actions">
+    <button class="btn-primary" id="btn-bulk-add">Adicionar à fila</button>
+    <button class="btn-ghost" id="btn-bulk-back">← Voltar</button>
+  </div>
+</div>
+
+<!-- ── Rascunho de artigo por IA ─────────────────────────────────────────── -->
+<div class="view hidden" id="view-draft">
+  <div class="queue-header"><span class="count" id="draft-label">Escolha os materiais</span></div>
+  <input type="search" id="draft-search" placeholder="Filtrar..." style="width:100%;margin-bottom:8px">
+  <div class="queue-list" id="draft-list"></div>
+  <div class="form">
+    <div class="field">
+      <label>Sobre o que é o artigo <span class="hint">opcional, ajuda a IA</span></label>
+      <input type="text" id="draft-angle" placeholder="ex: por que provas de conceito não viram produto">
+    </div>
+  </div>
+  <div id="draft-toast"></div>
+  <div class="actions">
+    <button class="btn-primary" id="btn-draft-gen">✦ Gerar rascunho</button>
+    <button class="btn-ghost" id="btn-draft-back">← Voltar</button>
   </div>
 </div>
 

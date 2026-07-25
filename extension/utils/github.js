@@ -57,6 +57,30 @@ export async function putDataJson(token, owner, repo, entries, sha, branch = 'ma
   return res.json();
 }
 
+/** Grava um arquivo qualquer do repo (arquivo do texto, rascunho de artigo). */
+export async function putFile(settings, path, content, message) {
+  const { githubToken: t, githubOwner: o, githubRepo: r, githubBranch: b = 'main' } = settings;
+  const url = `https://api.github.com/repos/${o}/${r}/contents/${path}`;
+  // Precisa do sha se o arquivo já existir, senão a API recusa a sobrescrita.
+  const atual = await fetch(`${url}?ref=${b}`, { headers: headers(t) });
+  const sha = atual.ok ? (await atual.json()).sha : undefined;
+
+  const bytes = new TextEncoder().encode(content);
+  let binary = '';
+  bytes.forEach(x => (binary += String.fromCharCode(x)));
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: headers(t),
+    body: JSON.stringify({ message, content: btoa(binary), branch: b, ...(sha ? { sha } : {}) }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub ${res.status}`);
+  }
+  return res.json();
+}
+
 /**
  * Rota única de escrita: lê, aplica `mutate(entries)`, grava.
  * Em conflito (409/422 — alguém gravou entre o GET e o PUT) refaz uma vez com

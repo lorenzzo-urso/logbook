@@ -29,6 +29,20 @@ export async function clearQueue() {
   await chrome.storage.local.set({ queue: [] });
 }
 
+// Entradas privadas nunca vão para o repositório: num repo público, "privado"
+// dentro do data.json seria mentira. Ficam aqui, e você exporta se quiser.
+export async function getPrivateEntries() {
+  const { privateEntries = [] } = await chrome.storage.local.get('privateEntries');
+  return privateEntries;
+}
+
+export async function addPrivateEntries(entries) {
+  const atuais = await getPrivateEntries();
+  const merged = [...atuais, ...entries];
+  await chrome.storage.local.set({ privateEntries: merged });
+  return merged;
+}
+
 const DEFAULTS = {
   aiProvider: 'claude',
   claudeKey: '',

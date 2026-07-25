@@ -1,7 +1,7 @@
 import { createEntry, SUBTYPES, STATUS, normUrl, normTag } from '../utils/schema.js';
-import { getQueue, addToQueue, removeFromQueue, clearQueue, getSettings, saveSettings } from '../utils/storage.js';
-import { enrichEntry } from '../utils/ai.js';
-import { getDataJson, updateDataJson } from '../utils/github.js';
+import { getQueue, addToQueue, removeFromQueue, clearQueue, getSettings, saveSettings, getPrivateEntries, addPrivateEntries } from '../utils/storage.js';
+import { enrichEntry, draftArticle } from '../utils/ai.js';
+import { getDataJson, updateDataJson, putFile } from '../utils/github.js';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let currentEntry = null;
@@ -60,6 +60,8 @@ function fillForm(e) {
   $('f-tags').value      = (e.tags || []).join(', ');
   $('f-notes').value     = e.notes   || '';
   $('f-desc').value      = e.description || '';
+  $('f-quotes').value  = (e.quotes || []).map(q => q.page ? `${q.text} — ${q.page}` : q.text).join('\n');
+  $('f-private').checked = !!e.private;
   setRating(e.rating || 0);
 }
 
@@ -89,7 +91,18 @@ function readForm() {
     e.pitch = $('f-pitch').value.trim();
     e.description = $('f-desc').value.trim();
   }
+  const quotes = parseQuotes($('f-quotes').value);
+  if (quotes.length) e.quotes = quotes;
+  if ($('f-private').checked) e.private = true;
   return e;
+}
+
+// Uma linha = um trecho. "texto — p. 42" separa a localização, se você escrever.
+function parseQuotes(raw) {
+  return String(raw || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const m = l.match(/^(.*?)\s+[—-]\s*(p\.?\s*[\d\-]+|pos\.?\s*[\d\-]+)$/i);
+    return m ? { text: m[1].trim(), page: m[2].trim() } : { text: l, page: '' };
+  });
 }
 
 // ── Type UI switching ──────────────────────────────────────────────────────
@@ -226,6 +239,11 @@ async function renderQueue() {
   $('queue-label').textContent = `${q.length} ${q.length === 1 ? 'item' : 'itens'} na fila`;
   $('btn-push').disabled = q.length === 0;
 
+  // Privadas ficam só aqui; sem um jeito de exportar, ficariam presas no navegador.
+  const privadas = await getPrivateEntries();
+  $('private-row').classList.toggle('hidden', privadas.length === 0);
+  $('private-label').textContent = `${privadas.length} privada(s) só neste navegador`;
+
   const list = $('queue-list');
   list.innerHTML = '';
 
@@ -258,17 +276,47 @@ async function pushToGitHub() {
     return;
   }
 
-  const queue = await getQueue();
+  const tudo = await getQueue();
+  // Privadas saem da fila e ficam só no navegador — repo público não guarda segredo.
+  const privadas = tudo.filter(e => e.private);
+  const queue = tudo.filter(e => !e.private);
+  if (privadas.length) await addPrivateEntries(privadas.map(({ _body, _desc, ...e }) => e));
+
   // Fila vazia não vira commit. O histórico tem dois "add: 0 entradas".
-  if (!queue.length) { toast('push-toast', 'Fila vazia — nada a publicar', 'error'); return; }
+  if (!queue.length) {
+    await clearQueue();
+    await refreshBadge();
+    await renderQueue();
+    toast('push-toast', privadas.length
+      ? `${privadas.length} privada(s) guardada(s) localmente — nada publicado`
+      : 'Fila vazia — nada a publicar', privadas.length ? 'success' : 'error');
+    return;
+  }
 
   const btn = $('btn-push');
   btn.disabled = true;
   btn.classList.add('loading');
   btn.textContent = '↑ Enviando...';
 
-  let added = 0, skipped = 0;
+  let added = 0, skipped = 0, arquivados = 0;
   try {
+    // Arquiva o texto lido antes de publicar. Era scrapado, mandado para a IA e
+    // jogado fora — agora sobrevive ao link original sair do ar.
+    const { entries: jaLa } = await getDataJson(
+      settings.githubToken, settings.githubOwner, settings.githubRepo, settings.githubBranch);
+    const conhecidas = new Set(jaLa.map(e => normUrl(e.url)).filter(Boolean));
+    for (const item of queue) {
+      const key = normUrl(item.url);
+      if ((key && conhecidas.has(key)) || !item._body || item._body.length < 400) continue;
+      const cabecalho = `# ${item.title}\n\n> Arquivado em ${new Date().toISOString().slice(0, 10)} de ${item.url}\n\n---\n\n`;
+      try {
+        await putFile(settings, `archive/${item.id}.md`, cabecalho + item._body,
+          `archive: "${(item.title || '').slice(0, 50)}"`);
+        item.archived = true;
+        arquivados++;
+      } catch { /* arquivo é bônus: falhar aqui não pode impedir a publicação */ }
+    }
+
     await updateDataJson(settings, (existing) => {
       const seen = new Set(existing.map(e => normUrl(e.url)).filter(Boolean));
       const fresh = [];
@@ -288,7 +336,7 @@ async function pushToGitHub() {
     await refreshBadge();
     await renderQueue();
     const msg = added
-      ? `✓ ${added} publicada${added === 1 ? '' : 's'}${skipped ? ` · ${skipped} duplicada${skipped === 1 ? '' : 's'} ignorada${skipped === 1 ? '' : 's'}` : ''}`
+      ? `✓ ${added} publicada${added === 1 ? '' : 's'}${arquivados ? ` · ${arquivados} texto(s) arquivado(s)` : ''}${skipped ? ` · ${skipped} duplicada(s) ignorada(s)` : ''}`
       : `Nada novo — ${skipped} já estava${skipped === 1 ? '' : 'm'} no LogBook`;
     toast('push-toast', msg, added ? 'success' : 'error');
   } catch (e) {
@@ -508,15 +556,136 @@ async function addBookToQueue() {
   showView('capture');
 }
 
+async function exportPrivate() {
+  const privadas = await getPrivateEntries();
+  if (!privadas.length) return;
+  const blob = new Blob([JSON.stringify({ entries: privadas }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'logbook-privadas.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── Captura em lote ────────────────────────────────────────────────────────
+async function addBulkToQueue() {
+  const urls = $('bulk-urls').value.split('\n').map(u => u.trim()).filter(u => /^https?:\/\//i.test(u));
+  if (!urls.length) { toast('bulk-toast', 'Cole ao menos uma URL http(s)', 'error'); return; }
+
+  const status = $('bulk-status').value;
+  const tags = [...new Set($('bulk-tags').value.split(',').map(normTag).filter(Boolean))];
+  const hoje = new Date().toISOString().split('T')[0];
+  const naFila = new Set((await getQueue()).map(e => normUrl(e.url)).filter(Boolean));
+
+  let add = 0, dup = 0;
+  for (const url of urls) {
+    if (naFila.has(normUrl(url))) { dup++; continue; }
+    naFila.add(normUrl(url));
+    const base = createEntry();
+    // Sem abrir cada aba não dá para raspar título: fica o domínio, você edita depois.
+    let host = url;
+    try { host = new URL(url).hostname.replace(/^www\./, ''); } catch { /* usa a url crua */ }
+    await addToQueue({
+      ...base, title: url.length > 90 ? url.slice(0, 90) + '…' : url,
+      url, source: host, status, tags,
+      dates: { ...base.dates, consumed: status === 'consumido' ? hoje : null },
+    });
+    add++;
+  }
+
+  await refreshBadge();
+  $('bulk-urls').value = '';
+  toast('bulk-toast', `${add} na fila${dup ? ` · ${dup} já estava(m)` : ''}`, add ? 'success' : 'error');
+}
+
+// ── Rascunho de artigo com IA ──────────────────────────────────────────────
+const draftSelection = new Set();
+
+async function renderDraft() {
+  const settings = await getSettings();
+  draftSelection.clear();
+  $('draft-list').innerHTML = '<div class="empty-queue">Carregando...</div>';
+
+  if (!settings.githubToken || !settings.githubOwner || !settings.githubRepo) {
+    $('draft-list').innerHTML = '<div class="empty-queue">Configure o GitHub primeiro</div>';
+    return;
+  }
+  try {
+    const { entries } = await getDataJson(
+      settings.githubToken, settings.githubOwner, settings.githubRepo, settings.githubBranch);
+    existingEntriesCache = entries;
+    drawDraftList('');
+  } catch (e) {
+    toast('draft-toast', `Erro: ${e.message}`, 'error');
+  }
+}
+
+function drawDraftList(filtro) {
+  const q = filtro.trim().toLowerCase();
+  // Material sem nota não ajuda a IA a escrever nada — prioriza o que tem.
+  const lista = existingEntriesCache
+    .filter(e => !q || `${e.title} ${e.author || ''} ${(e.tags || []).join(' ')}`.toLowerCase().includes(q))
+    .sort((a, b) => (b.notes || '').length - (a.notes || '').length)
+    .slice(0, 40);
+
+  const el = $('draft-list');
+  el.innerHTML = '';
+  lista.forEach(item => {
+    const row = document.createElement('label');
+    row.className = 'q-item';
+    row.innerHTML = `<input type="checkbox"><span class="q-title" title="${item.title}">${item.title || '(sem título)'}</span>
+      <span class="q-type">${(item.quotes || []).length ? `${item.quotes.length} trechos` : item.status}</span>`;
+    row.querySelector('input').addEventListener('change', ev => {
+      ev.target.checked ? draftSelection.add(item.id) : draftSelection.delete(item.id);
+      $('draft-label').textContent = draftSelection.size
+        ? `${draftSelection.size} selecionado(s)` : 'Escolha os materiais';
+    });
+    el.appendChild(row);
+  });
+  if (!lista.length) el.innerHTML = '<div class="empty-queue">Nada encontrado</div>';
+}
+
+async function gerarRascunho() {
+  if (!draftSelection.size) { toast('draft-toast', 'Selecione ao menos um material', 'error'); return; }
+  const settings = await getSettings();
+  const btn = $('btn-draft-gen');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  toast('draft-toast', '✦ Escrevendo...', 'success');
+
+  try {
+    const escolhidos = existingEntriesCache.filter(e => draftSelection.has(e.id));
+    const rascunho = await draftArticle(escolhidos, $('draft-angle').value.trim(), settings);
+    if (!rascunho) throw new Error('a IA não devolveu nada — confira a chave em ⚙');
+
+    const hoje = new Date().toISOString().split('T')[0];
+    const slug = (rascunho.title || 'rascunho').toLowerCase().normalize('NFD')
+      .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+    const md = `---\ntitle: ${rascunho.title}\ndate: ${hoje}\ntags: ${(rascunho.tags || []).join(', ')}\nrefs:\n`
+      + escolhidos.map(e => `  - ${e.url || e.id}`).join('\n')
+      + `\ndraft: true\n---\n\n${rascunho.body}\n`;
+
+    await putFile(settings, `posts/${hoje}-${slug}.md`, md, `draft: "${rascunho.title}"`);
+    toast('draft-toast', `✓ posts/${hoje}-${slug}.md criado (draft) — edite e rode ./build.sh`, 'success');
+    draftSelection.clear();
+  } catch (e) {
+    toast('draft-toast', `Erro: ${e.message}`, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
 // ── Navigation ─────────────────────────────────────────────────────────────
 function showView(name) {
-  ['capture', 'queue', 'settings', 'book', 'manage', 'edit'].forEach(v => {
+  ['capture', 'queue', 'settings', 'book', 'manage', 'edit', 'bulk', 'draft'].forEach(v => {
     $(`view-${v}`).classList.toggle('hidden', v !== name);
   });
   if (name === 'queue')    renderQueue();
   if (name === 'settings') loadSettings();
   if (name === 'book')     resetBookForm();
   if (name === 'manage')   renderManage();
+  if (name === 'draft')    renderDraft();
 }
 
 // ── Event bindings ─────────────────────────────────────────────────────────
@@ -555,6 +724,15 @@ function bindAll() {
   $('btn-push').addEventListener('click', pushToGitHub);
   $('btn-save-settings').addEventListener('click', saveSettingsFromForm);
 
+  $('btn-bulk').addEventListener('click', () => showView('bulk'));
+  $('btn-draft').addEventListener('click', () => showView('draft'));
+  $('btn-bulk-back').addEventListener('click', () => showView('capture'));
+  $('btn-draft-back').addEventListener('click', () => showView('capture'));
+  $('btn-bulk-add').addEventListener('click', addBulkToQueue);
+  $('btn-draft-gen').addEventListener('click', gerarRascunho);
+  $('draft-search').addEventListener('input', e => drawDraftList(e.target.value));
+  $('btn-export-private').addEventListener('click', exportPrivate);
+
   $('manage-search').addEventListener('input', async e =>
     drawManageList(await getSettings(), e.target.value));
   $('btn-edit-save').addEventListener('click', saveEdit);
@@ -587,11 +765,14 @@ function toast(containerId, msg, type) {
 
 // ── Page scraper (injected into tab) ───────────────────────────────────────
 function scrapePage() {
+  // og:image costuma vir relativo ("/static/logo.png"): sem resolver contra a
+  // página, a capa quebra em qualquer lugar que não seja o site de origem.
+  const abs = (u) => { try { return u ? new URL(u, location.href).href : ''; } catch { return ''; } };
   const meta = (name) => {
     const s = [name, `og:${name}`, `twitter:${name}`, `article:${name}`];
     for (const n of s) {
       const el = document.querySelector(`meta[name="${n}"], meta[property="${n}"]`);
-      if (el?.content) return el.content;
+      if (el?.content) return /image/i.test(n) ? abs(el.content) : el.content;
     }
     return '';
   };

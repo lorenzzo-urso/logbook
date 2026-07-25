@@ -48,7 +48,51 @@ Regras:
   return null;
 }
 
-async function callClaude(prompt, apiKey) {
+/**
+ * Rascunho de artigo a partir de materiais já consumidos. A parte difícil de
+ * "depois escrevo" é começar; isso devolve título, tags e um corpo em markdown
+ * com as referências já resolvidas por quem chamou.
+ */
+export async function draftArticle(entries, angle, settings) {
+  const { aiProvider, claudeKey, openaiKey } = settings;
+  if (aiProvider === 'none') throw new Error('nenhum provedor de IA configurado em ⚙');
+  const key = aiProvider === 'claude' ? claudeKey : openaiKey;
+  if (!key) throw new Error(`falta a chave do ${aiProvider} em ⚙`);
+
+  const material = entries.map((e, i) => [
+    `[${i + 1}] ${e.title}${e.author ? ` — ${e.author}` : ''}`,
+    e.notes ? `Nota: ${e.notes}` : '',
+    (e.quotes || []).length ? 'Trechos: ' + e.quotes.map(q => `"${q.text}"`).join(' | ') : '',
+    (e.tags || []).length ? `Tags: ${e.tags.join(', ')}` : '',
+  ].filter(Boolean).join('\n')).join('\n\n');
+
+  const prompt = `Você ajuda a escrever um artigo para o LogBook, um logbook pessoal de conhecimento em pt-BR.
+
+Materiais que a pessoa leu e anotou:
+${material}
+
+${angle ? `Ângulo desejado: ${angle}` : 'Encontre o fio condutor entre os materiais.'}
+
+Responda APENAS com JSON válido, sem markdown:
+{
+  "title": "título direto, sem subtítulo, máx 70 chars",
+  "tags": ["tag1", "tag2"],
+  "body": "corpo em markdown, 400-700 palavras"
+}
+
+Regras do corpo:
+- primeira pessoa, tom de quem estudou o assunto, sem jargão de LinkedIn
+- estruture com 2 ou 3 subtítulos ## quando fizer sentido
+- use os trechos como citação em blockquote quando ajudarem o argumento
+- cite os materiais no texto pelo título, nunca pelo número [1]
+- é um RASCUNHO: deixe claro onde falta desenvolver, com um parágrafo final "A desenvolver:" listando as lacunas
+- não invente fatos que não estão nas notas ou trechos`;
+
+  if (aiProvider === 'claude') return callClaude(prompt, claudeKey, 2048);
+  return callOpenAI(prompt, openaiKey, 2048);
+}
+
+async function callClaude(prompt, apiKey, maxTokens = 512) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -58,7 +102,7 @@ async function callClaude(prompt, apiKey) {
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 512,
+      max_tokens: maxTokens,
       messages: [{ role: 'user', content: prompt }],
     }),
   });
@@ -70,7 +114,7 @@ async function callClaude(prompt, apiKey) {
   return JSON.parse(data.content[0].text);
 }
 
-async function callOpenAI(prompt, apiKey) {
+async function callOpenAI(prompt, apiKey, maxTokens = 512) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -81,7 +125,7 @@ async function callOpenAI(prompt, apiKey) {
       model: 'gpt-4o-mini',
       response_format: { type: 'json_object' },
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 512,
+      max_tokens: maxTokens,
     }),
   });
   if (!res.ok) {
