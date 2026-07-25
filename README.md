@@ -35,12 +35,15 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 ├── app.js              # Gerado por ./build.sh (commitado)
 ├── styles.css          # Tokens de design + componentes
 ├── vendor/             # React 18 de produção (UMD), sem CDN
+├── posts/*.md          # Seus artigos (markdown + front matter)
+├── posts.json          # Gerado por ./build.sh — não edite
 ├── data.json           # Todas as entradas (gerenciado pela extensão)
-├── feed.xml            # RSS, gerado do data.json
+├── feed.xml            # RSS de artigos + materiais
 ├── build.sh            # JSX → app.js + regenera o feed
 ├── tools/
+│   ├── build_posts.py  # posts/*.md → posts.json (markdown vira HTML na build)
 │   ├── gen_feed.py     # Gerador do RSS
-│   └── selftest.mjs    # Checagem de dedupe de URL e do feed
+│   └── selftest.mjs    # Checagem de dedupe, posts e feed
 └── extension/
     ├── manifest.json
     ├── background.js
@@ -142,6 +145,34 @@ Clique em 📚 no header da extensão para abrir o formulário de livro sem prec
 Clique em 🗂 no header → busque pelo título → **✎**. Dá para mudar status, nota, avaliação, tags e a data de consumo; **Salvar no GitHub** grava direto no `data.json`. É por aqui que um "quero ler" vira "consumido" — sem isso a fila nunca anda.
 
 🗑 no mesmo lugar deleta.
+
+### Escrever um artigo
+
+O ciclo fecha aqui: você junta material, escreve, e referencia o que leu.
+
+1. Crie `posts/2026-08-10-titulo-do-artigo.md` (o prefixo de data sai do slug — a URL vira `#/p/titulo-do-artigo`). Copie [posts/exemplo.md](posts/exemplo.md) como modelo.
+2. Front matter:
+
+```markdown
+---
+title: Como agentes de código falham na prática
+date: 2026-08-10
+tags: ia, programação
+refs:
+  - https://www.akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/
+draft: true
+---
+
+Texto em markdown normal.
+```
+
+3. `./build.sh` e commite. Tire o `draft: true` quando quiser publicar.
+
+Em `refs` você cola a **URL** do material como ela está no logbook. A build resolve para a entrada: o artigo ganha o card com título, notas e avaliação, e a ficha do material passa a mostrar **"Citado em"** apontando de volta. URL que ainda não está no logbook vira link externo; referência que não bate com nada gera aviso no terminal em vez de sumir calada.
+
+O markdown vira HTML durante a build (`npx marked`), então o site não carrega parser nenhum — e como o HTML é o seu próprio texto, não há sanitização: não cole HTML de terceiros dentro de um post.
+
+Escritos entram no feed RSS junto com os materiais, ordenados pela mesma linha do tempo.
 
 ### Capturar pelo celular
 

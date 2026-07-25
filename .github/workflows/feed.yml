@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Só o feed: posts.json depende do npx e é gerado no ./build.sh local.
       - run: python3 tools/gen_feed.py
       - name: Commit feed.xml
         run: |

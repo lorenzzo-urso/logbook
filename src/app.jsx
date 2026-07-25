@@ -35,6 +35,7 @@ const _TYPE_STYLES = {
   treinamento:{bg:'var(--type-treinamento-bg)',fg:'var(--type-treinamento-fg)',border:'var(--type-treinamento-border)'},
   'notícia':{bg:'var(--type-noticia-bg)',fg:'var(--type-noticia-fg)',border:'var(--type-noticia-border)'},
   projeto:{bg:'var(--type-projeto-bg)',fg:'var(--type-projeto-fg)',border:'var(--type-projeto-border)'},
+  escrito:{bg:'var(--type-escrito-bg)',fg:'var(--type-escrito-fg)',border:'var(--type-escrito-border)'},
 };
 const _STATUS_STYLES = {
   consumido:{bg:'var(--status-consumed-bg)',fg:'var(--status-consumed-fg)',border:'var(--status-consumed-border)'},
@@ -110,6 +111,10 @@ function EntryCard({ type='content', subtype, title, author, source, date, statu
 let ENTRIES = [];
 let CONTENT = [];
 let PROJECTS = [];
+let POSTS = [];   // escritos: posts/*.md compilados por tools/build_posts.py
+
+// Quem cita esta entrada. É o que fecha o ciclo: junta material, escreve, referencia.
+const citedIn = (id) => POSTS.filter(p => (p.refs || []).some(r => r.id === id));
 
 const TYPE_META = [
   { key:'artigo',      label:'Artigos' },
@@ -161,6 +166,7 @@ const IcoTheme    = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="
 const IcoProject  = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity=".55"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity=".55"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity=".25"/></svg>;
 const IcoBook     = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="1" width="8" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/><path d="M2 10.5h8" stroke="currentColor" strokeWidth="1.2"/><path d="M10 3h1.5A1.5 1.5 0 0 1 13 4.5v8A1.5 1.5 0 0 1 11.5 14H10" stroke="currentColor" strokeWidth="1.3"/></svg>;
 const IcoArrow    = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const IcoWrite    = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M10.5 1.8l2.7 2.7-7.4 7.4-3.4.7.7-3.4 7.4-7.4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M9.2 3.1l2.7 2.7" stroke="currentColor" strokeWidth="1.2"/></svg>;
 
 // ── SHARED ───────────────────────────────────────────────────────────────────
 function SectionHeader({ children, count, action }) {
@@ -260,6 +266,16 @@ function HomeView({ onNav }) {
           </div>
         </aside>
       </div>
+
+      {/* Escritos recentes — o que saiu de tudo isso */}
+      {POSTS.length > 0 && (
+        <section style={{ marginBottom:40 }}>
+          <SectionHeader action={<button onClick={() => onNav('escritos')} style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', color:'var(--accent-content)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Todos os escritos <IcoArrow /></button>}>Escritos recentes</SectionHeader>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {POSTS.slice(0, 3).map(p => <PostCard key={p.slug} post={p} />)}
+          </div>
+        </section>
+      )}
 
       {/* Projetos lançados — some quando ainda não há projeto nenhum */}
       {launched.length > 0 && (
@@ -534,6 +550,7 @@ function DetailModal({ entry, onClose }) {
   const related = (entry.related || [])
     .map(r => ({ entry: ENTRIES.find(e => e.id === r.id), why: r.why }))
     .filter(r => r.entry);
+  const cited = citedIn(entry.id);
   const ratings = entry.rating > 0 ? Array.from({length:5}).map((_,i) => (
     <span key={i} style={{ width:8,height:8,borderRadius:'50%',display:'inline-block',background: i<entry.rating ? 'var(--amber-500,#f59e0b)' : 'var(--sand-300,#d6d3cd)',marginRight:3 }} />
   )) : null;
@@ -594,6 +611,21 @@ function DetailModal({ entry, onClose }) {
             </div>
           )}
 
+          {cited.length > 0 && (
+            <div className="cb-modal-section">
+              <div className="cb-modal-label">Citado em</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                {cited.map(p => (
+                  <button key={p.slug} onClick={() => { onClose(); location.hash = hashFor('p', p.slug); }}
+                    style={{ textAlign:'left', background:'var(--bg-elevated)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-md)', padding:'10px 12px', cursor:'pointer', fontFamily:'var(--font-body)' }}>
+                    <div style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-primary)' }}>{p.title}</div>
+                    {p.date && <div style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)', marginTop:3 }}>{shortDate(p.date)}</div>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {related.length > 0 && (
             <div className="cb-modal-section">
               <div className="cb-modal-label">{isProject ? 'Inspirado por' : 'Isso me levou a'}</div>
@@ -623,9 +655,94 @@ function DetailModal({ entry, onClose }) {
   );
 }
 
+// ── VIEW: ESCRITOS ──────────────────────────────────────────────────────────
+function PostsView() {
+  if (!POSTS.length) return (
+    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
+      <PageTitle sub="O que sai da leitura: artigos escritos a partir do que está aqui.">Escritos</PageTitle>
+      <p style={{ color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>
+        Nada publicado ainda. Escreva um <code>.md</code> em <code>posts/</code> e rode <code>./build.sh</code>.
+      </p>
+    </div>
+  );
+  return (
+    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
+      <PageTitle sub="O que sai da leitura: artigos escritos a partir do que está aqui.">Escritos</PageTitle>
+      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        {POSTS.map(p => <PostCard key={p.slug} post={p} />)}
+      </div>
+    </div>
+  );
+}
+
+function PostCard({ post }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <article onClick={() => { location.hash = hashFor('p', post.slug); }}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ background:'var(--bg-surface)', border:`1px solid ${hov ? 'var(--border-default)' : 'var(--border-subtle)'}`, borderRadius:'var(--radius-lg)', padding:'var(--space-5) var(--space-6)', cursor:'pointer', boxShadow: hov ? 'var(--card-hover-shadow)' : 'var(--shadow-sm)', transition:'box-shadow 0.15s ease, border-color 0.15s ease' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+        <Badge subtype="escrito" size="sm" />
+        {post.date && <span style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{shortDate(post.date)}</span>}
+      </div>
+      <h3 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-lg)', fontWeight:500, color:'var(--fg-primary)', margin:'0 0 6px 0', lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{post.title}</h3>
+      {post.excerpt && <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', margin:'0 0 10px 0', lineHeight:'var(--leading-relaxed)' }}>{post.excerpt}</p>}
+      <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
+        {(post.tags||[]).map((t,i) => <Tag key={i} size="sm">{t}</Tag>)}
+        {(post.refs||[]).length > 0 && <span style={{ marginLeft:'auto', fontSize:'var(--text-xs)', color:'var(--fg-muted)', fontFamily:'var(--font-mono)' }}>{post.refs.length} ref{post.refs.length === 1 ? '' : 's'}</span>}
+      </div>
+    </article>
+  );
+}
+
+function PostView({ slug }) {
+  const post = POSTS.find(p => p.slug === slug);
+  React.useEffect(() => { document.querySelector('.cb-main')?.scrollTo(0, 0); }, [slug]);
+  if (!post) return (
+    <div style={{ padding:'60px 40px', textAlign:'center', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)' }}>
+      Artigo não encontrado. <a href="#/escritos" style={{ color:'var(--accent-content)' }}>Ver todos</a>.
+    </div>
+  );
+
+  return (
+    <article style={{ padding:'40px 40px 64px', maxWidth:680, margin:'0 auto' }}>
+      <button onClick={() => { location.hash = hashFor('escritos'); }}
+        style={{ display:'flex', alignItems:'center', gap:6, background:'none', border:'none', cursor:'pointer', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', marginBottom:16 }}>
+        <span style={{ transform:'rotate(180deg)', display:'flex' }}><IcoArrow /></span> Escritos
+      </button>
+      <h1 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-3xl)', fontWeight:600, color:'var(--fg-primary)', letterSpacing:'var(--tracking-tight)', lineHeight:'var(--leading-tight)', marginBottom:10 }}>{post.title}</h1>
+      <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:28, paddingBottom:20, borderBottom:'1px solid var(--border-subtle)' }}>
+        {post.date && <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{shortDate(post.date)}</span>}
+        {(post.tags||[]).map((t,i) => <Tag key={i} size="sm">{t}</Tag>)}
+      </div>
+
+      {/* HTML gerado na build a partir do seu próprio markdown */}
+      <div className="cb-prose" dangerouslySetInnerHTML={{ __html: post.html }} />
+
+      {(post.refs||[]).length > 0 && (
+        <section style={{ marginTop:40, paddingTop:24, borderTop:'1px solid var(--border-subtle)' }}>
+          <SectionHeader count={post.refs.length}>Referências</SectionHeader>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {post.refs.map((r, i) => {
+              const e = r.id && ENTRIES.find(x => x.id === r.id);
+              if (e) return card(e);
+              return (
+                <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--accent-content)', wordBreak:'break-all', padding:'10px 12px', background:'var(--bg-elevated)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-md)' }}>
+                  {r.url}
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
+    </article>
+  );
+}
+
 // ── SIDEBAR ────────────────────────────────────────────────────────────────
 // Backlog subiu: é o que o logbook mais tem. Projetos só aparece se existir projeto.
-const NAV = [['inicio','Início',IcoHome],['backlog','Backlog',IcoBook],['timeline','Timeline',IcoTimeline],['tipos','Por tipo',IcoType],['temas','Temas',IcoTheme],['projetos','Projetos',IcoProject]];
+const NAV = [['inicio','Início',IcoHome],['escritos','Escritos',IcoWrite],['backlog','Backlog',IcoBook],['timeline','Timeline',IcoTimeline],['tipos','Por tipo',IcoType],['temas','Temas',IcoTheme],['projetos','Projetos',IcoProject]];
 function Sidebar({ tab, onTab, open, onClose, searchQuery, onSearch, searchOpen, setSearchOpen }) {
   React.useEffect(() => { if (!searchQuery) setSearchOpen(false); }, [searchQuery]);
   const nav = NAV.filter(([id]) => id !== 'projetos' || PROJECTS.length > 0);
@@ -669,7 +786,7 @@ function Sidebar({ tab, onTab, open, onClose, searchQuery, onSearch, searchOpen,
 // ── ROTAS ──────────────────────────────────────────────────────────────────
 // #/timeline, #/temas/ia, #/tipos/livro, #/e/<id> — links compartilháveis e
 // botão voltar funcionando, que é o mínimo para um site público.
-const TABS = ['inicio','timeline','tipos','temas','projetos','backlog'];
+const TABS = ['inicio','escritos','timeline','tipos','temas','projetos','backlog'];
 function parseHash() {
   const parts = location.hash.replace(/^#\/?/, '').split('/').map(p => {
     try { return decodeURIComponent(p); } catch { return p; }
@@ -677,6 +794,7 @@ function parseHash() {
   const seg = parts[0] || 'inicio';
   const arg = parts.slice(1).join('/');
   if (seg === 'e') return { tab: null, entryId: arg, arg: '' };
+  if (seg === 'p') return { tab: 'escritos', postSlug: arg, arg: '', entryId: null };
   return { tab: TABS.includes(seg) ? seg : 'inicio', arg, entryId: null };
 }
 const hashFor = (to, arg) => '#/' + to + (arg ? '/' + encodeURIComponent(arg) : '');
@@ -692,7 +810,10 @@ function App() {
   const openedDeep = React.useRef(!!route.entryId);
 
   React.useEffect(() => {
-    fetch('./data.json')
+    // posts.json é opcional: quem nunca escreveu não tem o arquivo.
+    fetch('./posts.json').then(r => r.ok ? r.json() : { posts: [] })
+      .then(d => { POSTS = d.posts || []; }).catch(() => {})
+      .then(() => fetch('./data.json'))
       .then(r => r.ok ? r.json() : { entries: [] })
       .then(d => {
         ENTRIES = d.entries || [];
@@ -744,6 +865,7 @@ function App() {
         </div>
 
         {searchQuery ? <SearchView query={searchQuery} /> : tab === 'inicio'   && <HomeView onNav={nav} />}
+        {!searchQuery && tab === 'escritos' && (route.postSlug ? <PostView slug={route.postSlug} /> : <PostsView />)}
         {!searchQuery && tab === 'timeline' && <TimelineView />}
         {!searchQuery && tab === 'tipos'    && <TypeView initialType={route.arg || 'all'} />}
         {!searchQuery && tab === 'temas'    && <ThemesView initialTheme={route.arg || null} />}
