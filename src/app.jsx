@@ -91,7 +91,7 @@ function EntryCard({ type='content', subtype, title, author, source, date, statu
         {status && <Badge status={status} size="sm" dot />}
         {date && <span style={{ marginLeft:'auto', fontSize:'var(--text-xs)', color:'var(--fg-muted)', fontFamily:'var(--font-mono)', letterSpacing:'var(--tracking-wide)', flexShrink:0 }}>{date}</span>}
       </div>
-      <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>{image && subtype==='livro' && !compact && <img src={image} alt='' style={{ width:52, height:72, objectFit:'cover', borderRadius:4, flexShrink:0, marginTop:2 }} />}<div style={{ flex:1, minWidth:0 }}><h3 style={{ fontFamily:'var(--font-display)', fontSize: compact ? 'var(--text-base)' : 'var(--text-lg)', fontWeight:'var(--weight-medium)', color:'var(--fg-primary)', margin:'0 0 var(--space-1) 0', lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{title}</h3>
+      <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>{image && !compact && <img src={image} alt='' loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }} style={{ width:52, height:72, objectFit:'cover', borderRadius:4, flexShrink:0, marginTop:2 }} />}<div style={{ flex:1, minWidth:0 }}><h3 style={{ fontFamily:'var(--font-display)', fontSize: compact ? 'var(--text-base)' : 'var(--text-lg)', fontWeight:'var(--weight-medium)', color:'var(--fg-primary)', margin:'0 0 var(--space-1) 0', lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{title}</h3>
       {(author || source) && <p style={{ fontSize:'var(--text-sm)', color:'var(--fg-muted)', margin:`0 0 ${tags.length || rating || notesExcerpt || relatedCount ? 'var(--space-3)' : '0'} 0`, lineHeight:'var(--leading-normal)' }}>{[author, source].filter(Boolean).join(' · ')}</p>}
       {(tags.length > 0 || rating > 0) && (
         <div style={{ display:'flex', alignItems:'center', gap:'var(--space-1_5)', flexWrap:'wrap', marginBottom: notesExcerpt || relatedCount ? 'var(--space-3)' : 0 }}>
@@ -112,6 +112,7 @@ let ENTRIES = [];
 let CONTENT = [];
 let PROJECTS = [];
 let POSTS = [];   // escritos: posts/*.md compilados por tools/build_posts.py
+let ALIASES = {}; // aliases.json: sinônimo -> tag canônica
 
 // Quem cita esta entrada. É o que fecha o ciclo: junta material, escreve, referencia.
 const citedIn = (id) => POSTS.filter(p => (p.refs || []).some(r => r.id === id));
@@ -158,6 +159,28 @@ function shortDate(iso) {
 }
 const byDateDesc = (a, b) => String(entryDate(b) || '').localeCompare(String(entryDate(a) || ''));
 
+// Dias desde a data que importa. Base de "Revisitar" e do tempo na fila.
+function daysSince(iso) {
+  if (!iso) return null;
+  const d = Math.floor((Date.now() - new Date(iso + 'T00:00:00').getTime()) / 86400000);
+  return d >= 0 ? d : null;
+}
+
+// Autores vêm como "Fulano, Beltrano" numa string só (é o que a Amazon devolve).
+const authorsOf = (e) => String(e.author || '').split(/,| e |&/).map(a => a.trim()).filter(a => a.length > 2);
+const authorSlug = (a) => a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+function authorCounts() {
+  const m = {};
+  ENTRIES.forEach(e => authorsOf(e).forEach(a => {
+    const k = authorSlug(a);
+    if (!k) return;
+    m[k] = m[k] || { name: a, n: 0 };
+    m[k].n++;
+  }));
+  return Object.entries(m).sort((x, y) => y[1].n - x[1].n || x[1].name.localeCompare(y[1].name));
+}
+
 // ── ICONS ──────────────────────────────────────────────────────────────────
 const IcoHome     = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 6.5L7.5 2L13 6.5V13H9.5V9H5.5V13H2V6.5Z" fill="currentColor"/></svg>;
 const IcoTimeline = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="2" rx="1" fill="currentColor"/><rect x="1" y="6.5" width="9" height="2" rx="1" fill="currentColor" opacity=".65"/><rect x="1" y="10.5" width="5.5" height="2" rx="1" fill="currentColor" opacity=".35"/></svg>;
@@ -167,6 +190,8 @@ const IcoProject  = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="
 const IcoBook     = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="1" width="8" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/><path d="M2 10.5h8" stroke="currentColor" strokeWidth="1.2"/><path d="M10 3h1.5A1.5 1.5 0 0 1 13 4.5v8A1.5 1.5 0 0 1 11.5 14H10" stroke="currentColor" strokeWidth="1.3"/></svg>;
 const IcoArrow    = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const IcoWrite    = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M10.5 1.8l2.7 2.7-7.4 7.4-3.4.7.7-3.4 7.4-7.4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M9.2 3.1l2.7 2.7" stroke="currentColor" strokeWidth="1.2"/></svg>;
+const IcoNow      = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.8" stroke="currentColor" strokeWidth="1.4"/><path d="M7.5 4.2v3.6l2.3 1.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const IcoAuthor   = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="4.8" r="2.6" stroke="currentColor" strokeWidth="1.4"/><path d="M2.6 13c0-2.5 2.2-4.2 4.9-4.2s4.9 1.7 4.9 4.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>;
 
 // ── SHARED ───────────────────────────────────────────────────────────────────
 function SectionHeader({ children, count, action }) {
@@ -200,6 +225,12 @@ function HomeView({ onNav }) {
   const themes = mainThemes();
   // Nada em andamento? Mostra a fila em vez de uma grade vazia.
   const queued = ENTRIES.filter(e => e.status === 'quero ler' || e.status === 'na fila').slice(0, 3);
+  // Consumido há mais de 30 dias e com nota: o que vale ser relembrado.
+  // ponytail: corte por data, não repetição espaçada — sem estado de revisão para manter.
+  const revisit = ENTRIES
+    .filter(e => e.status === 'consumido' && e.notes && (daysSince(entryDate(e)) || 0) >= 30)
+    .sort((a, b) => (daysSince(entryDate(b)) || 0) - (daysSince(entryDate(a)) || 0))
+    .slice(0, 2);
 
   return (
     <div style={{ padding:'40px 40px 64px', maxWidth:940, margin:'0 auto' }}>
@@ -266,6 +297,14 @@ function HomeView({ onNav }) {
           </div>
         </aside>
       </div>
+
+      {/* Revisitar — nota lida há meses é nota perdida */}
+      {revisit.length > 0 && (
+        <section style={{ marginBottom:40 }}>
+          <SectionHeader action={<span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-disabled)' }}>consumido há um tempo</span>}>Revisitar</SectionHeader>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:10 }}>{revisit.map(card)}</div>
+        </section>
+      )}
 
       {/* Escritos recentes — o que saiu de tudo isso */}
       {POSTS.length > 0 && (
@@ -449,7 +488,7 @@ function BacklogView() {
   const BookCard = ({ b }) => (
     <div onClick={() => _onDetail && _onDetail(b)} style={{ display:'flex', gap:16, padding:'14px 18px', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-sm)', alignItems:'flex-start', cursor:'pointer' }}>
       <div style={{ width:4, alignSelf:'stretch', borderRadius:2, background: b.status==='em andamento' ? 'var(--accent-content)' : b.status==='consumido' ? '#22c55e' : 'var(--border-default)', flexShrink:0 }} />
-      {b.image && <img src={b.image} alt='' style={{ width:44, height:60, objectFit:'cover', borderRadius:4, flexShrink:0 }} />}
+      {b.image && <img src={b.image} alt='' loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }} style={{ width:44, height:60, objectFit:'cover', borderRadius:4, flexShrink:0 }} />}
       <div style={{ flex:1, minWidth:0 }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:8, marginBottom:4 }}>
           <h3 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', fontWeight:500, color:'var(--fg-primary)', margin:0, lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{b.title}</h3>
@@ -559,7 +598,7 @@ function DetailModal({ entry, onClose }) {
     <div className="cb-modal-bd" onClick={onClose}>
       <div className="cb-modal" onClick={e => e.stopPropagation()}>
         <div className="cb-modal-header">
-          {entry.image && entry.subtype==='livro' && <img src={entry.image} alt='' style={{ width:64, height:88, objectFit:'cover', borderRadius:6, flexShrink:0, marginTop:2 }} />}
+          {entry.image && <img src={entry.image} alt='' onError={e => { e.currentTarget.style.display = 'none'; }} style={{ width:64, height:88, objectFit:'cover', borderRadius:6, flexShrink:0, marginTop:2 }} />}
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8, flexWrap:'wrap' }}>
               <Badge subtype={subtypeKey} size="sm" />
@@ -574,7 +613,14 @@ function DetailModal({ entry, onClose }) {
         <div className="cb-modal-body">
           {(entry.author || entry.source) && (
             <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)', marginTop:8, marginBottom:0 }}>
-              {[entry.author, entry.source].filter(Boolean).join(' · ')}
+              {authorsOf(entry).map((a, i) => (
+                <React.Fragment key={a}>
+                  {i > 0 && ', '}
+                  <button onClick={() => { onClose(); location.hash = hashFor('autores', authorSlug(a)); }}
+                    style={{ background:'none', border:'none', padding:0, cursor:'pointer', color:'var(--accent-content)', fontFamily:'inherit', fontSize:'inherit' }}>{a}</button>
+                </React.Fragment>
+              ))}
+              {entry.source && (entry.author ? ' · ' : '') + entry.source}
             </p>
           )}
           {/* pitch e descrição só existem em projeto */}
@@ -608,6 +654,29 @@ function DetailModal({ entry, onClose }) {
             <div className="cb-modal-section">
               <div className="cb-modal-label">Minhas notas</div>
               <p className="cb-modal-notes">{entry.notes}</p>
+            </div>
+          )}
+
+          {(entry.quotes||[]).length > 0 && (
+            <div className="cb-modal-section">
+              <div className="cb-modal-label">Trechos ({entry.quotes.length})</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+                {entry.quotes.map((q, i) => (
+                  <blockquote key={i} style={{ margin:0, borderLeft:'2px solid var(--accent-content-border)', paddingLeft:12 }}>
+                    <p style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-primary)', lineHeight:'var(--leading-relaxed)', margin:0 }}>{q.text}</p>
+                    {q.page && <cite style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-2xs)', color:'var(--fg-muted)', fontStyle:'normal' }}>{q.page}</cite>}
+                  </blockquote>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {entry.archived && (
+            <div className="cb-modal-section">
+              <a href={`./archive/${entry.id}.md`} target="_blank" rel="noopener noreferrer"
+                style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--accent-content)' }}>
+                ↓ Texto arquivado no dia da captura
+              </a>
             </div>
           )}
 
@@ -651,6 +720,100 @@ function DetailModal({ entry, onClose }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ── VIEW: AUTORES ───────────────────────────────────────────────────────────
+function AuthorsView({ slug }) {
+  const all = authorCounts();
+
+  if (slug) {
+    const hit = all.find(([k]) => k === slug);
+    const items = ENTRIES.filter(e => authorsOf(e).some(a => authorSlug(a) === slug)).sort(byDateDesc);
+    return (
+      <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
+        <button onClick={() => { location.hash = hashFor('autores'); }}
+          style={{ display:'flex', alignItems:'center', gap:6, background:'none', border:'none', cursor:'pointer', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', marginBottom:14 }}>
+          <span style={{ transform:'rotate(180deg)', display:'flex' }}><IcoArrow /></span> Todos os autores
+        </button>
+        <PageTitle sub={`${items.length} ${items.length === 1 ? 'entrada' : 'entradas'}`}>{hit ? hit[1].name : slug}</PageTitle>
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{items.map(card)}</div>
+      </div>
+    );
+  }
+
+  // Paper com 10 coautores enchia a página de gente com 1 entrada só —
+  // mesmo critério de Temas: destaque para quem repete, o resto vira lista.
+  const recorrentes = all.filter(([, v]) => v.n >= 2);
+  const avulsos     = all.filter(([, v]) => v.n < 2).sort((a, b) => a[1].name.localeCompare(b[1].name));
+
+  return (
+    <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
+      <PageTitle sub="Quem escreveu o que passou por aqui.">Autores</PageTitle>
+      {all.length === 0
+        ? <p style={{ color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>Nenhum autor registrado ainda.</p>
+        : <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(240px, 1fr))', gap:10 }}>
+            {recorrentes.map(([k, { name, n }]) => (
+              <button key={k} onClick={() => { location.hash = hashFor('autores', k); }}
+                style={{ textAlign:'left', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', padding:'14px 16px', cursor:'pointer', boxShadow:'var(--shadow-sm)' }}>
+                <div style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', color:'var(--fg-primary)', marginBottom:4 }}>{name}</div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{n} {n === 1 ? 'entrada' : 'entradas'}</div>
+              </button>
+            ))}
+          </div>}
+      {avulsos.length > 0 && (
+        <div style={{ marginTop: recorrentes.length ? 32 : 0 }}>
+          <SectionHeader count={avulsos.length}>Com uma entrada</SectionHeader>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+            {avulsos.map(([k, { name }]) => (
+              <Tag key={k} size="sm" onClick={() => { location.hash = hashFor('autores', k); }}>{name}</Tag>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── VIEW: AGORA ─────────────────────────────────────────────────────────────
+// Convenção de blog pessoal (nownownow.com): o que estou fazendo neste momento.
+// Deriva inteiramente do que já existe — nenhum dado novo para manter.
+function NowView() {
+  const reading = ENTRIES.filter(e => e.status === 'em andamento');
+  const queued  = ENTRIES.filter(e => e.status === 'quero ler')
+                         .sort((a, b) => (waitingDays(b) || 0) - (waitingDays(a) || 0));
+  const lastPost = POSTS[0];
+  const recent = [...ENTRIES].filter(e => e.status === 'consumido').sort(byDateDesc).slice(0, 3);
+  const active = PROJECTS.filter(p => ['em andamento','iniciado'].includes(p.status));
+
+  const Bloco = ({ titulo, children }) => (
+    <section style={{ marginBottom:32 }}>
+      <SectionHeader>{titulo}</SectionHeader>
+      {children}
+    </section>
+  );
+  const vazio = (t) => <p style={{ color:'var(--fg-disabled)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>{t}</p>;
+
+  return (
+    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
+      <PageTitle sub="O que estou lendo e escrevendo neste momento.">Agora</PageTitle>
+      <Bloco titulo="Lendo">
+        {reading.length ? <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{reading.map(card)}</div>
+          : vazio('Nada em andamento — marque um item como "em andamento" na extensão.')}
+      </Bloco>
+      {active.length > 0 && <Bloco titulo="Construindo"><div style={{ display:'flex', flexDirection:'column', gap:10 }}>{active.map(card)}</div></Bloco>}
+      <Bloco titulo="Escrevendo">
+        {lastPost ? <PostCard post={lastPost} /> : vazio('Nenhum artigo publicado ainda.')}
+      </Bloco>
+      <Bloco titulo="Terminei há pouco">
+        {recent.length ? <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{recent.map(card)}</div> : vazio('Nada consumido ainda.')}
+      </Bloco>
+      {queued.length > 0 && (
+        <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)' }}>
+          E {queued.length} {queued.length === 1 ? 'item esperando' : 'itens esperando'} na fila — o mais antigo há {waitingDays(queued[0])} dias.
+        </p>
+      )}
     </div>
   );
 }
@@ -742,7 +905,7 @@ function PostView({ slug }) {
 
 // ── SIDEBAR ────────────────────────────────────────────────────────────────
 // Backlog subiu: é o que o logbook mais tem. Projetos só aparece se existir projeto.
-const NAV = [['inicio','Início',IcoHome],['escritos','Escritos',IcoWrite],['backlog','Backlog',IcoBook],['timeline','Timeline',IcoTimeline],['tipos','Por tipo',IcoType],['temas','Temas',IcoTheme],['projetos','Projetos',IcoProject]];
+const NAV = [['inicio','Início',IcoHome],['agora','Agora',IcoNow],['escritos','Escritos',IcoWrite],['backlog','Backlog',IcoBook],['timeline','Timeline',IcoTimeline],['tipos','Por tipo',IcoType],['temas','Temas',IcoTheme],['autores','Autores',IcoAuthor],['projetos','Projetos',IcoProject]];
 function Sidebar({ tab, onTab, open, onClose, searchQuery, onSearch, searchOpen, setSearchOpen }) {
   React.useEffect(() => { if (!searchQuery) setSearchOpen(false); }, [searchQuery]);
   const nav = NAV.filter(([id]) => id !== 'projetos' || PROJECTS.length > 0);
@@ -786,7 +949,7 @@ function Sidebar({ tab, onTab, open, onClose, searchQuery, onSearch, searchOpen,
 // ── ROTAS ──────────────────────────────────────────────────────────────────
 // #/timeline, #/temas/ia, #/tipos/livro, #/e/<id> — links compartilháveis e
 // botão voltar funcionando, que é o mínimo para um site público.
-const TABS = ['inicio','escritos','timeline','tipos','temas','projetos','backlog'];
+const TABS = ['inicio','agora','escritos','timeline','tipos','temas','autores','projetos','backlog'];
 function parseHash() {
   const parts = location.hash.replace(/^#\/?/, '').split('/').map(p => {
     try { return decodeURIComponent(p); } catch { return p; }
@@ -810,16 +973,24 @@ function App() {
   const openedDeep = React.useRef(!!route.entryId);
 
   React.useEffect(() => {
-    // posts.json é opcional: quem nunca escreveu não tem o arquivo.
-    fetch('./posts.json').then(r => r.ok ? r.json() : { posts: [] })
-      .then(d => { POSTS = d.posts || []; }).catch(() => {})
+    // posts.json e aliases.json são opcionais: podem simplesmente não existir.
+    Promise.all([
+      fetch('./posts.json').then(r => r.ok ? r.json() : { posts: [] }).catch(() => ({ posts: [] })),
+      fetch('./aliases.json').then(r => r.ok ? r.json() : {}).catch(() => ({})),
+    ])
+      .then(([p, a]) => { POSTS = p.posts || []; ALIASES = a || {}; })
       .then(() => fetch('./data.json'))
       .then(r => r.ok ? r.json() : { entries: [] })
       .then(d => {
         ENTRIES = d.entries || [];
-        // Normaliza tags na leitura: 'IA ' e 'ia' viravam dois temas distintos.
-        // ponytail: só caixa/espaço. Sinônimos de verdade pedem um mapa manual — quando doer.
-        ENTRIES.forEach(e => { e.tags = [...new Set((e.tags||[]).map(t => String(t).trim().toLowerCase()).filter(Boolean))]; });
+        // Normaliza caixa/espaço e aplica aliases.json ('ia' -> 'inteligência
+        // artificial'). Sinônimo exige julgamento humano; o mapa é manual de propósito.
+        const canon = (t) => {
+          const k = String(t).trim().toLowerCase();
+          return (ALIASES[k] || k).trim().toLowerCase();
+        };
+        ENTRIES.forEach(e => { e.tags = [...new Set((e.tags||[]).map(canon).filter(Boolean))]; });
+        POSTS.forEach(p => { p.tags = [...new Set((p.tags||[]).map(canon).filter(Boolean))]; });
         CONTENT = ENTRIES.filter(e => e.type === 'conteudo');
         PROJECTS = ENTRIES.filter(e => e.type === 'projeto');
         _setLoaded(true);
@@ -865,6 +1036,8 @@ function App() {
         </div>
 
         {searchQuery ? <SearchView query={searchQuery} /> : tab === 'inicio'   && <HomeView onNav={nav} />}
+        {!searchQuery && tab === 'agora'    && <NowView />}
+        {!searchQuery && tab === 'autores'  && <AuthorsView slug={route.arg || null} />}
         {!searchQuery && tab === 'escritos' && (route.postSlug ? <PostView slug={route.postSlug} /> : <PostsView />)}
         {!searchQuery && tab === 'timeline' && <TimelineView />}
         {!searchQuery && tab === 'tipos'    && <TypeView initialType={route.arg || 'all'} />}

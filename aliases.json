@@ -1,0 +1,8 @@
+{
+  "_leia-me": "sinônimo (minúsculo) -> tag canônica. Aplicado na leitura do site, sem reescrever o data.json. Chaves começando com _ são ignoradas por convenção — são comentário.",
+  "ia": "inteligência artificial",
+  "ai": "inteligência artificial",
+  "llm": "inteligência artificial",
+  "dev": "desenvolvimento",
+  "programação de computadores": "programação"
+}

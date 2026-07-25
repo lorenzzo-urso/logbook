@@ -362,3 +362,54 @@
 .cb-prose hr { border:none; border-top:1px solid var(--border-subtle); }
 .cb-prose table { width:100%; border-collapse:collapse; font-family:var(--font-body); font-size:var(--text-sm); display:block; overflow-x:auto; }
 .cb-prose th, .cb-prose td { border:1px solid var(--border-subtle); padding:6px 10px; text-align:left; }
+
+/* ── MODO ESCURO ─────────────────────────────────────────────────────────────
+   Só reatribui os tokens semânticos: componente nenhum precisa saber do tema.
+   Segue o sistema — sem botão de troca: macOS e iOS já viram sozinhos à noite.
+   ponytail: um toggle manual exigiria duplicar a paleta inteira num segundo
+   seletor. Adicionar só se você quiser forçar escuro num sistema claro. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-base:       #15140F;
+    --bg-surface:    #1D1B16;
+    --bg-elevated:   #26241E;
+    --bg-overlay:    rgba(0, 0, 0, 0.65);
+
+    --fg-primary:    #EDEAE1;
+    --fg-secondary:  #C3BEB1;
+    --fg-muted:      #918B7C;
+    --fg-disabled:   #6B665B;
+    --fg-inverse:    var(--sand-900);
+
+    --border-subtle:  #302D26;
+    --border-default: #423E35;
+    --border-strong:  #5C574B;
+
+    /* Fundos pastel viram tinta escura: contraste some no escuro. */
+    --accent-content-subtle: #33260E;
+    --accent-content-light:  #3D2D10;
+    --accent-content-border: #5C441A;
+    --accent-project-subtle: #1B222B;
+
+    --type-artigo-bg: #33260E;      --type-artigo-fg: #F2C46B;      --type-artigo-border: #5C441A;
+    --type-livro-bg: #35220F;       --type-livro-fg: #F0B37E;       --type-livro-border: #5E3C1B;
+    --type-video-bg: #331522;       --type-video-fg: #F2A0C4;       --type-video-border: #5C2440;
+    --type-curso-bg: #12301F;       --type-curso-fg: #7FD9A4;       --type-curso-border: #1F5537;
+    --type-treinamento-bg: #251A3D; --type-treinamento-fg: #C0A6F5;  --type-treinamento-border: #402D66;
+    --type-noticia-bg: #26241E;     --type-noticia-fg: #B4B0A3;     --type-noticia-border: #423E35;
+    --type-projeto-bg: #1B222B;     --type-projeto-fg: #9DB8D4;     --type-projeto-border: #2C3A4A;
+    --type-escrito-bg: #12233F;     --type-escrito-fg: #93BBF5;     --type-escrito-border: #1E3C66;
+
+    --status-consumed-bg: #12301F;  --status-consumed-fg: #7FD9A4;  --status-consumed-border: #1F5537;
+    --status-progress-bg: #33260E;  --status-progress-fg: #F2C46B;  --status-progress-border: #5C441A;
+    --status-abandoned-bg: #26241E; --status-abandoned-fg: #918B7C; --status-abandoned-border: #423E35;
+    --status-idea-bg: #251A3D;      --status-idea-fg: #C0A6F5;      --status-idea-border: #402D66;
+    --status-started-bg: #1B222B;   --status-started-fg: #9DB8D4;   --status-started-border: #2C3A4A;
+    --status-launched-bg: #12301F;  --status-launched-fg: #7FD9A4;  --status-launched-border: #1F5537;
+    --status-paused-bg: #26241E;    --status-paused-fg: #B4B0A3;    --status-paused-border: #423E35;
+    --status-archived-bg: #1D1B16;  --status-archived-fg: #6B665B;  --status-archived-border: #302D26;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.4);
+  }
+}
