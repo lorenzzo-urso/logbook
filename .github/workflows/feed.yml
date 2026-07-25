@@ -1,10 +1,13 @@
-name: feed
+name: build
 
-# A extensão grava data.json direto pela API do GitHub, então o feed precisa
-# ser regenerado aqui — senão fica desatualizado a cada captura.
+# A extensão grava data.json direto pela API, e artigos podem ser editados pelo
+# site do GitHub — nos dois casos o feed e as páginas dos artigos precisam ser
+# refeitos aqui, senão só atualizam no próximo ./build.sh local.
 on:
   push:
-    paths: ['data.json']
+    paths:
+      - 'data.json'
+      - 'posts/**'
   workflow_dispatch:
 
 permissions:
@@ -15,12 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Só o feed: posts.json depende do npx e é gerado no ./build.sh local.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # posts.json, páginas em p/ e as imagens og/ dependem de npx (marked, resvg).
+      - run: python3 tools/build_posts.py
       - run: python3 tools/gen_feed.py
-      - name: Commit feed.xml
+
+      - name: Commitar o que mudou
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add feed.xml
-          git diff --staged --quiet || git commit -m "chore: regenera feed.xml"
+          git add feed.xml posts.json p og
+          git diff --staged --quiet || git commit -m "chore: regenera feed, artigos e imagens"
           git push

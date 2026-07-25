@@ -1,0 +1,63 @@
+name: manutenção
+
+# Duas rotinas que só fazem sentido rodando sozinhas:
+# - segunda de manhã: como está o logbook (o cutucão)
+# - dia 1: links que morreram desde o mês passado
+on:
+  schedule:
+    - cron: '0 11 * * 1'     # segunda, 08:00 em Brasília
+    - cron: '0 12 1 * *'     # dia 1, 09:00 em Brasília
+  workflow_dispatch:
+    inputs:
+      tarefa:
+        description: qual rodar
+        type: choice
+        options: [status, links]
+        default: status
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  status:
+    if: github.event.schedule == '0 11 * * 1' || inputs.tarefa == 'status'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: rel
+        run: |
+          {
+            echo 'corpo<<FIM'
+            python3 tools/status_report.py
+            echo FIM
+          } >> "$GITHUB_OUTPUT"
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "logbook: semana de $(date +%d/%m)" \
+            --label semanal \
+            --body "${{ steps.rel.outputs.corpo }}"
+
+  links:
+    if: github.event.schedule == '0 12 1 * *' || inputs.tarefa == 'links'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        continue-on-error: true
+        run: |
+          {
+            echo 'corpo<<FIM'
+            python3 tools/check_links.py
+            echo FIM
+          } >> "$GITHUB_OUTPUT"
+      - if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "links quebrados — $(date +%m/%Y)" \
+            --label manutenção \
+            --body "${{ steps.check.outputs.corpo }}"

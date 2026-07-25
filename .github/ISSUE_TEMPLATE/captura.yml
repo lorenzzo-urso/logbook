@@ -1,0 +1,39 @@
+name: Capturar link
+description: Adiciona um material ao LogBook (funciona do celular)
+title: "captura: "
+labels: [captura]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      placeholder: https://...
+    validations:
+      required: true
+  - type: input
+    id: titulo
+    attributes:
+      label: Título
+      description: Deixe vazio para usar o título da issue
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo
+      options: [artigo, notícia, livro, curso, treinamento, vídeo]
+      default: 0
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options: ["quero ler", "em andamento", "consumido"]
+      default: 0
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      placeholder: ia, negociação
+  - type: textarea
+    id: nota
+    attributes:
+      label: Nota
+      placeholder: Por que isso importa
