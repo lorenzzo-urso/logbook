@@ -1,0 +1,342 @@
+/* LogBook — design tokens + componentes.
+   Fontes vêm do Google Fonts (link no index.html), não mais 24 woff2 em base64. */
+
+:root {
+  /* ── FONT FAMILIES ── */
+  --font-display: 'Lora', Georgia, 'Times New Roman', serif;
+  --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* ── FONT SIZE SCALE ── */
+  --text-2xs:  0.6875rem;   /*  11px */
+  --text-xs:   0.75rem;     /*  12px */
+  --text-sm:   0.875rem;    /*  14px */
+  --text-base: 1rem;        /*  16px */
+  --text-lg:   1.125rem;    /*  18px */
+  --text-xl:   1.25rem;     /*  20px */
+  --text-2xl:  1.5rem;      /*  24px */
+  --text-3xl:  1.875rem;    /*  30px */
+  --text-4xl:  2.25rem;     /*  36px */
+  --text-5xl:  3rem;        /*  48px */
+
+  /* ── FONT WEIGHTS ── */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ── LINE HEIGHTS ── */
+  --leading-none:    1;
+  --leading-tight:   1.25;
+  --leading-snug:    1.375;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose:   2;
+
+  /* ── LETTER SPACING ── */
+  --tracking-tighter: -0.03em;
+  --tracking-tight:   -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.03em;
+  --tracking-wider:   0.06em;
+  --tracking-widest:  0.10em;
+}
+
+/* LogBook — Color Tokens */
+
+:root {
+  /* ── SAND — warm neutral base ── */
+  --sand-50:  #FAFAF7;
+  --sand-100: #F4F3EE;
+  --sand-200: #E9E7DF;
+  --sand-300: #D5D2C8;
+  --sand-400: #B4B0A3;
+  --sand-500: #8D897C;
+  --sand-600: #6A6760;
+  --sand-700: #4A4843;
+  --sand-800: #2E2C28;
+  --sand-900: #1A1916;
+
+  /* ── AMBER — primary accent (content / input) ── */
+  --amber-50:  #FFF8EF;
+  --amber-100: #FEEDD4;
+  --amber-200: #FCD4A2;
+  --amber-300: #F8B066;
+  --amber-400: #F08A30;
+  --amber-500: #E07120;
+  --amber-600: #C25A0C;
+  --amber-700: #9D4508;
+  --amber-800: #7A3407;
+
+  /* ── SLATE — secondary accent (projects / output) ── */
+  --slate-50:  #F2F4FF;
+  --slate-100: #E3E8FF;
+  --slate-200: #C4CEFF;
+  --slate-300: #96A5FA;
+  --slate-400: #6577EF;
+  --slate-500: #4355E3;
+  --slate-600: #2F40C8;
+  --slate-700: #2232A6;
+  --slate-800: #162084;
+
+  /* ── STATUS — green ── */
+  --green-50:  #F0FBF4;
+  --green-100: #D8F4E5;
+  --green-200: #A5E8C3;
+  --green-500: #22A05B;
+  --green-700: #156639;
+
+  /* ── STATUS — red ── */
+  --red-50:  #FFF2F0;
+  --red-100: #FFE0DC;
+  --red-200: #FFBDB8;
+  --red-500: #E0402C;
+  --red-700: #A0250F;
+
+  /* ── STATUS — yellow ── */
+  --yellow-50:  #FFFBF0;
+  --yellow-100: #FFF3D1;
+  --yellow-200: #FFE49E;
+  --yellow-500: #E8A520;
+  --yellow-700: #9B6A00;
+
+  /* ── SURFACE / BG ── */
+  --bg-base:       var(--sand-50);
+  --bg-surface:    #FFFFFF;
+  --bg-elevated:   var(--sand-100);
+  --bg-overlay:    rgba(26, 25, 22, 0.5);
+
+  /* ── FOREGROUND / TEXT ── */
+  --fg-primary:    var(--sand-900);
+  --fg-secondary:  var(--sand-700);
+  --fg-muted:      var(--sand-500);
+  --fg-disabled:   var(--sand-400);
+  --fg-inverse:    var(--sand-50);
+
+  /* ── BORDERS ── */
+  --border-subtle:  var(--sand-200);
+  --border-default: var(--sand-300);
+  --border-strong:  var(--sand-500);
+
+  /* ── ACCENT: CONTENT (amber) ── */
+  --accent-content:        var(--amber-500);
+  --accent-content-hover:  var(--amber-600);
+  --accent-content-subtle: var(--amber-50);
+  --accent-content-light:  var(--amber-100);
+  --accent-content-border: var(--amber-200);
+
+  /* ── ACCENT: PROJECT (slate) ── */
+  --accent-project:        var(--slate-500);
+  --accent-project-hover:  var(--slate-600);
+  --accent-project-subtle: var(--slate-50);
+  --accent-project-light:  var(--slate-100);
+  --accent-project-border: var(--slate-200);
+
+  /* ── CONTENT TYPE COLORS ── */
+  --type-artigo-bg:       var(--amber-50);
+  --type-artigo-fg:       var(--amber-700);
+  --type-artigo-border:   var(--amber-200);
+
+  --type-livro-bg:        #FFF5EC;
+  --type-livro-fg:        #8C4A10;
+  --type-livro-border:    #FDDCB8;
+
+  --type-video-bg:        #FFF0F5;
+  --type-video-fg:        #A02860;
+  --type-video-border:    #FCCCE4;
+
+  --type-curso-bg:        var(--green-50);
+  --type-curso-fg:        var(--green-700);
+  --type-curso-border:    var(--green-200);
+
+  --type-treinamento-bg:  #F4EEFF;
+  --type-treinamento-fg:  #6432BC;
+  --type-treinamento-border: #DBC8FF;
+
+  --type-noticia-bg:      var(--sand-100);
+  --type-noticia-fg:      var(--sand-600);
+  --type-noticia-border:  var(--sand-300);
+
+  --type-projeto-bg:      var(--slate-50);
+  --type-projeto-fg:      var(--slate-700);
+  --type-projeto-border:  var(--slate-200);
+
+  /* ── STATUS SEMANTIC ── */
+  --status-consumed-bg:     var(--green-50);
+  --status-consumed-fg:     var(--green-700);
+  --status-consumed-border: var(--green-200);
+
+  --status-progress-bg:     var(--yellow-50);
+  --status-progress-fg:     var(--yellow-700);
+  --status-progress-border: var(--yellow-200);
+
+  --status-abandoned-bg:    var(--red-50);
+  --status-abandoned-fg:    var(--red-700);
+  --status-abandoned-border: var(--red-200);
+
+  --status-idea-bg:         var(--sand-100);
+  --status-idea-fg:         var(--sand-600);
+  --status-idea-border:     var(--sand-300);
+
+  --status-started-bg:      var(--yellow-50);
+  --status-started-fg:      var(--yellow-700);
+  --status-started-border:  var(--yellow-200);
+
+  --status-launched-bg:     var(--slate-50);
+  --status-launched-fg:     var(--slate-700);
+  --status-launched-border: var(--slate-200);
+
+  --status-paused-bg:       var(--red-50);
+  --status-paused-fg:       var(--red-700);
+  --status-paused-border:   var(--red-200);
+
+  --status-archived-bg:     var(--sand-100);
+  --status-archived-fg:     var(--sand-400);
+  --status-archived-border: var(--sand-200);
+}
+
+/* LogBook — Spacing, Sizing & Radius Tokens */
+
+:root {
+  /* ── SPACING SCALE (4px base unit) ── */
+  --space-px:   1px;
+  --space-0_5:  0.125rem;   /*  2px */
+  --space-1:    0.25rem;    /*  4px */
+  --space-1_5:  0.375rem;   /*  6px */
+  --space-2:    0.5rem;     /*  8px */
+  --space-2_5:  0.625rem;   /* 10px */
+  --space-3:    0.75rem;    /* 12px */
+  --space-4:    1rem;       /* 16px */
+  --space-5:    1.25rem;    /* 20px */
+  --space-6:    1.5rem;     /* 24px */
+  --space-7:    1.75rem;    /* 28px */
+  --space-8:    2rem;       /* 32px */
+  --space-10:   2.5rem;     /* 40px */
+  --space-12:   3rem;       /* 48px */
+  --space-14:   3.5rem;     /* 56px */
+  --space-16:   4rem;       /* 64px */
+  --space-20:   5rem;       /* 80px */
+  --space-24:   6rem;       /* 96px */
+  --space-32:   8rem;       /* 128px */
+
+  /* ── BORDER RADIUS ── */
+  --radius-none: 0;
+  --radius-sm:   3px;
+  --radius-md:   6px;
+  --radius-lg:   10px;
+  --radius-xl:   16px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+
+  /* ── LAYOUT CONSTANTS ── */
+  --sidebar-width:      240px;
+  --content-max-width:  680px;
+  --container-max-width: 1200px;
+  --card-padding-x:     var(--space-6);
+  --card-padding-y:     var(--space-5);
+  --section-gap:        var(--space-8);
+}
+
+/* LogBook — Shadow Tokens */
+/* Warm-tinted shadows (based on --sand-900 at low opacity) */
+
+:root {
+  /* ── ELEVATION SHADOWS ── */
+  --shadow-sm:   0 1px 2px rgba(26, 25, 22, 0.06);
+  --shadow-md:   0 2px 6px rgba(26, 25, 22, 0.08),  0 1px 2px rgba(26, 25, 22, 0.04);
+  --shadow-lg:   0 6px 20px rgba(26, 25, 22, 0.10), 0 2px 6px rgba(26, 25, 22, 0.05);
+  --shadow-xl:   0 16px 40px rgba(26, 25, 22, 0.12), 0 4px 12px rgba(26, 25, 22, 0.07);
+  --shadow-2xl:  0 32px 64px rgba(26, 25, 22, 0.16), 0 8px 20px rgba(26, 25, 22, 0.09);
+
+  /* ── FOCUS RINGS ── */
+  --focus-ring:         0 0 0 3px rgba(224, 113, 32, 0.28);
+  --focus-ring-project: 0 0 0 3px rgba(67, 85, 227, 0.24);
+
+  /* ── INSET ── */
+  --shadow-inset: inset 0 1px 2px rgba(26, 25, 22, 0.08);
+
+  /* ── CARD HOVER ── */
+  --card-hover-shadow: 0 4px 16px rgba(26, 25, 22, 0.10), 0 1px 4px rgba(26, 25, 22, 0.06);
+}
+
+
+/* ── Responsive / Mobile ─────────────────────────────────────────── */
+.cb-app { display:flex; height:100vh; }
+.cb-sidebar {
+  width:var(--sidebar-width); flex-shrink:0; height:100vh;
+  background:var(--bg-surface); border-right:1px solid var(--border-subtle);
+  display:flex; flex-direction:column;
+  transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+}
+.cb-main { flex:1; overflow:auto; min-width:0; }
+.cb-overlay { display:none; }
+.cb-topbar  { display:none; }
+
+@media (max-width: 640px) {
+  .cb-sidebar {
+    position:fixed; top:0; left:0; bottom:0; z-index:100;
+    transform:translateX(-100%);
+    width:220px;
+    box-shadow:4px 0 24px rgba(0,0,0,0.18);
+  }
+  .cb-sidebar.open { transform:translateX(0); }
+  .cb-overlay {
+    display:block; position:fixed; inset:0;
+    background:rgba(26,25,22,0.45); z-index:99;
+    backdrop-filter:blur(2px);
+  }
+  .cb-topbar {
+    display:flex; align-items:center; gap:10px;
+    padding:11px 16px;
+    background:var(--bg-surface);
+    border-bottom:1px solid var(--border-subtle);
+    position:sticky; top:0; z-index:10;
+  }
+  .cb-hamburger {
+    background:none; border:none; cursor:pointer;
+    color:var(--fg-primary); font-size:18px; line-height:1;
+    padding:2px 6px; border-radius:4px;
+  }
+  .cb-hamburger:hover { background:var(--bg-hover); }
+  .cb-topbar-title {
+    font-family:var(--font-display); font-size:var(--text-base);
+    font-weight:600; color:var(--fg-primary); letter-spacing:-0.01em;
+  }
+  .cb-topbar-title span { font-family:var(--font-body); font-weight:400; color:var(--fg-muted); }
+}
+
+
+/* ── Search bar ─────────────────────────────────────────────────── */
+.cb-side-search { padding:8px 8px 10px; border-top:1px solid var(--border-subtle); }
+.cb-side-search-input { width:100%; background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:6px 26px 6px 28px; font-size:var(--text-sm); color:var(--fg-primary); font-family:var(--font-body); outline:none; transition:border-color 0.15s; box-sizing:border-box; }
+.cb-side-search-input:focus { border-color:var(--accent-content); }
+.cb-side-search-input::placeholder { color:var(--fg-disabled); }
+.cb-side-search-wrap { position:relative; }
+.cb-side-search-ico { position:absolute; left:8px; top:50%; transform:translateY(-50%); color:var(--fg-disabled); font-size:12px; pointer-events:none; line-height:1; }
+.cb-side-search-clear { position:absolute; right:5px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--fg-muted); font-size:11px; padding:2px 4px; border-radius:var(--radius-sm); line-height:1; }
+.cb-side-search-clear:hover { background:var(--sand-200,#e8e5df); }
+.cb-search-toggle { display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; background:none; border:none; border-radius:var(--radius-md); cursor:pointer; color:var(--fg-secondary); font-family:var(--font-body); font-size:var(--text-sm); font-weight:400; transition:background 0.12s, color 0.12s; text-align:left; }
+.cb-search-toggle:hover { background:var(--bg-elevated); }
+/* ── Detail modal ────────────────────────────────────────────────── */
+.cb-modal-bd { position:fixed; inset:0; background:rgba(26,25,22,0.48); z-index:200; display:flex; align-items:center; justify-content:center; padding:24px; backdrop-filter:blur(3px); }
+.cb-modal { background:var(--bg-surface); border-radius:var(--radius-xl,12px); width:100%; max-width:580px; max-height:82vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,0.2); }
+.cb-modal-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:24px 24px 0; }
+.cb-modal-body { padding:16px 24px 28px; }
+.cb-modal-close { background:none; border:none; cursor:pointer; color:var(--fg-muted); font-size:18px; line-height:1; padding:4px; border-radius:var(--radius-md); flex-shrink:0; margin-top:-2px; }
+.cb-modal-close:hover { background:var(--bg-elevated); color:var(--fg-primary); }
+.cb-modal-section { margin-top:16px; padding-top:16px; border-top:1px solid var(--border-subtle); }
+.cb-modal-label { font-family:var(--font-mono); font-size:var(--text-2xs); color:var(--fg-disabled); letter-spacing:var(--tracking-wider); text-transform:uppercase; margin-bottom:6px; }
+.cb-modal-notes { font-family:var(--font-display); font-size:var(--text-sm); color:var(--fg-secondary); line-height:var(--leading-relaxed); white-space:pre-wrap; }
+@media (max-width:640px) { .cb-modal { max-height:90vh; border-radius:var(--radius-lg,8px); } .cb-searchbar { padding:8px 14px; } }
+
+/* ── BASE ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-base); height: 100vh; overflow: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--sand-300); border-radius: 99px; }
+
+/* Home: duas colunas no desktop, empilhado no celular. */
+.cb-home-split { display:grid; grid-template-columns:1.6fr 1fr; gap:32px; margin-bottom:40px; align-items:start; }
+@media (max-width:760px) { .cb-home-split { grid-template-columns:1fr; gap:28px; } }
