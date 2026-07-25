@@ -1,5 +1,4 @@
-# Dados locais (podem conter entradas pessoais)
-data.json
+# data.json NÃO entra aqui: é o storage do site, tem que ser versionado.
 
 # Scripts utilitários internos de manutenção
 _*.js

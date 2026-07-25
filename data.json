@@ -4,7 +4,6 @@
   "entries": [
     {
       "author": "Fabio Akita",
-      "changelog": [],
       "createdAt": "2026-06-17T23:01:42.727Z",
       "dates": {
         "captured": "2026-06-17",
@@ -15,11 +14,8 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "c03901f8-1fd3-4d51-b596-ce65452acc88",
-      "links": [],
       "notes": "A importância de não confundir provas de conceito com produtos prontos para produção. Reflexões sobre o uso de agentes de código na prática.",
-      "pitch": "",
       "rating": 5,
       "source": "akitaonrails.com",
       "status": "consumido",
@@ -32,26 +28,23 @@
       ],
       "title": "Dicas e Toolkit de IA do Akita: ai-jail, ai-memory, ai-usagebar – AkitaOnRails.com",
       "type": "conteudo",
-      "url": "https://www.akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/"
+      "url": "https://www.akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/",
+      "related": []
     },
     {
       "author": "Donna Weber, Maíra Meyer Bregalda, Marcelo Amaral de Moraes",
-      "changelog": [],
       "createdAt": "2026-06-18T00:27:26.783Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "8c2551a6-9e2a-4f73-a204-f3cbcd9025d3",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -65,26 +58,23 @@
       "title": "Onboarding orquestrado: A metodologia inovadora para fazer seus novos clientes mais bem-sucedidos, lucrativos e fiéis desde o início",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Onboarding-orquestrado-metodologia-bem-sucedidos-lucrativos/dp/6559282716",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/6559282716.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/6559282716.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "David H. Maister, Robert M. Galford, Charles H. Green, Thais Cotts Ferreira de Lima",
-      "changelog": [],
       "createdAt": "2026-06-18T00:28:06.630Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "f1fc1bee-ce9a-4f00-9f1f-989d88733b26",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -98,26 +88,23 @@
       "title": "O conselheiro confiável: edição de aniversário de 20 anos",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/conselheiro-confi%C3%A1vel-edi%C3%A7%C3%A3o-anivers%C3%A1rio-anos/dp/6555207310",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/6555207310.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/6555207310.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Robert McKee",
-      "changelog": [],
       "createdAt": "2026-06-18T00:28:48.674Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "dd9b1b17-35d5-4f2e-b85d-1f7e7bcda5f3",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -131,26 +118,23 @@
       "title": "Storynomics - Como o poder das histórias pode impulsionar seu negócio no mundo moderno.",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Storynomics-Robert-McKee/dp/6599521339",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/6599521339.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/6599521339.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Breno Paquelet, Helena Hennemann, Foresti Design",
-      "changelog": [],
       "createdAt": "2026-06-18T00:29:43.827Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "a81df57b-5d55-4a4c-93a7-6f311ca7ae93",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -164,26 +148,23 @@
       "title": "Negocie sem medo: Os cinco pilares para construir acordos com confiança",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Negocie-sem-medo-construir-confian%C3%A7a-ebook/dp/B0BF8FDSDJ",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/B0BF8FDSDJ.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/B0BF8FDSDJ.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Will Guidara, Vanessa Schreiner",
-      "changelog": [],
       "createdAt": "2026-06-18T00:31:12.902Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "5e600278-375b-4b3a-a852-2f166c9236e8",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -197,26 +178,23 @@
       "title": "Hospitalidade irracional: o extraordinário poder de dar às pessoas mais do que elas esperam",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Hospitalidade-Irracional-Extraordin%C3%A1rio-Pessoas-Esperam/dp/8550821012",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8550821012.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8550821012.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Elliot Aronson, Joshua Aronson, Marcello Borges, Saul Steinberg, Angelo Bottino, Eduardo Moreira",
-      "changelog": [],
       "createdAt": "2026-06-18T00:32:16.141Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "68e47d29-fabc-49b9-8330-69cbe1019792",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -230,26 +208,23 @@
       "title": "O animal social",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/animal-social-Elliot-Aronson/dp/8576576007",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8576576007.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8576576007.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Carmine Gallo",
-      "changelog": [],
       "createdAt": "2026-06-18T00:32:43.331Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "36f4dab5-8108-4f0a-ad18-35cea17dbc88",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -263,26 +238,23 @@
       "title": "Storytelling: aprenda a contar histórias com Steve Jobs, Papa Francisco, Churchill e outras lendas da liderança",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Storytelling-Hist%C3%B3rias-Francisco-Churchill-Lideran%C3%A7a/dp/8550810258",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8550810258.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8550810258.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Malcolm Gladwell, Ivo Korytowski",
-      "changelog": [],
       "createdAt": "2026-06-18T00:33:24.678Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "cec34ef0-87b1-454f-a73a-d0cfb6c580ce",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -296,26 +268,23 @@
       "title": "Fora de série - Outliers: Descubra por que algumas pessoas têm sucesso e outras não",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Fora-s%C3%A9rie-Outliers-Malcolm-Gladwell/dp/8575424483",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8575424483.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8575424483.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Maya Ackerman",
-      "changelog": [],
       "createdAt": "2026-06-18T00:35:50.585Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "b2585863-a095-4135-bf82-3609429d81a2",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -329,26 +298,23 @@
       "title": "Creative Machines: AI, Art & Us (English Edition)",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Creative-Machines-AI-Art-English-ebook/dp/B0FSYPB6WM",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/B0FSYPB6WM.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/B0FSYPB6WM.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Liz Pelly",
-      "changelog": [],
       "createdAt": "2026-06-18T00:36:27.968Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "c594dfcf-e32e-4ece-a89e-fa73a2bf6a4b",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -362,26 +328,23 @@
       "title": "Mood Machine: The Rise of Spotify and the Costs of the Perfect Playlist",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Mood-Machine-Spotify-Perfect-Playlist/dp/1668083515",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/1668083515.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/1668083515.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Dave Hoover, Adewale Oshineye",
-      "changelog": [],
       "createdAt": "2026-06-18T00:36:56.804Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "33ed4753-e4d7-4129-9b55-782d138c16d0",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -395,26 +358,23 @@
       "title": "Apprenticeship Patterns: Guidance for the Aspiring Software Craftsman",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Apprenticeship-Patterns-Dave-Hoover/dp/0596518382",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/0596518382.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/0596518382.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Karen Hao",
-      "changelog": [],
       "createdAt": "2026-06-18T00:37:20.299Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "568b2f0f-a44b-4c9d-b93a-d3abe8d87729",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -428,11 +388,11 @@
       "title": "Empire of AI: Dreams and Nightmares in Sam Altman's OpenAI (English Edition)",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Empire-AI-Nightmares-Altmans-English-ebook/dp/B0DQSQKMY4",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/B0DQSQKMY4.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/B0DQSQKMY4.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Virginia Woolf, Thaís Paiva, Stephanie Fernandes",
-      "changelog": [],
       "createdAt": "2026-06-18T00:38:37.362Z",
       "dates": {
         "captured": "2026-06-18",
@@ -443,11 +403,8 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "806cc820-869e-4c3d-8186-9f425ea68949",
-      "links": [],
       "notes": "Mrs. Dalloway me mostrou como um dia comum pode ter profundidade e complexidade, explorando temas como vida e morte",
-      "pitch": "",
       "rating": 5,
       "source": "Amazon",
       "status": "consumido",
@@ -461,11 +418,11 @@
       "title": "Mrs. Dalloway",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Mrs-Dalloway-Virginia-Woolf-ebook/dp/B0CDFH3Q6W",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/B0CDFH3Q6W.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/B0CDFH3Q6W.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Nassim Nicholas Taleb, Renato Marques, Eduardo Foresti",
-      "changelog": [],
       "createdAt": "2026-06-18T00:39:28.960Z",
       "dates": {
         "captured": "2026-06-18",
@@ -476,11 +433,8 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "ca130d07-fef2-4d93-bd02-0189e2adf8b7",
-      "links": [],
       "notes": "'Antifrágil',como o caos pode ser uma fonte de crescimento. Taleb transforma a incerteza em um elemento positivo da vida",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "consumido",
@@ -494,26 +448,23 @@
       "title": "Antifrágil (Nova edição): Coisas que se beneficiam com o caos",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Antifr%C3%A1gil-Nova-edi%C3%A7%C3%A3o-Coisas-beneficiam/dp/8547001085",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8547001085.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8547001085.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Joan Magretta, Edson de Godoy Bueno",
-      "changelog": [],
       "createdAt": "2026-06-18T00:41:16.669Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "fd8b0a21-c62d-4505-a47f-6da6440692ad",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -527,26 +478,23 @@
       "title": "Entendendo Michael Porter: o guia essencial da competição e estratégia",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Entendendo-Michael-Porter-Competi%C3%A7%C3%A3o-Estrat%C3%A9gia/dp/8550807486",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8550807486.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8550807486.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Disney Institute, Cristina Yamagami",
-      "changelog": [],
       "createdAt": "2026-06-18T00:41:34.795Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "69b89c4b-b3eb-4152-a732-004a5907b0d5",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -560,26 +508,23 @@
       "title": "O jeito Disney de encantar os clientes: Do atendimento excepcional ao nunca parar de crescer e acreditar",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Jeito-Disney-Encantar-Clientes/dp/8502124048",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8502124048.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8502124048.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Howard Schultz",
-      "changelog": [],
       "createdAt": "2026-06-18T00:42:07.667Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "833b48b0-ce17-4cd2-bc3b-0d8d7364bf17",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -593,26 +538,23 @@
       "title": "Dedique-se de coração: A história de como a Starbucks se tornou uma grande empresa de xícara em xícara",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Dedique-se-cora%C3%A7%C3%A3o-hist%C3%B3ria-Starbucks-empresa/dp/6580435194",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/6580435194.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/6580435194.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "John Doerr, Bruno de Menezes, Larry Page",
-      "changelog": [],
       "createdAt": "2026-06-18T00:42:21.443Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "76c887a9-8ba4-42cb-ab14-fef8dcae56dc",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -626,26 +568,23 @@
       "title": "Avalie o que importa: como o Google, Bono Vox e a Fundação Gates sacudiram o mundo com os OKRs",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Avalie-que-Importa-Funda%C3%A7%C3%A3o-Sacudiram/dp/855080455X",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/855080455X.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/855080455X.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Simon Sinek",
-      "changelog": [],
       "createdAt": "2026-06-18T00:42:37.052Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "3b52e14b-51e4-40e6-96df-a6028d280ef4",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -659,26 +598,23 @@
       "title": "Líderes se servem por último: como construir equipes seguras e confiantes",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/L%C3%ADderes-Se-Servem-por-%C3%9Altimo/dp/8550807818",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8550807818.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8550807818.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Colin Bryar, Bill Carr",
-      "changelog": [],
       "createdAt": "2026-06-18T00:42:47.290Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "0610cd93-4246-4e18-82ce-c35dbffffb58",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -692,26 +628,23 @@
       "title": "Obsessão pelo cliente",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Obsess%C3%A3o-pelo-cliente-Colin-Bryar/dp/6550471257",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/6550471257.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/6550471257.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Reed Hastings, Erin Meyer, Alexandre Raposo",
-      "changelog": [],
       "createdAt": "2026-06-18T00:43:01.623Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "e62e6771-71c9-4dbe-95a3-e21c5e22c753",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -725,26 +658,23 @@
       "title": "A regra é não ter regras: A netflix e a cultura da reinvenção",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/regra-n%C3%A3o-ter-regras-reinven%C3%A7%C3%A3o/dp/6555600314",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/6555600314.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/6555600314.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "author": "Neil Rackham",
-      "changelog": [],
       "createdAt": "2026-06-18T00:43:17.015Z",
       "dates": {
         "captured": "2026-06-18",
-        "consumed": "2026-06-18",
+        "consumed": null,
         "end": null,
         "idea": null,
         "launched": null,
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "0a46fd0f-a8f4-415c-8715-321517f03ae6",
-      "links": [],
       "notes": "",
-      "pitch": "",
       "rating": 0,
       "source": "Amazon",
       "status": "quero ler",
@@ -758,7 +688,8 @@
       "title": "Alcançando excelência em vendas - spin selling",
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Alcan%C3%A7ando-excel%C3%AAncia-vendas-Spin-selling/dp/8550823384",
-      "image": "https://images-na.ssl-images-amazon.com/images/P/8550823384.01.LZZZZZZZ.jpg"
+      "image": "https://images-na.ssl-images-amazon.com/images/P/8550823384.01.LZZZZZZZ.jpg",
+      "related": []
     },
     {
       "id": "2cc3657b-9d5e-42e0-aff6-3bf2de3490ee",
@@ -779,9 +710,6 @@
       "status": "consumido",
       "rating": 5,
       "notes": "O artigo apresenta o OmniAgent, um agente nativo omni-modal que reformula a compreensão de vídeos como um ciclo iterativo de Observação-Pensamento-Ação baseado em POMDP. Ele permite a destilação seletiva de pistas áudio-visuais em uma memória textual persistente, melhorando a eficiência do processamento e a performance em benchmarks de vídeo.",
-      "pitch": "",
-      "description": "",
-      "links": [],
       "dates": {
         "captured": "2026-06-18",
         "consumed": "2026-06-18",
@@ -791,13 +719,12 @@
         "started": null,
         "launched": null
       },
-      "changelog": [],
       "createdAt": "2026-06-18T20:13:36.856287+00:00",
-      "captureVia": "discord"
+      "captureVia": "discord",
+      "related": []
     },
     {
       "author": "Lorenzo Franceschi-Bicchierai",
-      "changelog": [],
       "createdAt": "2026-06-20T01:46:54.025Z",
       "dates": {
         "captured": "2026-06-20",
@@ -808,12 +735,9 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "9cb6fed2-5c3f-4a6c-9253-231c083b7f87",
       "image": "https://techcrunch.com/wp-content/uploads/2026/06/donald-trump-open-mouth.jpg?resize=1200,800",
-      "links": [],
       "notes": "O artigo discute a eficácia limitada das restrições de exportação em tecnologia cibernética, com foco no modelo de IA Mythos da Anthropic e sua importância na segurança nacional.",
-      "pitch": "",
       "rating": 0,
       "source": "TechCrunch",
       "status": "consumido",
@@ -826,11 +750,11 @@
       ],
       "title": "Encryption, spyware, and now Mythos: History shows why cyber export control doesn't work | TechCrunch",
       "type": "conteudo",
-      "url": "https://techcrunch.com/2026/06/19/encryption-spyware-and-now-mythos-history-shows-why-cyber-export-control-doesnt-work/"
+      "url": "https://techcrunch.com/2026/06/19/encryption-spyware-and-now-mythos-history-shows-why-cyber-export-control-doesnt-work/",
+      "related": []
     },
     {
       "author": "Ruizhong Qiu, Yinglong Xia, Dongqi Fu, Hanqing Zeng, Ren Chen, Xiangjun Fan, Hong Li, Hong Yan, Hanghang Tong",
-      "changelog": [],
       "createdAt": "2026-06-20T01:50:31.425Z",
       "dates": {
         "captured": "2026-06-20",
@@ -841,12 +765,9 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "af8c7c04-2770-48d0-a70f-46eec94a6279",
       "image": "/static/browse/0.3.4/images/arxiv-logo-fb.png",
-      "links": [],
       "notes": "Este artigo aborda a estruturação e tokenização de contextos de interesse do usuário para recomendações gerativas, um tema relevante para melhorar sistemas de recomendação.",
-      "pitch": "",
       "rating": 5,
       "source": "arXiv.org",
       "status": "consumido",
@@ -859,11 +780,11 @@
       ],
       "title": "[2606.20554v1] Structuring and Tokenizing Distributed User Interest Context for Generative Recommendation",
       "type": "conteudo",
-      "url": "https://arxiv.org/abs/2606.20554"
+      "url": "https://arxiv.org/abs/2606.20554",
+      "related": []
     },
     {
       "author": "Joshua Engels, Callum McDougall, Bilal Chughtai, Janos Kramar, Senthoran Rajamanoharan, Cindy Wu, Arthur Conmy, Asic Q Chen, Jean Tarbouriech, Min Ma, Brendan O'Donoghue, João Gabriel Lopes de Oliveira, Rohin Shah, Neel Nanda",
-      "changelog": [],
       "createdAt": "2026-06-28T03:58:39.309Z",
       "dates": {
         "captured": "2026-06-28",
@@ -874,12 +795,9 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "ff057b2d-2808-4bc3-aef2-97a7b76362b0",
       "image": "/static/browse/0.3.4/images/arxiv-logo-fb.png",
-      "links": [],
       "notes": "O artigo investiga a transparência do modelo DiffusionGemma na IA, destacando a importância de entender suas decisões para melhorar a confiança e evitar abusos.",
-      "pitch": "",
       "rating": 5,
       "source": "arXiv.org",
       "status": "consumido",
@@ -892,11 +810,11 @@
       ],
       "title": "[2606.20560v1] How Transparent is DiffusionGemma?",
       "type": "conteudo",
-      "url": "https://arxiv.org/abs/2606.20560"
+      "url": "https://arxiv.org/abs/2606.20560",
+      "related": []
     },
     {
       "author": "Mingyu Yang, Keye Zheng, Congchao Cheng, Yujie Liu, Xingkang Lu, Fan Jiang, Yefei Zheng",
-      "changelog": [],
       "createdAt": "2026-06-28T04:04:51.905Z",
       "dates": {
         "captured": "2026-06-28",
@@ -907,12 +825,9 @@
         "start": null,
         "started": null
       },
-      "description": "",
       "id": "a41996c5-73ce-4b31-9d60-8ab2947158ed",
       "image": "/static/browse/0.3.4/images/arxiv-logo-fb.png",
-      "links": [],
       "notes": "O artigo aborda a acumulação de vantagens marginais em agentes de auto-evolução, oferecendo um novo método para melhorar a eficácia na aprendizagem de máquina.",
-      "pitch": "",
       "rating": 5,
       "source": "arXiv.org",
       "status": "consumido",
@@ -925,7 +840,8 @@
       ],
       "title": "[2606.20475v1] Marginal Advantage Accumulation for Memory-Driven Agent Self-Evolution",
       "type": "conteudo",
-      "url": "https://arxiv.org/abs/2606.20475"
+      "url": "https://arxiv.org/abs/2606.20475",
+      "related": []
     }
   ]
 }

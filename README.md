@@ -30,21 +30,40 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 
 ```
 /
-├── index.html          # Frontend do LogBook (GitHub Pages)
+├── index.html          # Casca da página (meta tags, fontes, scripts)
+├── src/app.jsx         # Fonte do site — edite aqui
+├── app.js              # Gerado por ./build.sh (commitado)
+├── styles.css          # Tokens de design + componentes
+├── vendor/             # React 18 de produção (UMD), sem CDN
 ├── data.json           # Todas as entradas (gerenciado pela extensão)
-├── extension/
-│   ├── manifest.json
-│   ├── background.js
-│   ├── popup/
-│   │   ├── popup.html
-│   │   ├── popup.js
-│   │   └── popup.css
-│   └── utils/
-│       ├── schema.js   # Estrutura de uma entrada
-│       ├── storage.js  # Fila local e configurações
-│       ├── github.js   # Leitura e escrita no GitHub via API
-│       └── ai.js       # Integração Claude / OpenAI
+├── feed.xml            # RSS, gerado do data.json
+├── build.sh            # JSX → app.js + regenera o feed
+├── tools/
+│   ├── gen_feed.py     # Gerador do RSS
+│   └── selftest.mjs    # Checagem de dedupe de URL e do feed
+└── extension/
+    ├── manifest.json
+    ├── background.js
+    ├── popup/
+    │   ├── popup.html
+    │   ├── popup.js
+    │   └── popup.css
+    └── utils/
+        ├── schema.js   # Estrutura de uma entrada
+        ├── storage.js  # Fila local e configurações
+        ├── github.js   # Leitura e escrita no GitHub via API
+        └── ai.js       # Integração Claude / OpenAI
 ```
+
+### Mexendo no site
+
+```bash
+./build.sh
+```
+
+Transpila `src/app.jsx` → `app.js` (esbuild via `npx`, sem `node_modules`) e regenera o `feed.xml`. Commite os dois. Para testar local: `python3 -m http.server` e abra `localhost:8000`.
+
+O `feed.xml` também é regenerado sozinho pelo GitHub Actions sempre que a extensão altera o `data.json`.
 
 ---
 
@@ -114,11 +133,28 @@ Salve. Pronto.
 5. Edite à vontade → **+ Adicionar à fila**
 6. Na view **Fila** → **↑ Push GitHub**
 
+Capturar duas vezes a mesma URL não duplica: o push ignora o que já está no `data.json` e avisa.
+
 ### Adicionar livro manualmente
 Clique em 📚 no header da extensão para abrir o formulário de livro sem precisar de uma URL.
 
-### Gerenciar / deletar entradas
-Clique em 🗂 no header → lista todas as entradas do GitHub → clique em 🗑 para deletar.
+### Marcar como lido / editar uma entrada publicada
+Clique em 🗂 no header → busque pelo título → **✎**. Dá para mudar status, nota, avaliação, tags e a data de consumo; **Salvar no GitHub** grava direto no `data.json`. É por aqui que um "quero ler" vira "consumido" — sem isso a fila nunca anda.
+
+🗑 no mesmo lugar deleta.
+
+### Capturar pelo celular
+
+A extensão é Chrome desktop. Para capturar do iPhone, um Atalho (app Atalhos) resolve sem código:
+
+1. Novo atalho → ação **Obter conteúdo da URL**
+2. URL: `https://api.github.com/repos/SEU-USUARIO/logbook/contents/data.json`
+3. Método `GET`, cabeçalho `Authorization: Bearer SEU_TOKEN` → guarde `content` e `sha`
+4. Segunda ação: decodifique o base64, insira a entrada nova no array `entries`, recodifique
+5. `PUT` na mesma URL com `{"message": "add via celular", "content": ..., "sha": ...}`
+6. Marque **Mostrar na Folha de Compartilhamento**
+
+Aí é só compartilhar qualquer página do Safari para o atalho. Alternativa mais preguiçosa: mandar o link para si mesmo e capturar depois no desktop.
 
 ---
 
@@ -145,5 +181,12 @@ A extensão reconhece automaticamente:
 ## Limitações
 
 - O site é **público** — qualquer um com o link vê as entradas
-- Não use a extensão simultaneamente em duas abas fazendo push (race condition)
-- O token PAT fica no `chrome.storage` local da extensão
+- O token PAT fica em `chrome.storage.local` (não sincroniza para outros dispositivos)
+- Escrita concorrente no `data.json` tenta de novo uma vez em caso de conflito; na segunda falha, o erro aparece e nada é perdido
+- Sem busca no servidor: o site carrega o `data.json` inteiro. Suficiente até uns poucos milhares de entradas
+
+## Verificação
+
+```bash
+node tools/selftest.mjs
+```
