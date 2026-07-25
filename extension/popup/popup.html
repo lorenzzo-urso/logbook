@@ -225,10 +225,51 @@
   <div class="queue-header">
     <span class="count" id="manage-label">Carregando...</span>
   </div>
+  <input type="search" id="manage-search" placeholder="Filtrar por título ou autor..." style="width:100%;margin-bottom:8px">
   <div class="queue-list" id="manage-list"></div>
   <div id="manage-toast"></div>
   <div class="actions" style="margin-top:12px">
     <button class="btn-ghost" id="btn-back-manage">← Voltar</button>
+  </div>
+</div>
+
+<!-- ── Edit view (marcar como lido / editar entrada publicada) ───────────── -->
+<div class="view hidden" id="view-edit">
+  <div class="queue-header">
+    <span class="count" id="edit-title">—</span>
+  </div>
+  <div class="form">
+    <div class="field">
+      <label>Status</label>
+      <select id="e-status"></select>
+    </div>
+    <div class="field">
+      <label>Consumido em</label>
+      <input type="date" id="e-consumed">
+    </div>
+    <div class="field">
+      <label>Avaliação</label>
+      <div class="rating" id="e-rating">
+        <span data-v="1">★</span>
+        <span data-v="2">★</span>
+        <span data-v="3">★</span>
+        <span data-v="4">★</span>
+        <span data-v="5">★</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tags</label>
+      <input type="text" id="e-tags" placeholder="ia, produtividade">
+    </div>
+    <div class="field">
+      <label>Minhas notas</label>
+      <textarea id="e-notes" rows="5" placeholder="O que ficou disso?"></textarea>
+    </div>
+  </div>
+  <div id="edit-toast"></div>
+  <div class="actions">
+    <button class="btn-primary" id="btn-edit-save">Salvar no GitHub</button>
+    <button class="btn-ghost" id="btn-edit-back">← Voltar</button>
   </div>
 </div>
 

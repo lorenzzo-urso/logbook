@@ -34,6 +34,7 @@ if (!window.chrome?.storage) {
           localStorage.setItem(ls(`sync_${k}`), JSON.stringify(v))
         );
       },
+      remove: async (key) => localStorage.removeItem(ls(`sync_${key}`)),
     },
   };
 
@@ -64,5 +65,5 @@ if (!window.chrome?.storage) {
     onInstalled: { addListener: () => {} },
   };
 
-  console.info('[ContentBlog] chrome-mock active (dev mode)');
+  console.info('[LogBook] chrome-mock active (dev mode)');
 }

@@ -12,7 +12,7 @@ export async function enrichEntry(entry, pageContent, existingEntries, settings)
     tags: e.tags,
   }));
 
-  const prompt = `Você é um assistente curadoria para um blog pessoal de conhecimento chamado ContentBlog (pt-BR).
+  const prompt = `Você é um assistente de curadoria para um logbook pessoal de conhecimento chamado LogBook (pt-BR).
 
 Dados da página capturada:
 Título: ${entry.title}
@@ -21,7 +21,7 @@ Autor: ${entry.author || 'desconhecido'}
 Descrição: ${entry.description || ''}
 Conteúdo (trecho): ${pageContent.slice(0, 1500)}
 
-Tags existentes no blog: ${existingTags.join(', ') || 'nenhuma ainda'}
+Tags existentes no logbook: ${existingTags.join(', ') || 'nenhuma ainda'}
 Últimas entradas: ${JSON.stringify(recentEntries)}
 
 Responda APENAS com JSON válido, sem markdown:

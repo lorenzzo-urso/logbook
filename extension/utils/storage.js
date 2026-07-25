@@ -39,11 +39,22 @@ const DEFAULTS = {
   githubBranch: 'main',
 };
 
+// storage.local, não sync: token do GitHub e chaves de API não devem ser
+// replicados em texto plano para todo dispositivo logado na conta Google.
 export async function getSettings() {
-  const { settings = {} } = await chrome.storage.sync.get('settings');
-  return { ...DEFAULTS, ...settings };
+  const { settings } = await chrome.storage.local.get('settings');
+  if (settings) return { ...DEFAULTS, ...settings };
+
+  // Migração única do storage.sync antigo — move e apaga a cópia sincronizada.
+  const { settings: synced } = await chrome.storage.sync.get('settings');
+  if (synced) {
+    await chrome.storage.local.set({ settings: synced });
+    await chrome.storage.sync.remove('settings');
+    return { ...DEFAULTS, ...synced };
+  }
+  return { ...DEFAULTS };
 }
 
 export async function saveSettings(settings) {
-  await chrome.storage.sync.set({ settings });
+  await chrome.storage.local.set({ settings });
 }

@@ -1,14 +1,15 @@
-import { createEntry, SUBTYPES, STATUS } from '../utils/schema.js';
+import { createEntry, SUBTYPES, STATUS, normUrl, normTag } from '../utils/schema.js';
 import { getQueue, addToQueue, removeFromQueue, clearQueue, getSettings, saveSettings } from '../utils/storage.js';
 import { enrichEntry } from '../utils/ai.js';
-import { getDataJson, putDataJson } from '../utils/github.js';
+import { getDataJson, updateDataJson } from '../utils/github.js';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let currentEntry = null;
 let rating = 0;
 let bookRating = 0;
-let selectedConnections = new Set();
+let selectedConnections = new Map();   // id -> motivo da conexão
 let existingEntriesCache = [];
+let editing = null;                    // entrada do GitHub aberta para edição
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
@@ -51,7 +52,7 @@ function fillForm(e) {
   $('sel-type').value    = e.type    || 'conteudo';
   updateTypeUI(e.type || 'conteudo');   // populate options before setting values
   $('sel-subtype').value = e.subtype || 'artigo';
-  $('sel-status').value  = e.status  || 'consumido';
+  $('sel-status').value  = e.status  || 'quero ler';
   $('f-title').value     = e.title   || '';
   $('f-url').value       = e.url     || '';
   $('f-author').value    = e.author  || '';
@@ -64,21 +65,31 @@ function fillForm(e) {
 
 function readForm() {
   const type = $('sel-type').value;
-  return {
+  const status = $('sel-status').value;
+  const today = new Date().toISOString().split('T')[0];
+  const e = {
     ...currentEntry,
     type,
-    subtype:     $('sel-subtype').value,
-    title:       $('f-title').value.trim(),
-    url:         $('f-url').value.trim(),
-    author:      $('f-author').value.trim(),
-    pitch:       $('f-pitch').value.trim(),
-    tags:        $('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-    status:      $('sel-status').value,
-    notes:       $('f-notes').value.trim(),
-    description: $('f-desc').value.trim(),
+    subtype: $('sel-subtype').value,
+    title:   $('f-title').value.trim(),
+    url:     $('f-url').value.trim(),
+    author:  $('f-author').value.trim(),
+    tags:    [...new Set($('f-tags').value.split(',').map(normTag).filter(Boolean))],
+    status,
+    notes:   $('f-notes').value.trim(),
     rating,
-    links: [...selectedConnections],
+    related: [...selectedConnections].map(([id, why]) => ({ id, why })),
+    dates: {
+      ...(currentEntry?.dates || {}),
+      // Só é "consumido em" se estiver consumido — antes copiava a data de captura sempre.
+      consumed: status === 'consumido' ? ((currentEntry?.dates?.consumed) || today) : null,
+    },
   };
+  if (type === 'projeto') {
+    e.pitch = $('f-pitch').value.trim();
+    e.description = $('f-desc').value.trim();
+  }
+  return e;
 }
 
 // ── Type UI switching ──────────────────────────────────────────────────────
@@ -194,7 +205,8 @@ function renderConnections(ids, reasons) {
         <div class="conn-reason">${reasons[id] || ''}</div>
       </div>`;
     el.querySelector('input').addEventListener('change', ev => {
-      ev.target.checked ? selectedConnections.add(id) : selectedConnections.delete(id);
+      if (ev.target.checked) selectedConnections.set(id, reasons[id] || '');
+      else selectedConnections.delete(id);
     });
     list.appendChild(el);
   }
@@ -246,29 +258,39 @@ async function pushToGitHub() {
     return;
   }
 
+  const queue = await getQueue();
+  // Fila vazia não vira commit. O histórico tem dois "add: 0 entradas".
+  if (!queue.length) { toast('push-toast', 'Fila vazia — nada a publicar', 'error'); return; }
+
   const btn = $('btn-push');
   btn.disabled = true;
   btn.classList.add('loading');
   btn.textContent = '↑ Enviando...';
 
+  let added = 0, skipped = 0;
   try {
-    const queue = await getQueue();
-    const { entries: existing, sha } = await getDataJson(
-      settings.githubToken, settings.githubOwner, settings.githubRepo, settings.githubBranch
-    );
-
-    const clean = queue.map(({ _body, _desc, ...e }) => e);
-    const merged = [...existing, ...clean];
-
-    await putDataJson(
-      settings.githubToken, settings.githubOwner, settings.githubRepo,
-      merged, sha, settings.githubBranch, queue.length
-    );
+    await updateDataJson(settings, (existing) => {
+      const seen = new Set(existing.map(e => normUrl(e.url)).filter(Boolean));
+      const fresh = [];
+      for (const { _body, _desc, ...e } of queue) {
+        const key = normUrl(e.url);
+        if (key && seen.has(key)) { skipped++; continue; }   // já está no LogBook
+        if (key) seen.add(key);
+        fresh.push(e);
+      }
+      added = fresh.length;
+      return fresh.length ? [...existing, ...fresh] : null;
+    }, () => added === 1
+      ? `add: "${queue[queue.length - 1]?.title?.slice(0, 60) || 'entrada'}"`
+      : `add: ${added} entradas via extensão`);
 
     await clearQueue();
     await refreshBadge();
     await renderQueue();
-    toast('push-toast', `✓ ${queue.length} entr${queue.length === 1 ? 'ada' : 'adas'} publicadas!`, 'success');
+    const msg = added
+      ? `✓ ${added} publicada${added === 1 ? '' : 's'}${skipped ? ` · ${skipped} duplicada${skipped === 1 ? '' : 's'} ignorada${skipped === 1 ? '' : 's'}` : ''}`
+      : `Nada novo — ${skipped} já estava${skipped === 1 ? '' : 'm'} no LogBook`;
+    toast('push-toast', msg, added ? 'success' : 'error');
   } catch (e) {
     toast('push-toast', `Erro: ${e.message}`, 'error');
   } finally {
@@ -278,10 +300,11 @@ async function pushToGitHub() {
   }
 }
 
-// ── Manage (delete from GitHub) ────────────────────────────────────────────
+// ── Manage (editar / deletar no GitHub) ────────────────────────────────────
+let manageCache = [];
+
 async function renderManage() {
   const settings = await getSettings();
-  const list = $('manage-label');
 
   if (!settings.githubToken || !settings.githubOwner || !settings.githubRepo) {
     $('manage-label').textContent = 'Configure o GitHub nas configurações';
@@ -296,49 +319,115 @@ async function renderManage() {
     const { entries } = await getDataJson(
       settings.githubToken, settings.githubOwner, settings.githubRepo, settings.githubBranch
     );
-
-    $('manage-label').textContent = `${entries.length} ${entries.length === 1 ? 'entrada' : 'entradas'} no LogBook`;
-
-    if (!entries.length) {
-      $('manage-list').innerHTML = '<div class="empty-queue">Nenhuma entrada ainda</div>';
-      return;
-    }
-
-    const container = $('manage-list');
-    [...entries].reverse().forEach(item => {
-      const el = document.createElement('div');
-      el.className = 'q-item';
-      el.innerHTML = `
-        <span class="q-type">${item.subtype || item.type}</span>
-        <span class="q-title" title="${item.title}">${item.title || '(sem título)'}</span>
-        <button class="q-remove" data-id="${item.id}" title="Deletar">🗑</button>`;
-      el.querySelector('.q-remove').addEventListener('click', async ev => {
-        const id = ev.currentTarget.dataset.id;
-        if (!confirm(`Deletar "${item.title}"?`)) return;
-        await deleteEntry(id, settings);
-      });
-      container.appendChild(el);
-    });
+    manageCache = entries;
+    existingEntriesCache = entries;
+    drawManageList(settings, $('manage-search').value);
   } catch (e) {
     $('manage-label').textContent = 'Erro ao carregar';
     toast('manage-toast', `Erro: ${e.message}`, 'error');
   }
 }
 
+function drawManageList(settings, filter = '') {
+  const q = filter.trim().toLowerCase();
+  const shown = q
+    ? manageCache.filter(e => `${e.title} ${e.author || ''}`.toLowerCase().includes(q))
+    : manageCache;
+
+  $('manage-label').textContent = `${shown.length} de ${manageCache.length} ${manageCache.length === 1 ? 'entrada' : 'entradas'}`;
+  const container = $('manage-list');
+  container.innerHTML = '';
+
+  if (!shown.length) {
+    container.innerHTML = '<div class="empty-queue">Nenhuma entrada</div>';
+    return;
+  }
+
+  [...shown].reverse().forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'q-item';
+    el.innerHTML = `
+      <span class="q-type">${item.status || item.subtype || item.type}</span>
+      <span class="q-title" title="${item.title}">${item.title || '(sem título)'}</span>
+      <button class="q-edit" title="Editar">✎</button>
+      <button class="q-remove" title="Deletar">🗑</button>`;
+    el.querySelector('.q-edit').addEventListener('click', () => openEdit(item));
+    el.querySelector('.q-remove').addEventListener('click', async () => {
+      if (!confirm(`Deletar "${item.title}"?`)) return;
+      await deleteEntry(item.id, settings);
+    });
+    container.appendChild(el);
+  });
+}
+
 async function deleteEntry(id, settings) {
   try {
-    const { entries, sha } = await getDataJson(
-      settings.githubToken, settings.githubOwner, settings.githubRepo, settings.githubBranch
-    );
-    const filtered = entries.filter(e => e.id !== id);
-    await putDataJson(
-      settings.githubToken, settings.githubOwner, settings.githubRepo,
-      filtered, sha, settings.githubBranch, 0
-    );
+    const title = manageCache.find(e => e.id === id)?.title || 'entrada';
+    await updateDataJson(settings,
+      entries => entries.filter(e => e.id !== id),
+      `remove: "${title.slice(0, 60)}"`);
     toast('manage-toast', '✓ Entrada deletada', 'success');
     await renderManage();
   } catch (e) {
     toast('manage-toast', `Erro: ${e.message}`, 'error');
+  }
+}
+
+// ── Edit (marcar como lido / revisar entrada já publicada) ─────────────────
+let editRating = 0;
+
+function openEdit(entry) {
+  editing = entry;
+  editRating = entry.rating || 0;
+  $('edit-title').textContent = entry.title || '(sem título)';
+  $('e-status').innerHTML = (STATUS[entry.type] || STATUS.conteudo)
+    .map(v => `<option value="${v}">${cap(v)}</option>`).join('');
+  $('e-status').value = entry.status || 'quero ler';
+  $('e-consumed').value = (entry.dates || {}).consumed || '';
+  $('e-tags').value = (entry.tags || []).join(', ');
+  $('e-notes').value = entry.notes || '';
+  setEditRating(editRating);
+  showView('edit');
+}
+
+function setEditRating(val) {
+  editRating = val;
+  document.querySelectorAll('#e-rating span').forEach((s, i) => s.classList.toggle('active', i < val));
+}
+
+async function saveEdit() {
+  if (!editing) return;
+  const settings = await getSettings();
+  const status = $('e-status').value;
+  const today = new Date().toISOString().split('T')[0];
+  const btn = $('btn-edit-save');
+  btn.disabled = true;
+
+  try {
+    await updateDataJson(settings, (entries) => {
+      const i = entries.findIndex(e => e.id === editing.id);
+      if (i === -1) throw new Error('entrada não existe mais no data.json');
+      entries[i] = {
+        ...entries[i],
+        status,
+        rating: editRating,
+        tags: [...new Set($('e-tags').value.split(',').map(normTag).filter(Boolean))],
+        notes: $('e-notes').value.trim(),
+        dates: {
+          ...(entries[i].dates || {}),
+          consumed: $('e-consumed').value || (status === 'consumido' ? today : null),
+        },
+      };
+      return entries;
+    }, `update: "${(editing.title || '').slice(0, 60)}" → ${status}`);
+
+    toast('edit-toast', '✓ Salvo', 'success');
+    editing = null;
+    setTimeout(() => showView('manage'), 700);
+  } catch (e) {
+    toast('edit-toast', `Erro: ${e.message}`, 'error');
+  } finally {
+    btn.disabled = false;
   }
 }
 
@@ -397,21 +486,21 @@ async function addBookToQueue() {
   if (!title) { $('bk-title').focus(); return; }
 
   const status = $('bk-status').value;
-  const entry = createEntry({
+  const today = new Date().toISOString().split('T')[0];
+  const base = createEntry();
+  const entry = {
+    ...base,
     type:    'conteudo',
     subtype: 'livro',
     title,
     author:  $('bk-author').value.trim(),
-    tags:    $('bk-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    tags:    [...new Set($('bk-tags').value.split(',').map(normTag).filter(Boolean))],
     status,
-    rating:  bookRating || null,
+    rating:  bookRating,
     notes:   $('bk-notes').value.trim(),
     url:     $('bk-url').value.trim(),
-    dates: {
-      captured: new Date().toISOString().split('T')[0],
-      consumed: status === 'consumido' ? new Date().toISOString().split('T')[0] : null,
-    },
-  });
+    dates:   { ...base.dates, consumed: status === 'consumido' ? today : null },
+  };
 
   await addToQueue(entry);
   await refreshBadge();
@@ -421,7 +510,7 @@ async function addBookToQueue() {
 
 // ── Navigation ─────────────────────────────────────────────────────────────
 function showView(name) {
-  ['capture', 'queue', 'settings', 'book', 'manage'].forEach(v => {
+  ['capture', 'queue', 'settings', 'book', 'manage', 'edit'].forEach(v => {
     $(`view-${v}`).classList.toggle('hidden', v !== name);
   });
   if (name === 'queue')    renderQueue();
@@ -465,6 +554,13 @@ function bindAll() {
   $('btn-discard').addEventListener('click', () => window.close());
   $('btn-push').addEventListener('click', pushToGitHub);
   $('btn-save-settings').addEventListener('click', saveSettingsFromForm);
+
+  $('manage-search').addEventListener('input', async e =>
+    drawManageList(await getSettings(), e.target.value));
+  $('btn-edit-save').addEventListener('click', saveEdit);
+  $('btn-edit-back').addEventListener('click', () => { editing = null; showView('manage'); });
+  document.querySelectorAll('#e-rating span').forEach(s =>
+    s.addEventListener('click', () => setEditRating(parseInt(s.dataset.v))));
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
