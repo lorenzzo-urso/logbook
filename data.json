@@ -143,6 +143,39 @@
       "type": "conteudo",
       "url": "https://tiinside.com.br/22/07/2026/criar-agentes-nao-basta-o-futuro-pertence-as-empresas-agenticas/",
       "archived": true
+    },
+    {
+      "author": "",
+      "createdAt": "2026-07-26T21:13:05.674Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": null,
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "0ac971be-c316-4a67-93c6-20d7fbe9faa1",
+      "image": "https://s3.amazonaws.com/coursera_assets/meta_images/generated/XDP/XDP~COURSE!~introduction-to-cognitive-psychology-and-neuropsychology/XDP~COURSE!~introduction-to-cognitive-psychology-and-neuropsychology.jpeg",
+      "notes": "Curso introdutório sobre psicologia cognitiva e neuropsicologia, abordando fundamentos de cognição humana e metodologias de pesquisa. Relevante para compreensão da mente e tomada de decisão.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 0,
+      "related": [],
+      "source": "Coursera",
+      "status": "quero ler",
+      "subtype": "curso",
+      "tags": [
+        "psicologia",
+        "cognitiva",
+        "neurociência",
+        "pesquisa"
+      ],
+      "title": "Introduction to Cognitive Psychology and Neuropsychology | Coursera",
+      "type": "conteudo",
+      "url": "https://www.coursera.org/learn/introduction-to-cognitive-psychology-and-neuropsychology",
+      "archived": true
     }
   ]
 }
