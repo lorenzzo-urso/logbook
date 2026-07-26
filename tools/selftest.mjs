@@ -68,6 +68,44 @@ assert.ok(!validar({ entries: [semTags] }), 'entrada sem campo obrigatório pass
 // E o data.json de verdade precisa estar válido.
 execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, stdio: 'pipe' });
 
+// ── atualização por issue: é o que faz as ações do site funcionarem ──────────
+{
+  const orig = readFileSync(join(root, 'data.json'), 'utf8');
+  const alvo = JSON.parse(orig).entries[0];
+  const corpo = join(root, 'tmp-issue.txt');
+  const aplicar = (campos) => {
+    writeFileSync(corpo, Object.entries(campos).map(([k, v]) => `### ${k}\n\n${v}\n`).join('\n'));
+    execFileSync('python3', [join(root, 'tools/issue_update.py'), corpo], { cwd: root, stdio: 'pipe' });
+    return JSON.parse(readFileSync(join(root, 'data.json'), 'utf8')).entries.find(e => e.id === alvo.id);
+  };
+  try {
+    let e = aplicar({ 'ID da entrada': alvo.id, 'Ação': 'comecei', 'Total de páginas': '288', 'Página atual': '40' });
+    assert.equal(e.status, 'em andamento');
+    assert.equal(e.pages, 288);
+    assert.equal(e.pagesRead, 40);
+    assert.ok(e.dates.started, 'dates.started tem de ser preenchido (setdefault não serve: a chave já existe com null)');
+    assert.equal(e.dates.consumed, null);
+
+    e = aplicar({ 'ID da entrada': alvo.id, 'Ação': 'trecho', 'Trecho ou nota': 'frase guardada', 'Página atual': '42' });
+    assert.deepEqual(e.quotes.at(-1), { text: 'frase guardada', page: 'p. 42' });
+
+    e = aplicar({ 'ID da entrada': alvo.id, 'Ação': 'terminei' });
+    assert.equal(e.status, 'consumido');
+    assert.ok(e.dates.consumed, 'terminei precisa datar o consumo');
+    assert.equal(e.pagesRead, e.pages, 'terminei fecha o progresso');
+
+    // Ação inválida e id inexistente têm de falhar em vez de gravar lixo.
+    for (const ruim of [{ 'ID da entrada': alvo.id, 'Ação': 'inventada' }, { 'ID da entrada': 'nao-existe', 'Ação': 'terminei' }]) {
+      writeFileSync(corpo, Object.entries(ruim).map(([k, v]) => `### ${k}\n\n${v}\n`).join('\n'));
+      assert.throws(() => execFileSync('python3', [join(root, 'tools/issue_update.py'), corpo], { cwd: root, stdio: 'pipe' }));
+    }
+    execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, stdio: 'pipe' });
+  } finally {
+    writeFileSync(join(root, 'data.json'), orig);
+    rmSync(corpo, { force: true });
+  }
+}
+
 // ── busca no texto guardado ──────────────────────────────────────────────────
 {
   const dir = join(root, 'archive');

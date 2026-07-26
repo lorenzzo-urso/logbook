@@ -42,6 +42,7 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 ├── archive/<id>.md     # Trecho do material salvo no dia da captura
 ├── search.json         # Índice de busca, gerado do archive/
 ├── manifest.webmanifest, sw.js, icons/   # PWA
+├── assets/logo*.svg    # Marca (ícone e wordmark)
 ├── data.json           # Todas as entradas (gerenciado pela extensão)
 ├── aliases.json        # Sinônimos de tag ("ia" → "inteligência artificial")
 ├── feed.xml            # RSS de artigos + materiais
@@ -54,7 +55,8 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 │   ├── gen_feed.py     # Gerador do RSS
 │   ├── import_kindle.py# My Clippings.txt → entradas com trechos
 │   ├── import_csv.py   # Export do Goodreads/Skoob → entradas
-│   ├── issue_to_entry.py # Issue rotulada `captura` → entrada (usado pela Action)
+│   ├── issue_to_entry.py # Issue `captura` → entrada nova (usado pela Action)
+│   ├── issue_update.py   # Issue `atualizar` → altera entrada existente
 │   ├── status_report.py  # Corpo da issue semanal
 │   ├── check_links.py    # Caça links quebrados (mensal)
 │   └── selftest.mjs      # Checagem de tudo acima
@@ -262,6 +264,30 @@ A extensão reconhece automaticamente:
 
 ---
 
+## A interface
+
+Navegação em três grupos, do que entra para o que sai:
+
+| Grupo | Itens |
+|---|---|
+| **Consumo** | Lendo · Fila · Biblioteca |
+| **Produção** | Projetos · Escritos |
+| **Descobrir** | Timeline · Temas · Autores |
+
+**Hoje** é a home (o wordmark leva até ela): o que estou lendo agora, o log dos últimos 30 dias e, na coluna lateral, o que a leitura gerou, a pressão da fila e os temas do mês. As duas primeiras seções laterais ficam guardadas em `localStorage` — some com elas se incomodarem.
+
+**⌘K** abre o Registrar de qualquer tela, **/** foca a busca, **Esc** fecha.
+
+As rotas antigas (`#/inicio`, `#/agora`, `#/backlog`, `#/tipos`, `#/projetos`) continuam funcionando: redirecionam para as novas.
+
+### As ações que escrevem
+
+O site é estático e público — não tem como escrever no `data.json` a partir dele. Então **Registrar**, **Começar**, **Terminei**, **Atualizar página** e **Anotar trecho** abrem uma issue já preenchida, e uma Action aplica a mudança em segundos.
+
+Na prática: você clica, confere, envia. Funciona do celular, sem token no aparelho. A alternativa seria guardar um PAT no navegador, o que num site público é pedir problema.
+
+Os campos inline (página atual, trecho) são digitados **no próprio card** — só o "salvar" é que vai pela issue.
+
 ## Busca
 
 A busca da barra lateral olha título, autor, notas e tags. A partir de 3 caracteres ela também procura **dentro do texto guardado na captura** e mostra o trecho onde achou — é a resposta para "onde eu li aquilo sobre X?". O índice (`search.json`) só é baixado quando você busca de fato.
@@ -275,6 +301,7 @@ O site é um PWA: abra no navegador do celular e use **Adicionar à tela de iní
 | Quando | O quê |
 |---|---|
 | Issue com rótulo `captura` | Valida e vira entrada no `data.json`; a issue fecha sozinha |
+| Issue com rótulo `atualizar` | Aplica status, progresso, trecho ou conexão numa entrada existente |
 | `data.json` ou `posts/` mudam | Valida o `data.json`, regenera feed, `posts.json`, páginas em `p/` e imagens `og/` |
 | Segunda, 08:00 | Abre uma issue com o estado do logbook: o que entrou, o que parou, o que está esperando há mais tempo |
 | Dia 1º, 09:00 | Testa todas as URLs e abre issue com as quebradas (se todas falharem, entende como problema de rede e não abre) |
@@ -297,6 +324,7 @@ Tag com uma entrada só não vira "tema" — fica na lista **Outras tags**. Mesm
 - O token PAT fica em `chrome.storage.local` (não sincroniza para outros dispositivos)
 - `./build.sh` e o workflow precisam de rede na primeira execução (`npx` baixa `marked` e `resvg`); sem isso a build segue, só não gera as imagens `og/`
 - O HTML dos artigos não é sanitizado — é o seu próprio markdown. Não cole HTML de terceiros dentro de um post
+- Progresso de leitura só aparece quando `pages` está preenchido (na extensão ou pela ação "Atualizar página")
 - O `archive/` guarda os **primeiros 3000 caracteres** da página (~500 palavras), não o artigo inteiro. Serve para lembrar do conteúdo e para a busca; não substitui o original se o link morrer. Aumentar esse limite num repositório público significa republicar texto de terceiros
 - Escrita concorrente no `data.json` tenta de novo uma vez em caso de conflito; na segunda falha, o erro aparece e nada é perdido
 - Sem busca no servidor: o site carrega o `data.json` inteiro. Suficiente até uns poucos milhares de entradas

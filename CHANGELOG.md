@@ -6,6 +6,62 @@ Este arquivo não aparece no site — é só para quem lê o repositório.
 
 ---
 
+## 2026-07-26
+
+Rebranding visual e reorganização da navegação, a partir do handoff de design
+(direção "Diário").
+
+### Marca
+
+- Wordmark `logbook`, minúsculo e serifado (Lora 600, tracking −0.04em) no lugar
+  do "Log**Book**" anterior.
+- Ícone de três barras decrescentes em amber, sand e slate — que são a própria
+  legenda de cor do app: entrada, fila, o que virou projeto. Vale para
+  `assets/logo*.svg`, o ícone do PWA e o favicon.
+
+### Navegação
+
+- De 9 itens irmãos para **três grupos**: Consumo (Lendo, Fila, Biblioteca),
+  Produção (Projetos, Escritos) e Descobrir (Timeline, Temas, Autores).
+- Sidebar de 224px com botão **Registrar** no topo e busca no rodapé.
+- Rotas antigas (`#/inicio`, `#/agora`, `#/backlog`, `#/tipos`, `#/projetos`)
+  redirecionam para as novas.
+
+### Telas
+
+- **Hoje** substitui a home: cabeçalho com data e "dia N do log", cards de
+  leitura em andamento com barra de progresso e ações inline, o log por dia, e
+  uma coluna lateral com o que a leitura gerou, a pressão da fila e os temas.
+- **Consumo** junta Backlog, Por tipo e Agora numa tela só, ordenada pelo que
+  está parado há mais tempo, com a pill `Começar` em cada linha.
+- **Produção** mostra projetos e escritos juntos, cada um com a procedência
+  (`↳ nasceu de` / `↳ cita`). Borda esquerda sólida = projeto, tracejada = escrito.
+- **Timeline** ganha filtro de escopo (tudo / só consumo / só produção) e
+  controle de densidade, e mostra a conexão na própria linha do tempo.
+- **Temas** ganha barra de conversão amber↔slate: quanto do tema foi lido e
+  quanto virou produção, com diagnóstico quando o tema acumula sem digerir.
+- **Registrar (⌘K)** é novo: três campos e pronto.
+- **Ficha da entrada** reformulada, com progresso, trechos e "Isso me levou a".
+- **Mobile**: tab bar, FAB de 46px e folha de registro, com alvos de toque ≥44px.
+
+### Escrita a partir do site
+
+- Registrar, Começar, Terminei, Atualizar página e Anotar trecho abrem uma issue
+  pré-preenchida que uma Action aplica — o site é estático e público, e guardar
+  um token no navegador seria pior. Os campos inline são digitados no card; só o
+  salvar passa pela issue.
+- Novo workflow `atualizar` + `tools/issue_update.py`.
+- Schema ganha `pages` e `pagesRead` (progresso de leitura), na extensão e no
+  validador.
+
+### Notas de implementação
+
+- O design especifica a paleta crua (`--sand-200` etc.); a implementação usa os
+  tokens semânticos equivalentes para o modo escuro continuar funcionando. Em
+  claro o valor é idêntico.
+- Nenhuma cor nova foi inventada: `--type-escrito-*` já existia, dentro da
+  família slate.
+
 ## 2026-07-25
 
 Reforma grande: o site foi reescrito de um bundle gerado para código editável,
