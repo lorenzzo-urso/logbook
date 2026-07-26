@@ -337,7 +337,11 @@
 
 /* ── BASE ── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg-base); height: 100vh; overflow: hidden; }
+  body { background: var(--bg-base); }
+  /* Travar a página só faz sentido no desktop, onde .lb-main rola por dentro.
+     No celular .lb-main é height:auto, então quem tem de rolar é o body — com
+     `overflow:hidden` aqui, nada rolava. */
+  @media (min-width: 769px) { body { height: 100vh; overflow: hidden; } }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--sand-300); border-radius: 99px; }
