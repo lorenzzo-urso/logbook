@@ -109,6 +109,40 @@
       "title": "Introdução à ética e moral  (p. 27-65)",
       "type": "conteudo",
       "url": ""
+    },
+    {
+      "author": "Fulvio Mascara",
+      "createdAt": "2026-07-26T21:09:48.529Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "02125373-e1b4-4631-a4d4-da32cf0b6c60",
+      "image": "",
+      "notes": "O texto discute a diferença entre criar agentes de IA e a necessidade de empresas agênticas que governem esses agentes, focando na importância da arquitetura corporativa.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 4,
+      "related": [],
+      "source": "tiinside.com.br",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "agentes ia",
+        "ia",
+        "estratégia",
+        "ética",
+        "tecnologia"
+      ],
+      "title": "Criar agentes não basta: o futuro pertence às empresas agênticas | TI INSIDE Online",
+      "type": "conteudo",
+      "url": "https://tiinside.com.br/22/07/2026/criar-agentes-nao-basta-o-futuro-pertence-as-empresas-agenticas/",
+      "archived": true
     }
   ]
 }
