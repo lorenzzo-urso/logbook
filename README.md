@@ -39,20 +39,24 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 ├── posts.json          # Gerado por ./build.sh — não edite
 ├── p/<slug>/           # Página real de cada artigo (SEO e preview de link)
 ├── og/<slug>.png       # Imagem de compartilhamento, gerada na build
-├── archive/<id>.md     # Texto do material salvo no dia da captura
+├── archive/<id>.md     # Trecho do material salvo no dia da captura
+├── search.json         # Índice de busca, gerado do archive/
+├── manifest.webmanifest, sw.js, icons/   # PWA
 ├── data.json           # Todas as entradas (gerenciado pela extensão)
 ├── aliases.json        # Sinônimos de tag ("ia" → "inteligência artificial")
 ├── feed.xml            # RSS de artigos + materiais
 ├── build.sh            # JSX → app.js, artigos, imagens e feed
 ├── tools/
+│   ├── validate_data.py# Schema do data.json (roda no build e na CI)
 │   ├── build_posts.py  # posts/*.md → posts.json + páginas + og:image
+│   ├── build_search.py # archive/*.md → search.json
 │   ├── gen_feed.py     # Gerador do RSS
 │   ├── import_kindle.py# My Clippings.txt → entradas com trechos
 │   ├── import_csv.py   # Export do Goodreads/Skoob → entradas
 │   ├── issue_to_entry.py # Issue rotulada `captura` → entrada (usado pela Action)
 │   ├── status_report.py  # Corpo da issue semanal
 │   ├── check_links.py    # Caça links quebrados (mensal)
-│   └── selftest.mjs      # Checagem de dedupe, posts, feed e páginas
+│   └── selftest.mjs      # Checagem de tudo acima
 └── extension/
     ├── manifest.json
     ├── background.js
@@ -73,7 +77,7 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 ./build.sh
 ```
 
-Transpila `src/app.jsx` → `app.js` (esbuild via `npx`, sem `node_modules`) e regenera o `feed.xml`. Commite os dois. Para testar local: `python3 -m http.server` e abra `localhost:8000`.
+Valida o `data.json`, transpila `src/app.jsx` → `app.js` (esbuild via `npx`, sem `node_modules`) e regenera artigos, imagens, índice de busca e feed. Commite o que mudar. Para testar local: `python3 -m http.server` e abra `localhost:8000`.
 
 O `feed.xml` também é regenerado sozinho pelo GitHub Actions sempre que a extensão altera o `data.json`.
 
@@ -257,12 +261,20 @@ A extensão reconhece automaticamente:
 
 ---
 
+## Busca
+
+A busca da barra lateral olha título, autor, notas e tags. A partir de 3 caracteres ela também procura **dentro do texto guardado na captura** e mostra o trecho onde achou — é a resposta para "onde eu li aquilo sobre X?". O índice (`search.json`) só é baixado quando você busca de fato.
+
+## Instalar no celular
+
+O site é um PWA: abra no navegador do celular e use **Adicionar à tela de início**. Depois disso ele abre como app e funciona sem internet, com os dados da última visita. O service worker busca a rede primeiro e só cai para o cache quando ela falha — assim você nunca vê uma versão velha depois de um deploy.
+
 ## Rotinas automáticas
 
 | Quando | O quê |
 |---|---|
-| Issue com rótulo `captura` | Vira entrada no `data.json` e a issue fecha sozinha |
-| `data.json` ou `posts/` mudam | Regenera feed, `posts.json`, páginas em `p/` e imagens `og/` |
+| Issue com rótulo `captura` | Valida e vira entrada no `data.json`; a issue fecha sozinha |
+| `data.json` ou `posts/` mudam | Valida o `data.json`, regenera feed, `posts.json`, páginas em `p/` e imagens `og/` |
 | Segunda, 08:00 | Abre uma issue com o estado do logbook: o que entrou, o que parou, o que está esperando há mais tempo |
 | Dia 1º, 09:00 | Testa todas as URLs e abre issue com as quebradas (se todas falharem, entende como problema de rede e não abre) |
 
@@ -284,6 +296,7 @@ Tag com uma entrada só não vira "tema" — fica na lista **Outras tags**. Mesm
 - O token PAT fica em `chrome.storage.local` (não sincroniza para outros dispositivos)
 - `./build.sh` e o workflow precisam de rede na primeira execução (`npx` baixa `marked` e `resvg`); sem isso a build segue, só não gera as imagens `og/`
 - O HTML dos artigos não é sanitizado — é o seu próprio markdown. Não cole HTML de terceiros dentro de um post
+- O `archive/` guarda os **primeiros 3000 caracteres** da página (~500 palavras), não o artigo inteiro. Serve para lembrar do conteúdo e para a busca; não substitui o original se o link morrer. Aumentar esse limite num repositório público significa republicar texto de terceiros
 - Escrita concorrente no `data.json` tenta de novo uma vez em caso de conflito; na segunda falha, o erro aparece e nada é perdido
 - Sem busca no servidor: o site carrega o `data.json` inteiro. Suficiente até uns poucos milhares de entradas
 
@@ -292,3 +305,11 @@ Tag com uma entrada só não vira "tema" — fica na lista **Outras tags**. Mesm
 ```bash
 node tools/selftest.mjs
 ```
+
+Cobre o dedupe de URL (nos dois runtimes), a validação do `data.json`, o índice de busca, os artigos, o feed e as páginas estáticas.
+
+```bash
+python3 tools/validate_data.py
+```
+
+Sozinho, valida o `data.json`: ids repetidos, status e subtipo inválidos, datas fora do ISO, `consumed` em item não consumido, `related` órfão, entrada privada que vazou. Roda no `./build.sh` e na CI antes de qualquer commit automático — são quatro coisas diferentes escrevendo nesse arquivo.

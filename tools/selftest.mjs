@@ -1,8 +1,9 @@
-// Checagem mínima do que quebra em silêncio: dedupe de URL e geração do feed.
+// Checagem do que quebra em silêncio: dedupe de URL, validação do data.json,
+// índice de busca, posts e feed.
 // Rodar: node tools/selftest.mjs
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { normUrl, normTag, createEntry } from '../extension/utils/schema.js';
@@ -37,6 +38,56 @@ assert.equal(e.dates.consumed, null);
 assert.equal(e.status, 'quero ler');
 assert.deepEqual(e.related, []);
 assert.ok(!('changelog' in e) && !('links' in e));
+
+// ── validação: o data.json tem quatro escritores, um write ruim é silencioso ──
+const validar = (obj) => {
+  const f = join(root, 'tmp-validate.json');
+  writeFileSync(f, JSON.stringify(obj));
+  try {
+    execFileSync('python3', [join(root, 'tools/validate_data.py'), f], { cwd: root, stdio: 'pipe' });
+    return true;
+  } catch { return false; } finally { rmSync(f); }
+};
+const entradaBoa = () => ({
+  id: 'a1', type: 'conteudo', subtype: 'artigo', title: 'X', status: 'quero ler',
+  tags: ['ia'], rating: 0, url: 'https://x.com/a', related: [], quotes: [],
+  dates: { captured: '2026-07-01', consumed: null }, createdAt: '2026-07-01T00:00:00Z',
+});
+assert.ok(validar({ entries: [entradaBoa()] }), 'entrada válida foi recusada');
+assert.ok(!validar({ entries: [entradaBoa(), { ...entradaBoa() }] }), 'id repetido passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), status: 'lido' }] }), 'status inválido passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), subtype: 'podcast' }] }), 'subtype inválido passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), rating: 9 }] }), 'rating fora da faixa passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), private: true }] }), 'entrada privada publicada passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), url: 'x.com' }] }), 'url sem protocolo passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), dates: { captured: '01/07/2026' } }] }), 'data fora do ISO passou');
+assert.ok(!validar({ entries: [{ ...entradaBoa(), dates: { captured: '2026-07-01', consumed: '2026-07-02' } }] }),
+  'consumed em item não consumido passou');
+const { tags, ...semTags } = entradaBoa();
+assert.ok(!validar({ entries: [semTags] }), 'entrada sem campo obrigatório passou');
+// E o data.json de verdade precisa estar válido.
+execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, stdio: 'pipe' });
+
+// ── busca no texto guardado ──────────────────────────────────────────────────
+{
+  const dir = join(root, 'archive');
+  const alvo = JSON.parse(readFileSync(join(root, 'data.json'), 'utf8')).entries[0];
+  const f = join(dir, `${alvo.id}.md`);
+  const orfao = join(dir, 'nao-existe-no-data.md');
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(f, `# ${alvo.title}\n\n> Arquivado em 2026-01-01 de ${alvo.url}\n\n---\n\npalavraunicaparaoteste no corpo.\n`);
+  writeFileSync(orfao, '---\n\nlixo de entrada apagada\n');
+  try {
+    execFileSync('python3', [join(root, 'tools/build_search.py')], { cwd: root, stdio: 'pipe' });
+    const idx = JSON.parse(readFileSync(join(root, 'search.json'), 'utf8'));
+    assert.ok(idx[alvo.id]?.includes('palavraunicaparaoteste'), 'texto não entrou no índice');
+    assert.ok(!idx[alvo.id].includes('Arquivado em'), 'cabeçalho do arquivo vazou para o índice');
+    assert.ok(!('nao-existe-no-data' in idx), 'texto órfão não pode entrar no índice');
+  } finally {
+    rmSync(f); rmSync(orfao);
+    execFileSync('python3', [join(root, 'tools/build_search.py')], { cwd: root, stdio: 'pipe' });
+  }
+}
 
 // ── posts: front matter, draft e resolução de referências ────────────────────
 execFileSync('python3', [join(root, 'tools/build_posts.py')], { cwd: root });
