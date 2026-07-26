@@ -322,6 +322,49 @@
       "type": "conteudo",
       "url": "https://sciencespectrumu.com/the-white-rabbit-effect-how-ai-disrupts-the-metronome-of-human-cognition-c456a5338b1f",
       "archived": true
+    },
+    {
+      "author": "Kelly Werner, PhD",
+      "createdAt": "2026-07-26T22:35:42.630Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "2204dfa6-66e4-4180-8da1-4d1a7a5c526e",
+      "image": "https://miro.medium.com/v2/resize:fit:1200/1*W0BEB6wtkMhtlZ7AAAASwQ.png",
+      "notes": "O texto destaca as limitações da IA na terapia humana, ressaltando a importância da conexão emocional e da regulação social na transformação pessoal.",
+      "pages": 0,
+      "pagesRead": 0,
+      "quotes": [
+        {
+          "page": "",
+          "text": "Dan Siegel escreve sobre uma paciente que lhe disse que o que realmente mudou as coisas para ela não foi a análise ou o conselho. Foi simplesmente \"sentir-se compreendida\"."
+        },
+        {
+          "page": "",
+          "text": "Não diagnosticado. Não resolvido. Sentido ."
+        }
+      ],
+      "rating": 5,
+      "related": [],
+      "source": "Medium",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "psicologia",
+        "ia",
+        "saúde",
+        "tecnologia"
+      ],
+      "title": "Human Therapists Do What AI Can’t | by Kelly Werner, PhD | Medium",
+      "type": "conteudo",
+      "url": "https://medium.com/@kelly.h.werner/human-therapists-do-what-ai-cant-9fa5a1bb9f22",
+      "archived": true
     }
   ]
 }
