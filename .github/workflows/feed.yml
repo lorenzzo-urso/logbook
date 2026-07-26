@@ -8,6 +8,7 @@ on:
     paths:
       - 'data.json'
       - 'posts/**'
+      - 'archive/**'     # texto novo precisa entrar no índice de busca
   workflow_dispatch:
 
 permissions:
@@ -27,12 +28,17 @@ jobs:
 
       # posts.json, páginas em p/ e as imagens og/ dependem de npx (marked, resvg).
       - run: python3 tools/build_posts.py
+      # O índice de busca vem do archive/, que a extensão sobe junto com o push.
+      - run: python3 tools/build_search.py
       - run: python3 tools/gen_feed.py
 
       - name: Commitar o que mudou
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add feed.xml posts.json p og
-          git diff --staged --quiet || git commit -m "chore: regenera feed, artigos e imagens"
+          # `git add p og` quebra quando não há artigo publicado: as pastas são
+          # regeneradas do zero e simplesmente não existem. -A pega criação,
+          # alteração e remoção do que os scripts acabaram de escrever.
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: regenera feed, artigos, imagens e busca"
           git push
