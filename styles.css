@@ -464,7 +464,7 @@
     position:sticky; top:0; z-index:20;
   }
   .lb-tabbar {
-    display:flex; align-items:flex-end; justify-content:space-between;
+    display:flex; align-items:flex-end; justify-content:space-around;
     position:fixed; left:0; right:0; bottom:0; z-index:30;
     background:var(--bg-elevated); border-top:1px solid var(--border-subtle);
     padding:10px 14px 16px;
@@ -476,15 +476,9 @@
   }
   .lb-tab[aria-current="page"] { color:var(--accent-content-hover); font-weight:600; }
   .lb-tab.lb-tab-prod[aria-current="page"] { color:var(--accent-project-hover); }
-  .lb-fab {
-    width:46px; height:46px; border-radius:var(--radius-full); border:none;
-    background:var(--accent-content); color:#fff; font-size:22px; line-height:1;
-    box-shadow:var(--shadow-md); cursor:pointer; flex:0 0 46px; margin:0 6px;
-    display:flex; align-items:center; justify-content:center;
-  }
 }
 
-/* Folha de registro no mobile; no desktop o mesmo componente vira modal. */
+/* Ficha da entrada: modal no desktop, folha vinda de baixo no celular. */
 .lb-sheet-bd { position:fixed; inset:0; z-index:200; background:rgba(26,25,22,0.5); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; padding:24px; }
 .lb-sheet {
   background:var(--bg-surface); border-radius:var(--radius-xl); box-shadow:var(--shadow-2xl);
@@ -510,7 +504,7 @@
   .lb-log-dia { grid-template-columns: 42px 1fr; gap: 4px; }
   .lb-so-desktop { display: none; }
 }
-/* Alça da folha de registro: só existe quando ela vem de baixo. */
+/* Alça da folha: só existe quando ela vem de baixo. */
 .lb-sheet-alca { display: none; }
 @media (max-width: 768px) {
   .lb-sheet-alca { display: block; width: 36px; height: 4px; border-radius: 2px; background: var(--border-default); margin: 10px auto 2px; }

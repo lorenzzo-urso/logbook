@@ -276,17 +276,21 @@ Navegação em três grupos, do que entra para o que sai:
 
 **Hoje** é a home (o wordmark leva até ela): o que estou lendo agora, o log dos últimos 30 dias e, na coluna lateral, o que a leitura gerou, a pressão da fila e os temas do mês. As duas primeiras seções laterais ficam guardadas em `localStorage` — some com elas se incomodarem.
 
-**⌘K** abre o Registrar de qualquer tela, **/** foca a busca, **Esc** fecha.
+**⌘K** ou **/** abrem a busca, **Esc** fecha.
 
 As rotas antigas (`#/inicio`, `#/agora`, `#/backlog`, `#/tipos`, `#/projetos`) continuam funcionando: redirecionam para as novas.
 
-### As ações que escrevem
+### O site não captura
 
-O site é estático e público — não tem como escrever no `data.json` a partir dele. Então **Registrar**, **Começar**, **Terminei**, **Atualizar página** e **Anotar trecho** abrem uma issue já preenchida, e uma Action aplica a mudança em segundos.
+Capturar material novo é da **extensão** (desktop) ou da **issue de captura** (celular) — só elas têm acesso à página para pegar título, autor, fonte, capa e o texto que vai para o `archive/`, e para rodar a IA. Um formulário no site só teria a URL colada, e criaria entrada pobre.
 
-Na prática: você clica, confere, envia. Funciona do celular, sem token no aparelho. A alternativa seria guardar um PAT no navegador, o que num site público é pedir problema.
+### Modo edição
 
-Os campos inline (página atual, trecho) são digitados **no próprio card** — só o "salvar" é que vai pela issue.
+Visite `#/editor` uma vez no seu aparelho para ligar **Começar**, **Terminei**, **Atualizar página** e **Anotar trecho**. Desligado por padrão: são ações que só o dono consegue usar (a Action recusa issue de terceiro), e site público não precisa exibir botão de administração.
+
+Ligado, cada ação abre uma issue já preenchida e uma Action aplica a mudança em segundos — funciona do celular, sem token no aparelho. Os campos inline (página atual, trecho) são digitados **no próprio card**; só o salvar passa pela issue.
+
+O interruptor mora no `localStorage`, não é segurança — é para não mostrar ao visitante um botão que ele não pode usar.
 
 ## Busca
 

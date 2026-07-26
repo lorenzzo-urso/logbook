@@ -37,6 +37,21 @@ function issueUrl(template, params = {}) {
 }
 const abrirIssue = (template, params) => window.open(issueUrl(template, params), '_blank', 'noopener');
 
+// As ações de escrita (Começar, Terminei, progresso, trecho) só o dono usa — a
+// Action recusa issue de terceiro. Ficam escondidas até você ligar o modo edição
+// visitando #/editor neste aparelho. Não é segurança, é não mostrar botão que o
+// visitante não pode usar.
+let MODO_EDICAO = false;
+function lerModoEdicao() {
+  try { return localStorage.getItem('logbook:editor') === '1'; } catch { return false; }
+}
+function alternarModoEdicao() {
+  const novo = !lerModoEdicao();
+  try { localStorage.setItem('logbook:editor', novo ? '1' : '0'); } catch { /* modo privado */ }
+  MODO_EDICAO = novo;
+  return novo;
+}
+
 // Quem cita esta entrada — fecha o ciclo leitura → produção.
 const citedIn = (id) => POSTS.filter(p => (p.refs || []).some(r => r.id === id));
 
@@ -509,7 +524,7 @@ function CardLendo({ entry, compacto = false }) {
         )}
         {p && <div style={{ marginBottom: compacto ? 0 : 12 }}><Progresso dados={p} mostrarTexto={!compacto} /></div>}
 
-        {!compacto && modo === null && (
+        {!compacto && MODO_EDICAO && modo === null && (
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             <Pill onClick={() => { setModo('trecho'); setValor(''); }}>Anotar trecho</Pill>
             <Pill onClick={() => { setModo('pagina'); setValor(p ? String(p.lidas) : ''); }}>Atualizar página</Pill>
@@ -520,7 +535,7 @@ function CardLendo({ entry, compacto = false }) {
           </div>
         )}
 
-        {!compacto && modo !== null && (
+        {!compacto && MODO_EDICAO && modo !== null && (
           <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
             {modo === 'pagina'
               ? <input autoFocus type="number" min="0" value={valor} onChange={e => setValor(e.target.value)}
@@ -719,10 +734,12 @@ function LinhaFila({ entry, destaque }) {
         </div>
       </div>
       <TypeTag tipo={entry.subtype} />
-      <Pill tom={destaque ? 'amber' : 'neutro'} style={{ padding: '7px 13px' }}
-        onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'comecei' })}>
-        Começar
-      </Pill>
+      {MODO_EDICAO
+        ? <Pill tom={destaque ? 'amber' : 'neutro'} style={{ padding: '7px 13px' }}
+            onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'comecei' })}>
+            Começar
+          </Pill>
+        : <span />}
     </div>
   );
 }
@@ -1265,14 +1282,14 @@ function FichaModal({ entry, onClose }) {
         </div>
 
         <div style={{ padding: '14px 22px 26px' }}>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {MODO_EDICAO && <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             <Pill onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'progresso' })}
               style={{ background: 'var(--fg-primary)', color: 'var(--bg-base)', borderColor: 'var(--fg-primary)' }}>
               Atualizar progresso
             </Pill>
             <Pill onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'trecho' })}>Anotar trecho</Pill>
             <Pill tom="slate" onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'ligar' })}>Ligar a um projeto</Pill>
-          </div>
+          </div>}
 
           {p && <div style={{ ...secao }}><div style={labelSecao}>Progresso</div><Progresso dados={p} /></div>}
 
@@ -1363,126 +1380,9 @@ function FichaModal({ entry, onClose }) {
   );
 }
 
-// ── REGISTRAR (⌘K) ───────────────────────────────────────────────────────────
-// Três campos e pronto. O site é estático: salvar abre uma issue pré-preenchida
-// que a Action `captura` converte em commit — funciona no celular, sem token.
-const TIPOS_REGISTRO = ['artigo', 'livro', 'vídeo', 'curso', 'treinamento', 'notícia'];
-const STATUS_REGISTRO = [['quero ler', 'quero ler'], ['em andamento', 'estou lendo'], ['consumido', 'já consumi']];
-
-function Registrar({ onClose }) {
-  const [url, setUrl] = React.useState('');
-  const [tipo, setTipo] = React.useState('artigo');
-  const [status, setStatus] = React.useState('quero ler');
-  const [nota, setNota] = React.useState('');
-  const [tags, setTags] = React.useState('');
-  const [rating, setRating] = React.useState(0);
-  const notaRef = React.useRef(null);
-
-  const salvar = (soFila) => {
-    if (!url.trim()) return;
-    abrirIssue('captura.yml', {
-      title: 'captura: ',
-      url: url.trim(),
-      tipo,
-      status: soFila ? 'quero ler' : status,
-      tags: tags.trim(),
-      nota: soFila ? '' : nota.trim(),
-      avaliacao: rating || '',
-    });
-    onClose();
-  };
-
-  React.useEffect(() => {
-    const fn = e => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) salvar(false);
-    };
-    document.addEventListener('keydown', fn);
-    return () => document.removeEventListener('keydown', fn);
-  });
-
-  const label = { fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 7, display: 'flex', gap: 7, alignItems: 'baseline' };
-
-  return (
-    <div className="lb-sheet-bd" onClick={onClose}>
-      <div className="lb-sheet" onClick={e => e.stopPropagation()}>
-        <div className="lb-sheet-alca" />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderBottom: '1px solid var(--border-subtle)' }}>
-          <span style={{ color: 'var(--fg-muted)', display: 'flex' }}><IcoSearch /></span>
-          <input autoFocus value={url} onChange={e => setUrl(e.target.value)} placeholder="cole a URL do que você leu"
-            style={{ flex: 1, border: 'none', background: 'none', outline: 'none', fontSize: 14, fontFamily: 'var(--font-body)', color: 'var(--fg-primary)' }} />
-          <button onClick={onClose} aria-label="Fechar" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontSize: 16 }}>✕</button>
-        </div>
-
-        <div style={{ padding: '18px' }}>
-          <div style={{ marginBottom: 18 }}>
-            <div style={label}>Isso é</div>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {TIPOS_REGISTRO.map(t => (
-                <button key={t} onClick={() => setTipo(t)}
-                  style={{ padding: '8px 14px', minHeight: 36, borderRadius: 'var(--radius-full)', fontSize: 12.5, fontFamily: 'var(--font-body)', cursor: 'pointer', fontWeight: tipo === t ? 600 : 400, background: tipo === t ? 'var(--accent-content)' : 'var(--bg-elevated)', color: tipo === t ? '#fff' : 'var(--fg-secondary)', border: `1px solid ${tipo === t ? 'var(--accent-content)' : 'var(--border-subtle)'}`, transition: 'background 0.12s ease' }}>
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 18 }}>
-            <div style={label}>Onde entra</div>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {STATUS_REGISTRO.map(([valor, texto]) => (
-                <button key={valor} onClick={() => setStatus(valor)}
-                  style={{ padding: '8px 14px', minHeight: 36, borderRadius: 'var(--radius-full)', fontSize: 12.5, fontFamily: 'var(--font-body)', cursor: 'pointer', fontWeight: status === valor ? 600 : 400, background: status === valor ? statusToken(valor, 'bg') : 'var(--bg-elevated)', color: status === valor ? statusToken(valor, 'fg') : 'var(--fg-secondary)', border: `1px solid ${status === valor ? statusToken(valor, 'border') : 'var(--border-subtle)'}` }}>
-                  {texto}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 18 }}>
-            <div style={label}>Valeu?</div>
-            <div style={{ display: 'flex', gap: 7 }}>
-              {[1, 2, 3, 4, 5].map(n => (
-                <button key={n} onClick={() => setRating(n === rating ? 0 : n)} aria-label={`${n} de 5`}
-                  style={{ width: 22, height: 22, padding: 0, border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ width: 9, height: 9, borderRadius: '50%', background: n <= rating ? 'var(--accent-content)' : 'var(--border-default)' }} />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 18 }}>
-            <div style={label}>O que eu tiro disso <span style={{ textTransform: 'none', letterSpacing: 0, color: 'var(--fg-disabled)' }}>— o campo que importa</span></div>
-            <textarea ref={notaRef} value={nota} onChange={e => setNota(e.target.value)} rows={3}
-              placeholder="uma frase serve"
-              style={{ width: '100%', minHeight: 62, padding: '10px 12px', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-display)', fontSize: 14, color: 'var(--fg-primary)', resize: 'vertical', caretColor: 'var(--accent-content)', boxSizing: 'border-box' }} />
-          </div>
-
-          <div style={{ marginBottom: 4 }}>
-            <div style={label}>Temas</div>
-            <input value={tags} onChange={e => setTags(e.target.value)} placeholder="separados por vírgula"
-              style={{ width: '100%', padding: '8px 12px', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--fg-primary)', boxSizing: 'border-box' }} />
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '14px 18px', borderTop: '1px solid var(--border-subtle)' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-disabled)', flex: 1 }}>
-            abre uma issue no GitHub · a Action grava no log
-          </span>
-          <Pill onClick={() => salvar(true)} style={{ padding: '9px 14px', fontSize: 12.5 }}>Só na fila</Pill>
-          <Pill tom="amber" onClick={() => salvar(false)}
-            style={{ padding: '9px 16px', fontSize: 12.5, fontWeight: 600, background: 'var(--accent-content)', color: '#fff', borderColor: 'var(--accent-content)' }}>
-            Registrar · ⏎
-          </Pill>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── ROTAS ────────────────────────────────────────────────────────────────────
 // #/consumo/fila, #/temas/gestão, #/e/<id>, #/p/<slug> — tudo linkável.
-const TABS = ['hoje', 'consumo', 'producao', 'escritos', 'timeline', 'temas', 'autores'];
+const TABS = ['hoje', 'consumo', 'producao', 'escritos', 'timeline', 'temas', 'autores', 'editor'];
 // Rotas da versão anterior continuam funcionando.
 const LEGADO = { inicio: 'hoje', agora: 'consumo/lendo', backlog: 'consumo/fila', tipos: 'consumo', projetos: 'producao' };
 
@@ -1498,8 +1398,31 @@ function parseHash() {
 }
 const hashFor = (to, arg) => '#/' + to + (arg ? '/' + encodeURIComponent(arg) : '');
 
+// ── MODO EDIÇÃO ──────────────────────────────────────────────────────────────
+function EditorView() {
+  const [ligado, setLigado] = React.useState(lerModoEdicao());
+  return (
+    <div className="lb-tela" style={{ maxWidth: 560 }}>
+      <PageHead titulo="Modo edição" sub="Liga as ações que alteram o log neste aparelho." />
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 13.5, color: 'var(--fg-secondary)', lineHeight: 1.6, marginBottom: 18 }}>
+        Com ele ligado aparecem <em>Começar</em>, <em>Terminei</em>, <em>Atualizar página</em> e
+        <em> Anotar trecho</em>. Cada uma abre uma issue já preenchida no GitHub, e uma Action
+        aplica a mudança — o site é estático e não escreve sozinho.
+      </p>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 12.5, color: 'var(--fg-muted)', lineHeight: 1.6, marginBottom: 18 }}>
+        Só serve para você: a Action recusa issue de quem não é dono do repositório.
+        Captura de material novo continua sendo pela extensão, ou pela issue de captura no celular.
+      </p>
+      <Pill tom={ligado ? 'verde' : 'amber'} style={{ padding: '9px 16px', fontSize: 13 }}
+        onClick={() => setLigado(alternarModoEdicao())}>
+        {ligado ? 'Ligado neste aparelho — desligar' : 'Ligar neste aparelho'}
+      </Pill>
+    </div>
+  );
+}
+
 // ── SIDEBAR ──────────────────────────────────────────────────────────────────
-function Sidebar({ tab, arg, onRegistrar, onBuscar, query }) {
+function Sidebar({ tab, arg, onBuscar, query }) {
   const grupos = [
     { titulo: 'Consumo', itens: [
       { id: 'consumo/lendo', label: 'Lendo', n: lendo().length, ico: IcoClock },
@@ -1524,13 +1447,9 @@ function Sidebar({ tab, arg, onRegistrar, onBuscar, query }) {
         <Marca onClick={() => { location.hash = hashFor('hoje'); }} />
       </div>
 
-      <button onClick={onRegistrar}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '9px 12px', marginBottom: 20, background: 'var(--accent-content)', color: '#fff', border: 'none', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'background 0.12s ease' }}
-        onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-content-hover)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-content)'; }}>
-        <IcoPlus />Registrar
-        <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10, opacity: 0.75 }}>⌘K</span>
-      </button>
+      {/* Captura é da extensão (desktop) e da issue (celular): só elas têm acesso
+          à página para raspar título, autor, capa e texto. Um formulário aqui
+          criaria entrada pobre — e seria UI de admin num site público. */}
 
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         {grupos.map(g => (
@@ -1576,7 +1495,7 @@ function BarraBusca({ query, onChange, onClose }) {
 }
 
 // ── MOBILE ───────────────────────────────────────────────────────────────────
-function TabBar({ tab, onRegistrar, onBuscar }) {
+function TabBar({ tab, onBuscar }) {
   const tabs = [
     { id: 'hoje', label: 'Hoje' },
     { id: 'consumo', label: 'Consumo' },
@@ -1595,7 +1514,6 @@ function TabBar({ tab, onRegistrar, onBuscar }) {
   return (
     <nav className="lb-tabbar">
       {tabs.map(botao)}
-      <button className="lb-fab" onClick={onRegistrar} aria-label="Registrar">+</button>
       {tabsDir.map(botao)}
     </nav>
   );
@@ -1610,9 +1528,9 @@ function lerPrefs() {
 
 function App() {
   const [route, setRoute] = React.useState(parseHash);
+  MODO_EDICAO = lerModoEdicao();
   const [query, setQuery] = React.useState('');
   const [buscando, setBuscando] = React.useState(false);
-  const [registrando, setRegistrando] = React.useState(false);
   const [prefs, setPrefsState] = React.useState(lerPrefs);
   const [carregado, setCarregado] = React.useState(false);
   const ultimaTab = React.useRef(route.tab || 'hoje');
@@ -1664,16 +1582,16 @@ function App() {
     return () => window.removeEventListener('hashchange', on);
   }, []);
 
-  // ⌘K abre Registrar de qualquer tela; "/" foca a busca.
+  // ⌘K e "/" abrem a busca — é a única ação global que o site tem.
   React.useEffect(() => {
     const fn = (e) => {
       const digitando = /^(INPUT|TEXTAREA)$/.test(e.target.tagName);
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setRegistrando(true); return; }
-      if (e.key === '/' && !digitando && !registrando) { e.preventDefault(); setBuscando(true); }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setBuscando(true); return; }
+      if (e.key === '/' && !digitando) { e.preventDefault(); setBuscando(true); }
     };
     document.addEventListener('keydown', fn);
     return () => document.removeEventListener('keydown', fn);
-  }, [registrando]);
+  }, []);
 
   if (!carregado) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'var(--font-body)', color: 'var(--fg-muted)', fontSize: 14 }}>
@@ -1694,8 +1612,7 @@ function App() {
 
   return (
     <div className="lb-app">
-      <Sidebar tab={tab} arg={route.arg} query={query}
-        onRegistrar={() => setRegistrando(true)} onBuscar={() => setBuscando(true)} />
+      <Sidebar tab={tab} arg={route.arg} query={query} onBuscar={() => setBuscando(true)} />
 
       <div className="lb-mobile-top">
         <Marca size={16} iconSize={22} onClick={() => { location.hash = hashFor('hoje'); }} />
@@ -1707,6 +1624,7 @@ function App() {
         {buscando && query
           ? <SearchView query={query} />
           : <>
+              {tab === 'editor' && <EditorView />}
               {tab === 'hoje' && <HojeView prefs={prefs} />}
               {tab === 'consumo' && <ConsumoView arg={route.arg} />}
               {tab === 'producao' && <ProducaoView />}
@@ -1717,10 +1635,9 @@ function App() {
             </>}
       </main>
 
-      <TabBar tab={buscando ? 'buscar' : tab} onRegistrar={() => setRegistrando(true)} onBuscar={() => setBuscando(true)} />
+      <TabBar tab={buscando ? 'buscar' : tab} onBuscar={() => setBuscando(true)} />
 
       {entradaAberta && <FichaModal entry={entradaAberta} onClose={fecharFicha} />}
-      {registrando && <Registrar onClose={() => setRegistrando(false)} />}
     </div>
   );
 }

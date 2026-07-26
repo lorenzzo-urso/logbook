@@ -40,16 +40,23 @@ Rebranding visual e reorganização da navegação, a partir do handoff de desig
   controle de densidade, e mostra a conexão na própria linha do tempo.
 - **Temas** ganha barra de conversão amber↔slate: quanto do tema foi lido e
   quanto virou produção, com diagnóstico quando o tema acumula sem digerir.
-- **Registrar (⌘K)** é novo: três campos e pronto.
 - **Ficha da entrada** reformulada, com progresso, trechos e "Isso me levou a".
-- **Mobile**: tab bar, FAB de 46px e folha de registro, com alvos de toque ≥44px.
+- **Mobile**: tab bar com quatro destinos, alvos de toque ≥44px.
 
 ### Escrita a partir do site
 
-- Registrar, Começar, Terminei, Atualizar página e Anotar trecho abrem uma issue
+- **O Registrar via web foi removido** (o handoff pedia; a arquitetura não
+  sustenta). O modal só teria a URL colada: sem título, autor, capa, texto
+  arquivado ou sugestão da IA — tudo isso depende do acesso à página que só a
+  extensão tem. Capturar continua sendo pela extensão (desktop) ou pela issue de
+  captura (celular). ⌘K passou a abrir a busca.
+- Começar, Terminei, Atualizar página e Anotar trecho abrem uma issue
   pré-preenchida que uma Action aplica — o site é estático e público, e guardar
   um token no navegador seria pior. Os campos inline são digitados no card; só o
   salvar passa pela issue.
+- Essas ações ficam **escondidas por padrão**: `#/editor` liga o modo edição no
+  aparelho. Só o dono consegue usá-las, então não faz sentido exibi-las a quem
+  visita.
 - Novo workflow `atualizar` + `tools/issue_update.py`.
 - Schema ganha `pages` e `pagesRead` (progresso de leitura), na extensão e no
   validador.
