@@ -33,6 +33,42 @@
       "title": "O chope e a ética - Mario Sergio Cortella - YouTube",
       "type": "conteudo",
       "url": "https://www.youtube.com/watch?v=SOY2BIapESA"
+    },
+    {
+      "author": "Mario Sergio Cortella",
+      "createdAt": "2026-07-26T20:07:10.184Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "79ee8ca7-fb63-4dbb-939b-30f7e0f29463",
+      "image": "https://i.ytimg.com/vi/IDJ2mwSZPNs/maxresdefault.jpg",
+      "notes": "Cortella discute a natureza relativa da ética e como os valores morais podem mudar ao longo do tempo, essencial para compreendê-la em contextos sociais.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 5,
+      "related": [
+        {
+          "id": "fea36953-c300-4a50-b52d-c0cd90a5ae2e",
+          "why": "ambos os vídeos abordam a ética sob a perspectiva de Cortella"
+        }
+      ],
+      "source": "YouTube",
+      "status": "consumido",
+      "subtype": "vídeo",
+      "tags": [
+        "filosofia",
+        "ética",
+        "cortella"
+      ],
+      "title": "Ética é questão de opinião? - Mario Sergio Cortella - YouTube",
+      "type": "conteudo",
+      "url": "https://www.youtube.com/watch?v=IDJ2mwSZPNs"
     }
   ]
 }
