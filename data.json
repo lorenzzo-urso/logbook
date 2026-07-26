@@ -176,6 +176,42 @@
       "type": "conteudo",
       "url": "https://www.coursera.org/learn/introduction-to-cognitive-psychology-and-neuropsychology",
       "archived": true
+    },
+    {
+      "author": "Thilo Hermann",
+      "createdAt": "2026-07-26T21:46:55.956Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "898b7b95-60b2-492b-98eb-a5d6c037d33d",
+      "image": "https://miro.medium.com/v2/resize:fit:1200/1*e2_rMHHc8KAgG1sXqGQyMw.png",
+      "notes": "O autor discute a confusão entre CDM, ontologias e gráficos de conhecimento, propondo clareza na arquitetura de dados e uso eficaz desses conceitos.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 5,
+      "related": [],
+      "source": "Medium",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "tecnologia",
+        "estratégia",
+        "ia",
+        "data architecture",
+        "ontology",
+        "knowledge graphs",
+        "cdm"
+      ],
+      "title": "Stop Mixing CDM, Ontology, and Knowledge Graphs | by Thilo Hermann | Jul, 2026 | Medium",
+      "type": "conteudo",
+      "url": "https://thilo-hermann.medium.com/stop-mixing-cdm-ontology-and-knowledge-graphs-0d1d154e0c31",
+      "archived": true
     }
   ]
 }
