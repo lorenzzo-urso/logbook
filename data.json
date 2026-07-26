@@ -69,6 +69,46 @@
       "title": "Ética é questão de opinião? - Mario Sergio Cortella - YouTube",
       "type": "conteudo",
       "url": "https://www.youtube.com/watch?v=IDJ2mwSZPNs"
+    },
+    {
+      "author": "Kenya Jeniffer Marcon",
+      "createdAt": "2026-07-26T20:11:05.852Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "7d9789cc-aeec-4531-8ae0-923f6928b4eb",
+      "image": "https://plataforma.bvirtual.com.br/Leitor/Publicacao/183205/pdf/~/Leitor/images/logo-step2.png",
+      "notes": "Este livro aborda temas centrais de ética e cidadania, essenciais para a formação de cidadãos conscientes e críticos na sociedade contemporânea.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 5,
+      "related": [
+        {
+          "id": "fea36953-c300-4a50-b52d-c0cd90a5ae2e",
+          "why": "Discute a ética em situações do cotidiano, alinhando-se ao tema do livro."
+        },
+        {
+          "id": "79ee8ca7-fb63-4dbb-939b-30f7e0f29463",
+          "why": "Explora a questão da ética e suas interpretações, complementando o assunto abordado."
+        }
+      ],
+      "source": "Biblioteca Virtual Universitária",
+      "status": "consumido",
+      "subtype": "livro",
+      "tags": [
+        "ética",
+        "cidadania",
+        "filosofia"
+      ],
+      "title": "Introdução à ética e moral  (p. 27-65)",
+      "type": "conteudo",
+      "url": ""
     }
   ]
 }
