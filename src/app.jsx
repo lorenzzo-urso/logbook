@@ -108,7 +108,22 @@ function dayParts(iso) {
   const [y, m, d] = iso.split('-').map(Number);
   return { dia: `${String(d).padStart(2, '0')} ${MES_CURTO[m - 1]}`, semana: SEMANA[new Date(y, m - 1, d).getDay()] };
 }
-const byDateDesc = (a, b) => String(entryDate(b) || '').localeCompare(String(entryDate(a) || ''));
+// Ordenação: mais recente primeiro, inclusive dentro do mesmo dia.
+// entryDate só tem o dia; a hora vem do createdAt, que a extensão preenche.
+// A captura por issue grava só a data, então a ordem de inserção no data.json
+// (mais recente = mais abaixo no arquivo) desempata o resto.
+function quando(e) {
+  const dia = entryDate(e) || '';
+  const hora = String(e.createdAt || '').slice(11, 19) || '00:00:00';
+  return `${dia}T${hora}`;
+}
+const byDateDesc = (a, b) =>
+  quando(b).localeCompare(quando(a)) || ((b._ordem || 0) - (a._ordem || 0));
+
+// Um registro do log pode ser entrada ou artigo. Artigo fecha o dia.
+const quandoReg = (r) => (r.kind === 'escrito' ? `${r.post.date || ''}T23:59:59` : quando(r.entry));
+const byRegDesc = (a, b) =>
+  quandoReg(b).localeCompare(quandoReg(a)) || (((b.entry || {})._ordem || 0) - ((a.entry || {})._ordem || 0));
 
 function daysSince(iso) {
   if (!iso) return null;
@@ -584,6 +599,7 @@ function LogDias({ dias = 30, escopo = 'tudo', densidade = 'confortavel' }) {
 
   const porDia = {};
   validos.forEach(r => { (porDia[r.date] = porDia[r.date] || []).push(r); });
+  Object.values(porDia).forEach(lista => lista.sort(byRegDesc));
   const ordenados = Object.entries(porDia).sort((a, b) => b[0].localeCompare(a[0]));
 
   return (
@@ -919,6 +935,7 @@ function TimelineView({ prefs, setPrefs }) {
 function DiasDoMes({ itens, densidade }) {
   const porDia = {};
   itens.forEach(r => { (porDia[r.date] = porDia[r.date] || []).push(r); });
+  Object.values(porDia).forEach(lista => lista.sort(byRegDesc));
   return (
     <div>
       {Object.entries(porDia).sort((a, b) => b[0].localeCompare(a[0])).map(([data, lista]) => {
@@ -1586,7 +1603,11 @@ function App() {
           const k = String(t).trim().toLowerCase();
           return (ALIASES[k] || k).trim().toLowerCase();
         };
-        ENTRIES.forEach(e => { e.tags = [...new Set((e.tags || []).map(canon).filter(Boolean))]; });
+        // _ordem preserva a posição no arquivo: é o último desempate de data.
+        ENTRIES.forEach((e, i) => {
+          e.tags = [...new Set((e.tags || []).map(canon).filter(Boolean))];
+          e._ordem = i;
+        });
         POSTS.forEach(p => { p.tags = [...new Set((p.tags || []).map(canon).filter(Boolean))]; });
         CONTENT = ENTRIES.filter(e => e.type === 'conteudo');
         PROJECTS = ENTRIES.filter(e => e.type === 'projeto');
