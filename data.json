@@ -278,6 +278,50 @@
       "type": "conteudo",
       "url": "https://research.google/blog/sensorfm-towards-a-general-intelligence-and-interface-for-wearable-health-data/",
       "archived": true
+    },
+    {
+      "author": "Carin-Isabel Knoop",
+      "createdAt": "2026-07-26T22:14:30.408Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "580d4f27-21b8-4ff9-a88b-d35282e6519e",
+      "image": "https://miro.medium.com/v2/resize:fit:781/1*UPbo6b0MIVrY6SLHxGhKMQ.png",
+      "notes": "O artigo explora como a IA, apesar de aumentar a eficiência, pode impactar a capacidade de atenção humana, levando a distorções cognitivas e aumento da sensação de urgência.",
+      "pages": 0,
+      "pagesRead": 0,
+      "quotes": [
+        {
+          "page": "",
+          "text": "O sociólogo alemão Hartmut Rosa descreveu a modernidade como um processo de aceleração social, onde os avanços tecnológicos aumentam a velocidade, mas muitas vezes deixam as pessoas com uma sensação de maior pressão em vez de maior liberdade. A IA não se limita a acelerar tarefas. Ela comprime os intervalos entre elas. Os sistemas de inferência levam isso um passo adiante, reduzindo o atraso entre a intenção e a execução a praticamente zero."
+        }
+      ],
+      "rating": 5,
+      "related": [
+        {
+          "id": "0ac971be-c316-4a67-93c6-20d7fbe9faa1",
+          "why": "Relata sobre agentes de IA e suas implicações, conectando a eficiência tecnológica com o impacto na sociedade."
+        }
+      ],
+      "source": "Medium",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "ia",
+        "tecnologia",
+        "psicologia",
+        "cognitiva"
+      ],
+      "title": "The White Rabbit Effect: How AI Disrupts the Metronome of Human Cognition | by Carin-Isabel Knoop | Jun, 2026 | Science Spectrum",
+      "type": "conteudo",
+      "url": "https://sciencespectrumu.com/the-white-rabbit-effect-how-ai-disrupts-the-metronome-of-human-cognition-c456a5338b1f",
+      "archived": true
     }
   ]
 }
