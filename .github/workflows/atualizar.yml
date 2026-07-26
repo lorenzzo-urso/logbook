@@ -13,17 +13,15 @@ permissions:
 
 jobs:
   aplicar:
-    if: contains(github.event.issue.labels.*.name, 'atualizar')
+    # Dono do repositório, e só ele. Como condição do job em vez de passo que
+    # falha: issue de terceiro é ignorada em silêncio, sem execução vermelha
+    # no histórico nem issue aberta pendurada.
+    if: >-
+      contains(github.event.issue.labels.*.name, 'atualizar') &&
+      github.event.issue.user.login == github.repository_owner
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      # Só o dono do repositório pode alterar o log — as issues são públicas.
-      - name: Conferir autor
-        if: github.event.issue.user.login != github.repository_owner
-        run: |
-          echo "Issue de terceiro, ignorada."
-          exit 1
 
       - name: Corpo da issue para arquivo
         env:

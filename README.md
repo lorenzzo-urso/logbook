@@ -290,7 +290,9 @@ Visite `#/editor` uma vez no seu aparelho para ligar **Começar**, **Terminei**,
 
 Ligado, cada ação abre uma issue já preenchida e uma Action aplica a mudança em segundos — funciona do celular, sem token no aparelho. Os campos inline (página atual, trecho) são digitados **no próprio card**; só o salvar passa pela issue.
 
-O interruptor mora no `localStorage`, não é segurança — é para não mostrar ao visitante um botão que ele não pode usar.
+**O interruptor não sabe de quem é o aparelho.** Ele é só uma marca no `localStorage` daquele navegador: qualquer pessoa pode ligar. Não é autenticação, é higiene visual.
+
+Quem autoriza de verdade é o GitHub, em duas camadas: nenhum token existe no navegador (o botão só monta a URL de uma issue), e a issue criada carrega a conta de quem a abriu — o workflow só roda se essa conta for a dona do repositório. Issue de terceiro é ignorada em silêncio, sem execução vermelha no histórico.
 
 ## Busca
 

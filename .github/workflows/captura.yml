@@ -12,17 +12,15 @@ permissions:
 
 jobs:
   adicionar:
-    if: contains(github.event.issue.labels.*.name, 'captura')
+    # Dono do repositório, e só ele. Como condição do job em vez de passo que
+    # falha: issue de terceiro é ignorada em silêncio, sem execução vermelha
+    # no histórico nem issue aberta pendurada.
+    if: >-
+      contains(github.event.issue.labels.*.name, 'captura') &&
+      github.event.issue.user.login == github.repository_owner
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      # Só o dono do repositório pode capturar — a issue é pública.
-      - name: Conferir autor
-        if: github.event.issue.user.login != github.repository_owner
-        run: |
-          echo "Issue de terceiro, ignorada."
-          exit 1
 
       - name: Corpo da issue para arquivo
         env:
