@@ -543,12 +543,34 @@ function SearchView({ query, onDetail }) {
   const content = results.filter(e => e.type !== 'projeto');
   const projects = results.filter(e => e.type === 'projeto');
 
+  // Texto guardado na captura: carregado só quando alguém busca de verdade,
+  // porque o índice cresce com o acervo e não faz falta em nenhuma outra tela.
+  const [fullText, setFullText] = React.useState(null);
+  React.useEffect(() => {
+    if (q.length < 3 || fullText !== null) return;
+    fetch('./search.json').then(r => r.ok ? r.json() : {}).then(setFullText).catch(() => setFullText({}));
+  }, [q.length >= 3]);
+
+  const achados = React.useMemo(() => {
+    if (q.length < 3 || !fullText) return [];
+    const jaListados = new Set(results.map(e => e.id));
+    const out = [];
+    for (const [id, texto] of Object.entries(fullText)) {
+      if (jaListados.has(id)) continue;
+      const pos = texto.toLowerCase().indexOf(q);
+      if (pos === -1) continue;
+      const entry = ENTRIES.find(e => e.id === id);
+      if (entry) out.push({ entry, trecho: texto.slice(Math.max(0, pos - 90), pos + 160).trim(), pos });
+    }
+    return out;
+  }, [q, fullText, results.length]);
+
   if (q.length < 2) return (
     <div style={{ padding:'60px 40px', textAlign:'center', color:'var(--fg-disabled)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)' }}>
       Digite ao menos 2 caracteres para buscar.
     </div>
   );
-  if (!results.length) return (
+  if (!results.length && !achados.length) return (
     <div style={{ padding:'60px 40px', textAlign:'center', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)' }}>
       Nenhum resultado para <strong>"{query}"</strong>.
     </div>
@@ -557,6 +579,7 @@ function SearchView({ query, onDetail }) {
     <div style={{ padding:'32px 40px 64px', maxWidth:860, margin:'0 auto' }}>
       <p style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)', marginBottom:28 }}>
         {results.length} resultado{results.length !== 1 ? 's' : ''} para <strong style={{ color:'var(--fg-primary)' }}>"{query}"</strong>
+        {achados.length > 0 && ` · ${achados.length} no texto guardado`}
       </p>
       {projects.length > 0 && (
         <section style={{ marginBottom:32 }}>
@@ -570,7 +593,40 @@ function SearchView({ query, onDetail }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:10 }}>{content.map(e => card(e))}</div>
         </section>
       )}
+
+      {achados.length > 0 && (
+        <section style={{ marginTop:32 }}>
+          <SectionHeader count={achados.length}>No texto guardado</SectionHeader>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {achados.map(({ entry, trecho }) => (
+              <button key={entry.id} onClick={() => _onDetail && _onDetail(entry)}
+                style={{ textAlign:'left', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', padding:'14px 18px', cursor:'pointer', boxShadow:'var(--shadow-sm)' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
+                  <Badge subtype={entry.subtype} size="sm" />
+                  <span style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', color:'var(--fg-primary)' }}>{entry.title}</span>
+                </div>
+                <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', lineHeight:'var(--leading-relaxed)', margin:0 }}>
+                  …{destacar(trecho, q)}…
+                </p>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
+  );
+}
+
+// Mostra por que casou: sem o trecho, o resultado parece adivinhação.
+function destacar(texto, termo) {
+  const i = texto.toLowerCase().indexOf(termo);
+  if (i === -1) return texto;
+  return (
+    <>
+      {texto.slice(0, i)}
+      <mark style={{ background:'var(--accent-content-light)', color:'var(--fg-primary)', padding:'0 2px', borderRadius:2 }}>{texto.slice(i, i + termo.length)}</mark>
+      {texto.slice(i + termo.length)}
+    </>
   );
 }
 
