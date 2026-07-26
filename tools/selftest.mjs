@@ -39,6 +39,25 @@ assert.equal(e.status, 'quero ler');
 assert.deepEqual(e.related, []);
 assert.ok(!('changelog' in e) && !('links' in e));
 
+// O log de verdade pode estar vazio (e vai ficar, no começo). Os testes que
+// precisam de uma entrada trabalham sobre esta, gravada e removida na hora.
+const DATA = join(root, 'data.json');
+const dataOriginal = readFileSync(DATA, 'utf8');
+const fixtureEntrada = {
+  id: 'selftest-0001', type: 'conteudo', subtype: 'livro', title: 'Entrada de teste',
+  url: 'https://exemplo-selftest.invalid/livro', author: 'Autora Teste', source: 'teste',
+  image: '', tags: ['teste'], status: 'quero ler', rating: 0, notes: '', related: [], quotes: [],
+  dates: { captured: '2026-01-02', consumed: null, start: null, end: null, idea: null, started: null, launched: null },
+  createdAt: '2026-01-02T00:00:00.000Z',
+};
+const comFixture = () => {
+  const d = JSON.parse(dataOriginal);
+  d.entries = [...d.entries, structuredClone(fixtureEntrada)];
+  writeFileSync(DATA, JSON.stringify(d, null, 2) + '\n');
+  return structuredClone(fixtureEntrada);
+};
+const restaurarData = () => writeFileSync(DATA, dataOriginal);
+
 // ── validação: o data.json tem quatro escritores, um write ruim é silencioso ──
 const validar = (obj) => {
   const f = join(root, 'tmp-validate.json');
@@ -70,8 +89,7 @@ execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, std
 
 // ── atualização por issue: é o que faz as ações do site funcionarem ──────────
 {
-  const orig = readFileSync(join(root, 'data.json'), 'utf8');
-  const alvo = JSON.parse(orig).entries[0];
+  const alvo = comFixture();
   const corpo = join(root, 'tmp-issue.txt');
   const aplicar = (campos) => {
     writeFileSync(corpo, Object.entries(campos).map(([k, v]) => `### ${k}\n\n${v}\n`).join('\n'));
@@ -101,7 +119,7 @@ execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, std
     }
     execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, stdio: 'pipe' });
   } finally {
-    writeFileSync(join(root, 'data.json'), orig);
+    restaurarData();
     rmSync(corpo, { force: true });
   }
 }
@@ -109,7 +127,7 @@ execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, std
 // ── busca no texto guardado ──────────────────────────────────────────────────
 {
   const dir = join(root, 'archive');
-  const alvo = JSON.parse(readFileSync(join(root, 'data.json'), 'utf8')).entries[0];
+  const alvo = comFixture();
   const f = join(dir, `${alvo.id}.md`);
   const orfao = join(dir, 'nao-existe-no-data.md');
   mkdirSync(dir, { recursive: true });
@@ -123,20 +141,20 @@ execFileSync('python3', [join(root, 'tools/validate_data.py')], { cwd: root, std
     assert.ok(!('nao-existe-no-data' in idx), 'texto órfão não pode entrar no índice');
   } finally {
     rmSync(f); rmSync(orfao);
+    restaurarData();
     execFileSync('python3', [join(root, 'tools/build_search.py')], { cwd: root, stdio: 'pipe' });
   }
 }
 
 // ── posts: front matter, draft e resolução de referências ────────────────────
 execFileSync('python3', [join(root, 'tools/build_posts.py')], { cwd: root });
-const data = JSON.parse(readFileSync(join(root, 'data.json'), 'utf8'));
 const posts = JSON.parse(readFileSync(join(root, 'posts.json'), 'utf8')).posts;
 assert.ok(Array.isArray(posts));
 assert.ok(!posts.some(p => p.slug === 'exemplo'), 'draft: true não pode publicar');
 
 // Um post temporário exercita front matter, slug, refs por URL e draft off.
 const tmp = join(root, 'posts/9999-01-02-teste-selftest.md');
-const cited = data.entries.find(e => e.url);
+const cited = comFixture();
 writeFileSync(tmp, `---\ntitle: Teste\ndate: 9999-01-02\ntags: um, DOIS\nrefs:\n  - ${cited.url}\n  - https://nao-catalogado.example/x\n---\n\nCorpo com **negrito**.\n`);
 try {
   execFileSync('python3', [join(root, 'tools/build_posts.py')], { cwd: root });
@@ -167,6 +185,7 @@ try {
   assert.ok(pagina.includes(cited.title.slice(0, 20)), 'referência sem título na página');
 } finally {
   rmSync(tmp);
+  restaurarData();
   execFileSync('python3', [join(root, 'tools/build_posts.py')], { cwd: root });
   execFileSync('python3', [join(root, 'tools/gen_feed.py')], { cwd: root });
 }
