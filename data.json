@@ -212,6 +212,72 @@
       "type": "conteudo",
       "url": "https://thilo-hermann.medium.com/stop-mixing-cdm-ontology-and-knowledge-graphs-0d1d154e0c31",
       "archived": true
+    },
+    {
+      "author": "Ignacio de Gregorio",
+      "createdAt": "2026-07-26T21:56:27.208Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "7ad911e2-8601-45e1-93cd-174064d84dca",
+      "image": "https://miro.medium.com/v2/resize:fit:1200/1*cmRT0InnJjmt1zO5iUICSw.png",
+      "notes": "O artigo discute um novo uso da IA para personalizar a saúde, destacando seu potencial para transformar economias e práticas de saúde.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 5,
+      "related": [],
+      "source": "Medium",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "ia",
+        "tecnologia",
+        "saúde",
+        "futuro"
+      ],
+      "title": "An AI That Could Save Nations | Medium",
+      "type": "conteudo",
+      "url": "https://medium.com/@ignacio.de.gregorio.noblejas/an-ai-that-could-save-nations-d24a7a0cd17f",
+      "archived": true
+    },
+    {
+      "author": "Google Research",
+      "createdAt": "2026-07-26T21:58:39.578Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "41e9f298-f29b-4126-9ddd-912fa49dd255",
+      "image": "https://storage.googleapis.com/gweb-research2023-media/images/HO_previewImage1.width-800.format-jpeg.jpg",
+      "notes": "SensorFM é um modelo que transforma dados de saúde de dispositivos vestíveis em previsões mais precisas, ajudando na personalização da saúde preventiva.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 5,
+      "related": [],
+      "source": "research.google",
+      "status": "consumido",
+      "subtype": "artigo",
+      "tags": [
+        "tecnologia",
+        "saúde",
+        "ia",
+        "pesquisa"
+      ],
+      "title": "SensorFM: Towards a general intelligence and interface for wearable health data",
+      "type": "conteudo",
+      "url": "https://research.google/blog/sensorfm-towards-a-general-intelligence-and-interface-for-wearable-health-data/",
+      "archived": true
     }
   ]
 }
