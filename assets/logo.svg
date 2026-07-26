@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" role="img" aria-label="logbook">
+  <rect width="26" height="26" rx="7" fill="#1A1916"/>
+  <rect x="6" y="7" width="14" height="2.4" rx="1.2" fill="#F08A30"/>
+  <rect x="6" y="12" width="9" height="2.4" rx="1.2" fill="#B4B0A3"/>
+  <rect x="6" y="17" width="5" height="2.4" rx="1.2" fill="#96A5FA"/>
+</svg>

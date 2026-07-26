@@ -413,3 +413,105 @@
     --card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.4);
   }
 }
+
+/* ══ REDESIGN 2026-07 ═══════════════════════════════════════════════════════
+   Layout do rebranding. O design especifica a paleta crua (--sand-100 etc.);
+   aqui usamos os tokens semânticos equivalentes para o modo escuro continuar
+   funcionando — em claro o valor é o mesmo. */
+
+.lb-app { display:flex; min-height:100vh; }
+.lb-side {
+  width:224px; flex-shrink:0; height:100vh; position:sticky; top:0;
+  background:var(--bg-elevated); border-right:1px solid var(--border-subtle);
+  padding:18px 14px 14px; display:flex; flex-direction:column; gap:0;
+}
+.lb-main { flex:1; min-width:0; height:100vh; overflow-y:auto; }
+
+.lb-nav-item {
+  display:flex; align-items:center; gap:8px; width:100%;
+  padding:7px 8px; border:none; background:none; border-radius:var(--radius-md);
+  font-family:var(--font-body); font-size:13.5px; color:var(--fg-secondary);
+  cursor:pointer; text-align:left; transition:background 0.12s ease, color 0.12s ease;
+}
+.lb-nav-item:hover { background:var(--border-subtle); }
+.lb-nav-item[aria-current="page"] {
+  background:var(--accent-content-light); color:var(--accent-content-hover); font-weight:600;
+}
+.lb-nav-count { margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--fg-muted); }
+.lb-nav-item[aria-current="page"] .lb-nav-count { color:inherit; }
+.lb-group-label {
+  font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--fg-muted); padding:0 8px 7px;
+}
+
+/* Hoje: duas colunas no desktop, empilhado abaixo de 1100px. */
+.lb-hoje { display:grid; grid-template-columns:1fr 300px; align-items:start; }
+.lb-hoje-aside { border-left:1px solid var(--border-subtle); background:var(--bg-elevated); }
+@media (max-width:1100px) {
+  .lb-hoje { grid-template-columns:1fr; }
+  .lb-hoje-aside { border-left:none; border-top:1px solid var(--border-subtle); }
+}
+
+.lb-mobile-top, .lb-tabbar { display:none; }
+
+@media (max-width:768px) {
+  .lb-app { flex-direction:column; padding-bottom:78px; }
+  .lb-side { display:none; }
+  .lb-main { height:auto; overflow:visible; }
+  .lb-mobile-top {
+    display:flex; align-items:center; gap:9px; padding:12px 20px;
+    background:var(--bg-elevated); border-bottom:1px solid var(--border-subtle);
+    position:sticky; top:0; z-index:20;
+  }
+  .lb-tabbar {
+    display:flex; align-items:flex-end; justify-content:space-between;
+    position:fixed; left:0; right:0; bottom:0; z-index:30;
+    background:var(--bg-elevated); border-top:1px solid var(--border-subtle);
+    padding:10px 14px 16px;
+  }
+  .lb-tab {
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; border:none; cursor:pointer; padding:6px 2px;
+    font-family:var(--font-body); font-size:11px; color:var(--fg-muted); min-height:44px;
+  }
+  .lb-tab[aria-current="page"] { color:var(--accent-content-hover); font-weight:600; }
+  .lb-tab.lb-tab-prod[aria-current="page"] { color:var(--accent-project-hover); }
+  .lb-fab {
+    width:46px; height:46px; border-radius:var(--radius-full); border:none;
+    background:var(--accent-content); color:#fff; font-size:22px; line-height:1;
+    box-shadow:var(--shadow-md); cursor:pointer; flex:0 0 46px; margin:0 6px;
+    display:flex; align-items:center; justify-content:center;
+  }
+}
+
+/* Folha de registro no mobile; no desktop o mesmo componente vira modal. */
+.lb-sheet-bd { position:fixed; inset:0; z-index:200; background:rgba(26,25,22,0.5); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; padding:24px; }
+.lb-sheet {
+  background:var(--bg-surface); border-radius:var(--radius-xl); box-shadow:var(--shadow-2xl);
+  width:100%; max-width:520px; max-height:86vh; overflow-y:auto;
+}
+@media (max-width:768px) {
+  .lb-sheet-bd { align-items:flex-end; padding:0; }
+  .lb-sheet { max-width:none; border-radius:22px 22px 0 0; max-height:92vh; }
+}
+
+/* Anel de foco visível em tudo que é operável por teclado. */
+.lb-app :focus-visible, .lb-sheet :focus-visible { outline:none; box-shadow:var(--focus-ring); border-radius:var(--radius-md); }
+
+/* Padding e colunas das telas: 32px no desktop, 20px no celular. */
+.lb-tela { padding: 22px 32px 40px; }
+.lb-hoje-head { padding: 22px 32px 18px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.lb-hoje-corpo { padding: 24px 32px 32px; }
+.lb-log-dia { display: grid; grid-template-columns: 76px 1fr; }
+@media (max-width: 768px) {
+  .lb-tela { padding: 18px 20px 32px; }
+  .lb-hoje-head { padding: 18px 20px 14px; }
+  .lb-hoje-corpo { padding: 18px 20px 24px; }
+  .lb-log-dia { grid-template-columns: 42px 1fr; gap: 4px; }
+  .lb-so-desktop { display: none; }
+}
+/* Alça da folha de registro: só existe quando ela vem de baixo. */
+.lb-sheet-alca { display: none; }
+@media (max-width: 768px) {
+  .lb-sheet-alca { display: block; width: 36px; height: 4px; border-radius: 2px; background: var(--border-default); margin: 10px auto 2px; }
+}

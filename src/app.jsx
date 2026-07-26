@@ -1,109 +1,13 @@
-// ── INLINED DESIGN SYSTEM COMPONENTS ────────────────────────────────────────
-// (Self-contained copies of components/core/* so this prototype runs standalone.)
-
-const _BTN_VARIANTS = {
-  primary:   { background:'var(--accent-content)', color:'#fff', border:'1px solid transparent', hover:'var(--accent-content-hover)' },
-  secondary: { background:'var(--bg-surface)', color:'var(--fg-primary)', border:'1px solid var(--border-default)', hover:'var(--bg-elevated)' },
-  ghost:     { background:'transparent', color:'var(--fg-secondary)', border:'1px solid transparent', hover:'var(--bg-elevated)' },
-  project:   { background:'var(--accent-project)', color:'#fff', border:'1px solid transparent', hover:'var(--accent-project-hover)' },
-  danger:    { background:'var(--red-50)', color:'var(--red-700)', border:'1px solid var(--red-200)', hover:'var(--red-100)' },
-};
-const _BTN_SIZES = {
-  sm: { padding:'5px 12px', fontSize:'var(--text-xs)', borderRadius:'var(--radius-md)', gap:'var(--space-1_5)' },
-  md: { padding:'7px 16px', fontSize:'var(--text-sm)', borderRadius:'var(--radius-md)', gap:'var(--space-2)' },
-  lg: { padding:'10px 20px', fontSize:'var(--text-base)', borderRadius:'var(--radius-lg)', gap:'var(--space-2_5)' },
-};
-function Button({ children, variant='primary', size='md', disabled=false, fullWidth=false, onClick, type='button', icon, iconEnd, style }) {
-  const [hov, setHov] = React.useState(false);
-  const v = _BTN_VARIANTS[variant] || _BTN_VARIANTS.primary;
-  const s = _BTN_SIZES[size] || _BTN_SIZES.md;
-  return (
-    <button type={type} disabled={disabled} onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', gap:s.gap, padding:s.padding, fontSize:s.fontSize, fontFamily:'var(--font-body)', fontWeight:'var(--weight-medium)', lineHeight:'var(--leading-none)', borderRadius:s.borderRadius, border:v.border, background: hov && !disabled ? v.hover : v.background, color:v.color, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.45 : 1, transition:'background 0.14s ease, opacity 0.14s ease', width: fullWidth ? '100%' : undefined, whiteSpace:'nowrap', ...style }}>
-      {icon && <span style={{ display:'flex', alignItems:'center', lineHeight:1 }}>{icon}</span>}
-      {children}
-      {iconEnd && <span style={{ display:'flex', alignItems:'center', lineHeight:1 }}>{iconEnd}</span>}
-    </button>
-  );
-}
-
-const _TYPE_STYLES = {
-  artigo:{bg:'var(--type-artigo-bg)',fg:'var(--type-artigo-fg)',border:'var(--type-artigo-border)'},
-  livro:{bg:'var(--type-livro-bg)',fg:'var(--type-livro-fg)',border:'var(--type-livro-border)'},
-  'vídeo':{bg:'var(--type-video-bg)',fg:'var(--type-video-fg)',border:'var(--type-video-border)'},
-  curso:{bg:'var(--type-curso-bg)',fg:'var(--type-curso-fg)',border:'var(--type-curso-border)'},
-  treinamento:{bg:'var(--type-treinamento-bg)',fg:'var(--type-treinamento-fg)',border:'var(--type-treinamento-border)'},
-  'notícia':{bg:'var(--type-noticia-bg)',fg:'var(--type-noticia-fg)',border:'var(--type-noticia-border)'},
-  projeto:{bg:'var(--type-projeto-bg)',fg:'var(--type-projeto-fg)',border:'var(--type-projeto-border)'},
-  escrito:{bg:'var(--type-escrito-bg)',fg:'var(--type-escrito-fg)',border:'var(--type-escrito-border)'},
-};
-const _STATUS_STYLES = {
-  consumido:{bg:'var(--status-consumed-bg)',fg:'var(--status-consumed-fg)',border:'var(--status-consumed-border)'},
-  'em andamento':{bg:'var(--status-progress-bg)',fg:'var(--status-progress-fg)',border:'var(--status-progress-border)'},
-  'em progresso':{bg:'var(--status-progress-bg)',fg:'var(--status-progress-fg)',border:'var(--status-progress-border)'},
-  abandonado:{bg:'var(--status-abandoned-bg)',fg:'var(--status-abandoned-fg)',border:'var(--status-abandoned-border)'},
-  ideia:{bg:'var(--status-idea-bg)',fg:'var(--status-idea-fg)',border:'var(--status-idea-border)'},
-  iniciado:{bg:'var(--status-started-bg)',fg:'var(--status-started-fg)',border:'var(--status-started-border)'},
-  'lançado':{bg:'var(--status-launched-bg)',fg:'var(--status-launched-fg)',border:'var(--status-launched-border)'},
-  pausado:{bg:'var(--status-paused-bg)',fg:'var(--status-paused-fg)',border:'var(--status-paused-border)'},
-  arquivado:{bg:'var(--status-archived-bg)',fg:'var(--status-archived-fg)',border:'var(--status-archived-border)'},
-};
-const _BADGE_FALLBACK = { bg:'var(--bg-elevated)', fg:'var(--fg-muted)', border:'var(--border-subtle)' };
-function Badge({ subtype, status, size='md', dot=false }) {
-  const isStatus = status !== undefined;
-  const key = (isStatus ? (status||'') : (subtype||'')).toLowerCase();
-  const st = isStatus ? (_STATUS_STYLES[key] || _BADGE_FALLBACK) : (_TYPE_STYLES[key] || _BADGE_FALLBACK);
-  const label = subtype || status || '—';
-  return (
-    <span style={{ display:'inline-flex', alignItems:'center', gap: dot ? 'var(--space-1_5)' : 0, padding: size==='sm' ? '2px 7px' : '3px 9px', fontSize: size==='sm' ? 'var(--text-2xs)' : 'var(--text-xs)', fontFamily:'var(--font-body)', fontWeight:'var(--weight-semibold)', letterSpacing:'var(--tracking-wider)', textTransform:'uppercase', lineHeight:1, borderRadius:'var(--radius-full)', background:st.bg, color:st.fg, border:`1px solid ${st.border}`, whiteSpace:'nowrap' }}>
-      {dot && <span style={{ width:5, height:5, borderRadius:'50%', background:st.fg, opacity:0.7, flexShrink:0 }} />}
-      {label}
-    </span>
-  );
-}
-
-function Tag({ children, onClick, active=false, size='md' }) {
-  const [hov, setHov] = React.useState(false);
-  const interactive = !!onClick;
-  return (
-    <span onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ display:'inline-block', padding: size==='sm' ? '2px 8px' : '3px 10px', fontSize: size==='sm' ? 'var(--text-2xs)' : 'var(--text-xs)', fontFamily:'var(--font-body)', fontWeight:'var(--weight-medium)', lineHeight:'var(--leading-normal)', borderRadius:'var(--radius-full)', background: active ? 'var(--accent-content-light)' : (hov && interactive ? 'var(--sand-200)' : 'var(--bg-elevated)'), color: active ? 'var(--accent-content-hover)' : 'var(--fg-secondary)', border: active ? '1px solid var(--accent-content-border)' : '1px solid var(--border-subtle)', cursor: interactive ? 'pointer' : 'default', transition:'background 0.12s ease, color 0.12s ease', whiteSpace:'nowrap', userSelect:'none' }}>
-      {children}
-    </span>
-  );
-}
-
-const _ENTRY_TYPE_LABELS = { artigo:'Artigo', livro:'Livro', 'vídeo':'Vídeo', curso:'Curso', treinamento:'Treinamento', 'notícia':'Notícia', projeto:'Projeto' };
-function _RatingDots({ value, max=5 }) {
-  return <span style={{ display:'inline-flex', gap:3, alignItems:'center' }}>{Array.from({length:max}).map((_, i) => <span key={i} style={{ width:6, height:6, borderRadius:'50%', background: i < value ? 'var(--amber-500)' : 'var(--sand-300)' }} />)}</span>;
-}
-function EntryCard({ type='content', subtype, title, author, source, date, status, tags=[], rating, notesExcerpt, relatedCount, image, onClick, compact=false }) {
-  const [hov, setHov] = React.useState(false);
-  const isProject = type === 'projeto';
-  const subtypeKey = isProject ? 'projeto' : (subtype || 'artigo');
-  const displayLabel = _ENTRY_TYPE_LABELS[subtypeKey] || subtypeKey;
-  const interactive = !!onClick;
-  return (
-    <article onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background:'var(--bg-surface)', border:`1px solid ${hov && interactive ? 'var(--border-default)' : 'var(--border-subtle)'}`, borderRadius:'var(--radius-lg)', padding: compact ? 'var(--space-4) var(--space-5)' : 'var(--space-5) var(--space-6)', cursor: interactive ? 'pointer' : 'default', transition:'box-shadow 0.15s ease, border-color 0.15s ease', boxShadow: hov && interactive ? 'var(--card-hover-shadow)' : 'var(--shadow-sm)', position:'relative', fontFamily:'var(--font-body)' }}>
-      <div style={{ display:'flex', alignItems:'center', gap:'var(--space-2)', marginBottom:'var(--space-2_5)', flexWrap:'wrap' }}>
-        <Badge subtype={displayLabel.toLowerCase()} size="sm" />
-        {status && <Badge status={status} size="sm" dot />}
-        {date && <span style={{ marginLeft:'auto', fontSize:'var(--text-xs)', color:'var(--fg-muted)', fontFamily:'var(--font-mono)', letterSpacing:'var(--tracking-wide)', flexShrink:0 }}>{date}</span>}
-      </div>
-      <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>{image && !compact && <img src={image} alt='' loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }} style={{ width:52, height:72, objectFit:'cover', borderRadius:4, flexShrink:0, marginTop:2 }} />}<div style={{ flex:1, minWidth:0 }}><h3 style={{ fontFamily:'var(--font-display)', fontSize: compact ? 'var(--text-base)' : 'var(--text-lg)', fontWeight:'var(--weight-medium)', color:'var(--fg-primary)', margin:'0 0 var(--space-1) 0', lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{title}</h3>
-      {(author || source) && <p style={{ fontSize:'var(--text-sm)', color:'var(--fg-muted)', margin:`0 0 ${tags.length || rating || notesExcerpt || relatedCount ? 'var(--space-3)' : '0'} 0`, lineHeight:'var(--leading-normal)' }}>{[author, source].filter(Boolean).join(' · ')}</p>}
-      {(tags.length > 0 || rating > 0) && (
-        <div style={{ display:'flex', alignItems:'center', gap:'var(--space-1_5)', flexWrap:'wrap', marginBottom: notesExcerpt || relatedCount ? 'var(--space-3)' : 0 }}>
-          {rating > 0 && <_RatingDots value={rating} />}
-          {tags.map((t, i) => <Tag key={i} size="sm">{t}</Tag>)}
-        </div>
-      )}
-      {notesExcerpt && <p style={{ fontSize:'var(--text-sm)', color:'var(--fg-secondary)', margin:0, lineHeight:'var(--leading-relaxed)', fontFamily:'var(--font-display)', fontStyle:'italic', borderLeft:'2px solid var(--border-subtle)', paddingLeft:'var(--space-3)' }}>{notesExcerpt}</p>}
-      {relatedCount > 0 && <p style={{ fontSize:'var(--text-xs)', color: isProject ? 'var(--accent-project)' : 'var(--accent-content)', fontWeight:'var(--weight-medium)', margin: notesExcerpt ? 'var(--space-3) 0 0 0' : 0 }}>↗ {isProject ? 'Inspirado por' : 'Conecta com'} {relatedCount} {relatedCount === 1 ? 'entrada' : 'entradas'}</p>}
-    </div></div></article>
-  );
-}
+// LogBook — fonte do site. Transpilado por ./build.sh (esbuild, só JSX).
+// React de produção vem de vendor/. Sem bundler, sem npm.
+//
+// Redesign 2026-07: navegação em três grupos (Consumo / Produção / Descobrir),
+// marca minúscula, registro rápido em ⌘K e conexões explícitas entre o que eu
+// li e o que produzi.
+//
+// O design de origem especifica a paleta crua (--sand-200 etc.). Aqui usamos os
+// tokens semânticos equivalentes — mesmo valor em claro, e o modo escuro
+// continua funcionando.
 
 // ── DADOS ────────────────────────────────────────────────────────────────────
 // ponytail: globais preenchidas pelo fetch antes do primeiro render (App só
@@ -111,65 +15,125 @@ function EntryCard({ type='content', subtype, title, author, source, date, statu
 let ENTRIES = [];
 let CONTENT = [];
 let PROJECTS = [];
-let POSTS = [];   // escritos: posts/*.md compilados por tools/build_posts.py
-let ALIASES = {}; // aliases.json: sinônimo -> tag canônica
+let POSTS = [];
+let ALIASES = {};
 
-// Quem cita esta entrada. É o que fecha o ciclo: junta material, escreve, referencia.
+// O repositório é público e estático: nada aqui escreve. As ações de escrita
+// abrem uma issue pré-preenchida, que uma Action converte em commit.
+const REPO_PADRAO = 'lorenzzo-urso/logbook';
+function repoSlug() {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+  if (m) {
+    const repo = location.pathname.split('/').filter(Boolean)[0];
+    if (repo) return `${m[1]}/${repo}`;
+  }
+  return REPO_PADRAO;
+}
+function issueUrl(template, params = {}) {
+  const qs = new URLSearchParams();
+  qs.set('template', template);
+  Object.entries(params).forEach(([k, v]) => { if (v || v === 0) qs.set(k, String(v)); });
+  return `https://github.com/${repoSlug()}/issues/new?${qs}`;
+}
+const abrirIssue = (template, params) => window.open(issueUrl(template, params), '_blank', 'noopener');
+
+// Quem cita esta entrada — fecha o ciclo leitura → produção.
 const citedIn = (id) => POSTS.filter(p => (p.refs || []).some(r => r.id === id));
 
 const TYPE_META = [
-  { key:'artigo',      label:'Artigos' },
-  { key:'livro',       label:'Livros' },
-  { key:'vídeo',       label:'Vídeos' },
-  { key:'curso',       label:'Cursos' },
-  { key:'treinamento', label:'Treinamentos' },
-  { key:'notícia',     label:'Notícias' },
+  { key: 'artigo', label: 'Artigos' },
+  { key: 'livro', label: 'Livros' },
+  { key: 'vídeo', label: 'Vídeos' },
+  { key: 'curso', label: 'Cursos' },
+  { key: 'treinamento', label: 'Treinamentos' },
+  { key: 'notícia', label: 'Notícias' },
 ];
+const ABBR = {
+  artigo: 'ART', livro: 'LIV', 'vídeo': 'VID', curso: 'CUR',
+  treinamento: 'TRE', 'notícia': 'NOT', projeto: 'PRJ', escrito: 'ESC',
+};
 
-// Tag só vira "tema" com 2+ entradas — 2/3 das tags aparecem uma vez só.
+// Tag só vira "tema" com 2+ entradas — a maioria das tags aparece uma vez só.
 const THEME_MIN = 2;
-
-// Contagem de temas. Era um IIFE no topo do módulo, que rodava com ENTRIES=[]
-// e deixava a aba Temas permanentemente vazia. Agora é chamada no render.
 function themeCounts() {
   const m = {};
-  ENTRIES.forEach(e => (e.tags||[]).forEach(t => { m[t] = (m[t]||0) + 1; }));
-  return Object.entries(m).sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0]));
+  ENTRIES.forEach(e => (e.tags || []).forEach(t => { m[t] = (m[t] || 0) + 1; }));
+  return Object.entries(m).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
-const mainThemes  = () => themeCounts().filter(([, n]) => n >= THEME_MIN);
-const minorThemes = () => themeCounts().filter(([, n]) => n <  THEME_MIN);
+const mainThemes = () => themeCounts().filter(([, n]) => n >= THEME_MIN);
+const minorThemes = () => themeCounts().filter(([, n]) => n < THEME_MIN);
 
 // ── DATAS ────────────────────────────────────────────────────────────────────
 // A data que importa é quando aconteceu, não quando foi clipado.
 function entryDate(e) {
   const d = e.dates || {};
   return d.consumed || d.launched || d.started || d.end || d.captured
-      || (e.createdAt || '').slice(0, 10) || null;
+    || (e.createdAt || '').slice(0, 10) || null;
 }
-const MONTHS = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+const MES_CURTO = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+const SEMANA = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+
 function monthLabel(iso) {
   if (!iso) return 'sem data';
   const [y, m] = iso.split('-');
-  return `${MONTHS[Number(m) - 1] || '?'} de ${y}`;
+  return `${MESES[Number(m) - 1] || '?'} de ${y}`;
 }
 function shortDate(iso) {
   if (!iso) return null;
   const [y, m, d] = iso.split('-');
   return `${d}/${m}/${y.slice(2)}`;
 }
+// "18 JUN" + "qui" — as duas linhas da coluna de data do log.
+function dayParts(iso) {
+  if (!iso) return { dia: '—', semana: '' };
+  const [y, m, d] = iso.split('-').map(Number);
+  return { dia: `${String(d).padStart(2, '0')} ${MES_CURTO[m - 1]}`, semana: SEMANA[new Date(y, m - 1, d).getDay()] };
+}
 const byDateDesc = (a, b) => String(entryDate(b) || '').localeCompare(String(entryDate(a) || ''));
 
-// Dias desde a data que importa. Base de "Revisitar" e do tempo na fila.
 function daysSince(iso) {
   if (!iso) return null;
   const d = Math.floor((Date.now() - new Date(iso + 'T00:00:00').getTime()) / 86400000);
   return d >= 0 ? d : null;
 }
+function relTime(iso) {
+  const d = daysSince(iso);
+  if (d == null) return null;
+  if (d === 0) return 'hoje';
+  if (d === 1) return 'ontem';
+  if (d < 30) return `há ${d} dias`;
+  const m = Math.round(d / 30);
+  return m <= 1 ? 'há 1 mês' : `há ${m} meses`;
+}
+// Quanto tempo um item está parado na fila. Fila sem pressão vira depósito.
+function waitingDays(e) {
+  return daysSince((e.dates || {}).captured || (e.createdAt || '').slice(0, 10));
+}
+// "dia N do log": derivado da primeira captura. Sem entradas, não existe.
+function dayOfLog() {
+  const datas = ENTRIES.map(e => (e.dates || {}).captured).filter(Boolean).sort();
+  if (!datas.length) return null;
+  const d = daysSince(datas[0]);
+  return d == null ? null : d + 1;
+}
+function hojeLabel() {
+  const agora = new Date();
+  const base = `${SEMANA[agora.getDay()].toUpperCase()} · ${agora.getDate()} ${MES_CURTO[agora.getMonth()]} ${agora.getFullYear()}`;
+  const n = dayOfLog();
+  return n ? `${base} · dia ${n} do log` : base;
+}
 
-// Autores vêm como "Fulano, Beltrano" numa string só (é o que a Amazon devolve).
+// Progresso de leitura. Só existe quando pages foi preenchido.
+function progresso(e) {
+  const total = Number(e.pages) || 0;
+  if (total <= 0) return null;
+  const lidas = Math.max(0, Math.min(Number(e.pagesRead) || 0, total));
+  return { lidas, total, pct: Math.round((lidas / total) * 100) };
+}
+
 const authorsOf = (e) => String(e.author || '').split(/,| e |&/).map(a => a.trim()).filter(a => a.length > 2);
 const authorSlug = (a) => a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
 function authorCounts() {
   const m = {};
   ENTRIES.forEach(e => authorsOf(e).forEach(a => {
@@ -181,370 +145,988 @@ function authorCounts() {
   return Object.entries(m).sort((x, y) => y[1].n - x[1].n || x[1].name.localeCompare(y[1].name));
 }
 
-// ── ICONS ──────────────────────────────────────────────────────────────────
-const IcoHome     = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 6.5L7.5 2L13 6.5V13H9.5V9H5.5V13H2V6.5Z" fill="currentColor"/></svg>;
-const IcoTimeline = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="2" rx="1" fill="currentColor"/><rect x="1" y="6.5" width="9" height="2" rx="1" fill="currentColor" opacity=".65"/><rect x="1" y="10.5" width="5.5" height="2" rx="1" fill="currentColor" opacity=".35"/></svg>;
-const IcoType     = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1.5" width="12" height="3" rx="1" fill="currentColor"/><rect x="1" y="6" width="12" height="3" rx="1" fill="currentColor" opacity=".6"/><rect x="1" y="10.5" width="12" height="3" rx="1" fill="currentColor" opacity=".3"/></svg>;
-const IcoTheme    = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="4" cy="4" r="2.5" fill="currentColor"/><circle cx="11" cy="4" r="2.5" fill="currentColor" opacity=".6"/><circle cx="4" cy="11" r="2.5" fill="currentColor" opacity=".6"/><circle cx="11" cy="11" r="2.5" fill="currentColor" opacity=".3"/></svg>;
-const IcoProject  = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity=".55"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity=".55"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity=".25"/></svg>;
-const IcoBook     = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="1" width="8" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/><path d="M2 10.5h8" stroke="currentColor" strokeWidth="1.2"/><path d="M10 3h1.5A1.5 1.5 0 0 1 13 4.5v8A1.5 1.5 0 0 1 11.5 14H10" stroke="currentColor" strokeWidth="1.3"/></svg>;
-const IcoArrow    = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-const IcoWrite    = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M10.5 1.8l2.7 2.7-7.4 7.4-3.4.7.7-3.4 7.4-7.4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M9.2 3.1l2.7 2.7" stroke="currentColor" strokeWidth="1.2"/></svg>;
-const IcoNow      = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.8" stroke="currentColor" strokeWidth="1.4"/><path d="M7.5 4.2v3.6l2.3 1.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-const IcoAuthor   = () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="4.8" r="2.6" stroke="currentColor" strokeWidth="1.4"/><path d="M2.6 13c0-2.5 2.2-4.2 4.9-4.2s4.9 1.7 4.9 4.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>;
+// ── CONSUMO / PRODUÇÃO ───────────────────────────────────────────────────────
+const lendo = () => ENTRIES.filter(e => e.status === 'em andamento' && e.type !== 'projeto');
+const naFila = () => ENTRIES.filter(e => e.status === 'quero ler' || e.status === 'na fila')
+  .sort((a, b) => (waitingDays(b) || 0) - (waitingDays(a) || 0));
+const consumidos = () => ENTRIES.filter(e => e.status === 'consumido');
 
-// ── SHARED ───────────────────────────────────────────────────────────────────
-function SectionHeader({ children, count, action }) {
-  return (
-    <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
-      <h2 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-lg)', fontWeight:500, color:'var(--fg-primary)', letterSpacing:'var(--tracking-tight)', whiteSpace:'nowrap' }}>{children}</h2>
-      {count != null && <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-disabled)' }}>{count}</span>}
-      <div style={{ flex:1, height:1, background:'var(--border-subtle)' }} />
-      {action}
-    </div>
-  );
+// Projetos e escritos numa lista só: é o que a aba Produção mostra.
+function producaoItems() {
+  const projetos = PROJECTS.map(p => ({ kind: 'projeto', id: p.id, entry: p, date: entryDate(p) }));
+  const escritos = POSTS.map(p => ({ kind: 'escrito', id: 'post:' + p.slug, post: p, date: p.date }));
+  return [...projetos, ...escritos].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
 }
-function PageTitle({ children, sub }) {
-  return (
-    <div style={{ marginBottom:28 }}>
-      <h1 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-2xl)', fontWeight:500, color:'var(--fg-primary)', letterSpacing:'var(--tracking-tight)', marginBottom: sub ? 4 : 0 }}>{children}</h1>
-      {sub && <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)' }}>{sub}</p>}
-    </div>
-  );
+// Procedência: de onde este item de produção veio.
+function procedencia(item) {
+  const ids = item.kind === 'projeto'
+    ? (item.entry.related || []).map(r => r.id)
+    : (item.post.refs || []).filter(r => r.id).map(r => r.id);
+  return ids.map(id => ENTRIES.find(e => e.id === id)).filter(Boolean);
 }
-let _onDetail = null;
-const card = (e) => <EntryCard key={e.id} type={e.type} subtype={e.subtype} title={e.title} author={e.author} source={e.source} date={shortDate(entryDate(e))} status={e.status} tags={e.tags||[]} rating={e.rating} notesExcerpt={e.notes} relatedCount={(e.related||[]).length} image={e.image} onClick={_onDetail ? () => _onDetail(e) : undefined} />;
-const cardCompact = (e) => <EntryCard key={e.id} compact type={e.type} subtype={e.subtype} title={e.title} author={e.author} source={e.source} date={shortDate(entryDate(e))} status={e.status} tags={[]} rating={e.rating} relatedCount={(e.related||[]).length} />;
-
-// ── VIEW: INÍCIO (elaborate home) ───────────────────────────────────────────
-function HomeView({ onNav }) {
-  const inProgress = ENTRIES.filter(e => e.status === 'em andamento');
-  const recent = [...CONTENT].sort((a,b) => new Date(b.createdAt || (b.dates && b.dates.captured) || 0) - new Date(a.createdAt || (a.dates && a.dates.captured) || 0)).slice(0, 4);
-  const launched = PROJECTS.filter(p => p.status === 'lançado');
-  const consumedN = CONTENT.filter(c => c.status === 'consumido').length;
-  const themes = mainThemes();
-  // Nada em andamento? Mostra a fila em vez de uma grade vazia.
-  const queued = ENTRIES.filter(e => e.status === 'quero ler' || e.status === 'na fila').slice(0, 3);
-  // Consumido há mais de 30 dias e com nota: o que vale ser relembrado.
-  // ponytail: corte por data, não repetição espaçada — sem estado de revisão para manter.
-  const revisit = ENTRIES
-    .filter(e => e.status === 'consumido' && e.notes && (daysSince(entryDate(e)) || 0) >= 30)
-    .sort((a, b) => (daysSince(entryDate(b)) || 0) - (daysSince(entryDate(a)) || 0))
-    .slice(0, 2);
-
-  return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:940, margin:'0 auto' }}>
-      {/* Identity */}
-      <header style={{ marginBottom:40, paddingBottom:32, borderBottom:'1px solid var(--border-subtle)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:14 }}>
-                <h1 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-4xl)', fontWeight:600, color:'var(--fg-primary)', letterSpacing:'var(--tracking-tight)' }}>
-            Log<span style={{ fontFamily:'var(--font-body)', fontWeight:400, color:'var(--fg-muted)' }}>Book</span>
-          </h1>
-        </div>
-        <p style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-lg)', color:'var(--fg-secondary)', lineHeight:'var(--leading-relaxed)', maxWidth:560, marginBottom:18 }}>
-          Tudo que eu consumo e produzo em ordem cronológica e por tema. Uma base de conhecimento pública, e a história de como minhas ideias se formam.
-        </p>
-        <div style={{ display:'flex', gap:28, fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)', letterSpacing:'var(--tracking-wide)' }}>
-          <span><strong style={{ color:'var(--fg-primary)', fontSize:'var(--text-sm)' }}>{consumedN}</strong> consumidos</span>
-          <span><strong style={{ color:'var(--fg-primary)', fontSize:'var(--text-sm)' }}>{ENTRIES.length - consumedN}</strong> na fila</span>
-          {PROJECTS.length > 0 && <span><strong style={{ color:'var(--fg-primary)', fontSize:'var(--text-sm)' }}>{PROJECTS.length}</strong> projetos</span>}
-          {themes.length > 0 && <span><strong style={{ color:'var(--fg-primary)', fontSize:'var(--text-sm)' }}>{themes.length}</strong> temas</span>}
-        </div>
-      </header>
-
-      {/* Em andamento — ou, se não há nada em andamento, o topo da fila */}
-      {(inProgress.length > 0 || queued.length > 0) && (
-        <section style={{ marginBottom:40 }}>
-          <SectionHeader action={inProgress.length === 0 ? <button onClick={() => onNav('backlog')} style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', color:'var(--accent-content)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Ver backlog <IcoArrow /></button> : undefined}>
-            {inProgress.length > 0 ? 'Em andamento agora' : 'Próximos na fila'}
-          </SectionHeader>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(240px, 1fr))', gap:10 }}>
-            {(inProgress.length > 0 ? inProgress : queued).map(card)}
-          </div>
-        </section>
-      )}
-
-      {/* 2-col: Recent + Explore */}
-      <div className="cb-home-split">
-        <section>
-          <SectionHeader action={<button onClick={() => onNav('timeline')} style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', color:'var(--accent-content)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Ver timeline <IcoArrow /></button>}>Adicionado recentemente</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{recent.map(card)}</div>
-        </section>
-
-        <aside style={{ display:'flex', flexDirection:'column', gap:28 }}>
-          <div>
-            <SectionHeader action={<button onClick={() => onNav('tipos')} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--accent-content)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Tudo</button>}>Por tipo</SectionHeader>
-            <div style={{ display:'flex', flexDirection:'column', gap:2 }}>
-              {TYPE_META.map(t => {
-                const n = CONTENT.filter(c => c.subtype === t.key).length;
-                if (!n) return null;
-                return (
-                  <button key={t.key} onClick={() => onNav('tipos', { type:t.key })} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 10px', background:'none', border:'none', borderRadius:'var(--radius-md)', cursor:'pointer', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', transition:'background 0.12s' }} onMouseEnter={e=>e.currentTarget.style.background='var(--bg-elevated)'} onMouseLeave={e=>e.currentTarget.style.background='none'}>
-                    <span style={{ display:'flex', alignItems:'center', gap:8 }}><Badge subtype={t.key} size="sm" />{t.label}</span>
-                    <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{n}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div>
-            <SectionHeader action={<button onClick={() => onNav('temas')} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--accent-content)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Todos</button>}>Temas populares</SectionHeader>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-              {themes.slice(0, 9).map(([tag, n]) => (
-                <Tag key={tag} onClick={() => onNav('temas', { theme:tag })}>{tag} · {n}</Tag>
-              ))}
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      {/* Revisitar — nota lida há meses é nota perdida */}
-      {revisit.length > 0 && (
-        <section style={{ marginBottom:40 }}>
-          <SectionHeader action={<span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-disabled)' }}>consumido há um tempo</span>}>Revisitar</SectionHeader>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:10 }}>{revisit.map(card)}</div>
-        </section>
-      )}
-
-      {/* Escritos recentes — o que saiu de tudo isso */}
-      {POSTS.length > 0 && (
-        <section style={{ marginBottom:40 }}>
-          <SectionHeader action={<button onClick={() => onNav('escritos')} style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', color:'var(--accent-content)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Todos os escritos <IcoArrow /></button>}>Escritos recentes</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-            {POSTS.slice(0, 3).map(p => <PostCard key={p.slug} post={p} />)}
-          </div>
-        </section>
-      )}
-
-      {/* Projetos lançados — some quando ainda não há projeto nenhum */}
-      {launched.length > 0 && (
-        <section>
-          <SectionHeader action={<button onClick={() => onNav('projetos')} style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', color:'var(--accent-project)', fontFamily:'var(--font-body)', fontSize:'var(--text-xs)', fontWeight:500 }}>Todos os projetos <IcoArrow /></button>}>Projetos lançados</SectionHeader>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:10 }}>{launched.map(card)}</div>
-        </section>
-      )}
-    </div>
-  );
+function itemTags(item) {
+  return item.kind === 'projeto' ? (item.entry.tags || []) : (item.post.tags || []);
+}
+// Quanto de cada tema virou produção — alimenta a barra amber↔slate.
+function themeStats(tag) {
+  const consumo = ENTRIES.filter(e => e.type !== 'projeto' && (e.tags || []).includes(tag));
+  const producao = producaoItems().filter(i => itemTags(i).includes(tag));
+  return {
+    consumo, producao,
+    projetos: producao.filter(i => i.kind === 'projeto').length,
+    escritos: producao.filter(i => i.kind === 'escrito').length,
+    fila: consumo.filter(e => e.status === 'quero ler' || e.status === 'na fila').length,
+  };
 }
 
-// ── VIEW: TIMELINE ──────────────────────────────────────────────────────────
-function TimelineView() {
-  // Antes agrupava por `e.month`, campo que não existe no schema: tudo caía num
-  // único grupo "undefined". Agora deriva do que de fato aconteceu (ver entryDate).
-  const groups = {};
-  [...ENTRIES].sort(byDateDesc).forEach(e => {
-    const k = (entryDate(e) || '').slice(0, 7) || 'sem-data';
-    (groups[k] = groups[k] || []).push(e);
-  });
-  const ordered = Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]));
+// ── ÍCONES ───────────────────────────────────────────────────────────────────
+const IcoPlus = () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1.5v9M1.5 6h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>;
+const IcoSearch = () => <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="5.8" cy="5.8" r="4.2" stroke="currentColor" strokeWidth="1.5" /><path d="M9.2 9.2 12.5 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>;
+const IcoArrow = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const IcoClock = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="5.8" stroke="currentColor" strokeWidth="1.4" /><path d="M7.5 4.2v3.6l2.3 1.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const IcoBook = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="2" y="1.5" width="8" height="11" rx="1" stroke="currentColor" strokeWidth="1.4" /><path d="M10 3.5h1.4A1.4 1.4 0 0 1 12.8 5v7.1a1.4 1.4 0 0 1-1.4 1.4H10" stroke="currentColor" strokeWidth="1.3" /></svg>;
+const IcoLayers = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.5" y="2" width="12" height="2.6" rx="1" fill="currentColor" /><rect x="1.5" y="6.2" width="12" height="2.6" rx="1" fill="currentColor" opacity=".6" /><rect x="1.5" y="10.4" width="12" height="2.6" rx="1" fill="currentColor" opacity=".3" /></svg>;
+const IcoGrid = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="5" height="5" rx="1.4" fill="currentColor" /><rect x="8.5" y="1.5" width="5" height="5" rx="1.4" fill="currentColor" opacity=".55" /><rect x="1.5" y="8.5" width="5" height="5" rx="1.4" fill="currentColor" opacity=".55" /><rect x="8.5" y="8.5" width="5" height="5" rx="1.4" fill="currentColor" opacity=".25" /></svg>;
+const IcoPencil = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M10.5 1.8l2.7 2.7-7.4 7.4-3.4.7.7-3.4 7.4-7.4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /><path d="M9.2 3.1l2.7 2.7" stroke="currentColor" strokeWidth="1.2" /></svg>;
+const IcoUser = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="4.8" r="2.6" stroke="currentColor" strokeWidth="1.4" /><path d="M2.6 13c0-2.5 2.2-4.2 4.9-4.2s4.9 1.7 4.9 4.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>;
+const IcoTheme = () => <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="4" cy="4" r="2.5" fill="currentColor" /><circle cx="11" cy="4" r="2.5" fill="currentColor" opacity=".6" /><circle cx="4" cy="11" r="2.5" fill="currentColor" opacity=".6" /><circle cx="11" cy="11" r="2.5" fill="currentColor" opacity=".3" /></svg>;
+
+// ── MARCA ────────────────────────────────────────────────────────────────────
+// As três barras são a legenda de cor do app: entrada, fila, o que virou projeto.
+function MarcaIcone({ size = 26 }) {
   return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
-      <PageTitle sub="Tudo o que aconteceu, em ordem cronológica.">Timeline</PageTitle>
-      {ordered.map(([month, items]) => (
-        <div key={month} style={{ marginBottom:32 }}>
-          <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', fontWeight:500, color:'var(--fg-muted)', letterSpacing:'var(--tracking-wider)', textTransform:'uppercase', whiteSpace:'nowrap' }}>{month === 'sem-data' ? 'sem data' : monthLabel(month + '-01')}</span>
-            <div style={{ flex:1, height:1, background:'var(--border-subtle)' }} />
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-disabled)' }}>{items.length}</span>
-          </div>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{items.map(card)}</div>
-        </div>
-      ))}
-    </div>
+    <svg width={size} height={size} viewBox="0 0 26 26" aria-hidden="true" style={{ flexShrink: 0, display: 'block' }}>
+      <rect width="26" height="26" rx="7" fill="var(--sand-900)" />
+      <rect x="6" y="7" width="14" height="2.4" rx="1.2" fill="var(--amber-400)" />
+      <rect x="6" y="12" width="9" height="2.4" rx="1.2" fill="var(--sand-400)" />
+      <rect x="6" y="17" width="5" height="2.4" rx="1.2" fill="var(--slate-300)" />
+    </svg>
   );
 }
-
-// ── VIEW: POR TIPO ───────────────────────────────────────────────────────────
-function TypeView({ initialType }) {
-  // Estado mora na URL (#/tipos/livro), não em useState — assim o filtro é linkável.
-  const sel = initialType || 'all';
-  const setSel = (t) => { location.hash = hashFor('tipos', t === 'all' ? '' : t); };
-  const shown = (sel === 'all' ? CONTENT : CONTENT.filter(c => c.subtype === sel)).slice().sort(byDateDesc);
-  return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
-      <PageTitle sub="Navegue pela biblioteca por formato de material.">Por tipo</PageTitle>
-      <div style={{ display:'flex', gap:6, marginBottom:28, flexWrap:'wrap' }}>
-        <FilterChip label="Todos" count={CONTENT.length} active={sel==='all'} onClick={() => setSel('all')} accent="content" />
-        {TYPE_META.map(t => {
-          const n = CONTENT.filter(c => c.subtype === t.key).length;
-          if (!n) return null;
-          return <FilterChip key={t.key} label={t.label} count={n} active={sel===t.key} onClick={() => setSel(t.key)} accent="content" />;
-        })}
-      </div>
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:10 }}>{shown.map(card)}</div>
-    </div>
+function Marca({ size = 17, iconSize = 26, onClick }) {
+  const conteudo = (
+    <>
+      <MarcaIcone size={iconSize} />
+      <span style={{ fontFamily: 'var(--font-display)', fontSize: size, fontWeight: 600, letterSpacing: '-0.04em', color: 'var(--fg-primary)' }}>logbook</span>
+    </>
   );
-}
-
-// ── VIEW: TEMAS ──────────────────────────────────────────────────────────────
-function ThemesView({ initialTheme }) {
-  const sel = initialTheme || null;
-  const setSel = (t) => { location.hash = hashFor('temas', t || ''); };
-
-  if (!sel) {
-    const main = mainThemes(), minor = minorThemes();
-    return (
-      <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
-        <PageTitle sub="Os fios que conectam o que leio ao que construo.">Temas</PageTitle>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(240px, 1fr))', gap:10 }}>
-          {main.map(([tag, n]) => {
-            const c = ENTRIES.filter(e => (e.tags||[]).includes(tag));
-            const hasProj = c.some(e => e.type === 'projeto');
-            return (
-              <button key={tag} onClick={() => setSel(tag)} style={{ textAlign:'left', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', padding:'16px 18px', cursor:'pointer', boxShadow:'var(--shadow-sm)', transition:'box-shadow 0.15s, border-color 0.15s' }} onMouseEnter={e=>{e.currentTarget.style.boxShadow='var(--card-hover-shadow)';e.currentTarget.style.borderColor='var(--border-default)';}} onMouseLeave={e=>{e.currentTarget.style.boxShadow='var(--shadow-sm)';e.currentTarget.style.borderColor='var(--border-subtle)';}}>
-                <div style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-lg)', fontWeight:500, color:'var(--fg-primary)', marginBottom:6, letterSpacing:'var(--tracking-tight)' }}>{tag}</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{n} {n===1?'entrada':'entradas'}{hasProj && ' · com projeto'}</div>
-              </button>
-            );
-          })}
-        </div>
-        {minor.length > 0 && (
-          <div style={{ marginTop:32 }}>
-            <SectionHeader count={minor.length}>Outras tags</SectionHeader>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-              {minor.map(([tag]) => <Tag key={tag} size="sm" onClick={() => setSel(tag)}>{tag}</Tag>)}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  const themeContent = CONTENT.filter(e => (e.tags||[]).includes(sel));
-  const themeProjects = PROJECTS.filter(e => (e.tags||[]).includes(sel));
+  if (!onClick) return <span style={{ display: 'flex', alignItems: 'center', gap: 9 }}>{conteudo}</span>;
   return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
-      <button onClick={() => setSel(null)} style={{ display:'flex', alignItems:'center', gap:6, background:'none', border:'none', cursor:'pointer', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', marginBottom:14 }}>
-        <span style={{ transform:'rotate(180deg)', display:'flex' }}><IcoArrow /></span> Todos os temas
-      </button>
-      <PageTitle sub={`${themeContent.length + themeProjects.length} entradas marcadas com este tema.`}>Tema: {sel}</PageTitle>
-      {themeProjects.length > 0 && (
-        <div style={{ marginBottom:28 }}>
-          <SectionHeader count={themeProjects.length}>Projetos</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{themeProjects.map(card)}</div>
-        </div>
-      )}
-      {themeContent.length > 0 && (
-        <div>
-          <SectionHeader count={themeContent.length}>Conteúdo</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{themeContent.map(card)}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── VIEW: PROJETOS ────────────────────────────────────────────────────────────
-const PROJ_FILTERS = [['all','Todos'],['ideia','Ideias'],['em andamento','Em andamento'],['lançado','Lançados'],['pausado','Pausados'],['arquivado','Arquivados']];
-function ProjectsView() {
-  const [filter, setFilter] = React.useState('all');
-  const shown = filter === 'all' ? PROJECTS : PROJECTS.filter(e => e.status === filter);
-  return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
-      <PageTitle sub="O portfolio — das faíscas aos lançamentos.">Projetos</PageTitle>
-      <div style={{ display:'flex', gap:6, marginBottom:24, flexWrap:'wrap' }}>
-        {PROJ_FILTERS.map(([id, label]) => {
-          const count = id === 'all' ? PROJECTS.length : PROJECTS.filter(e => e.status === id).length;
-          return <FilterChip key={id} label={label} count={count} active={filter===id} onClick={() => setFilter(id)} accent="project" />;
-        })}
-      </div>
-      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-        {shown.length === 0
-          ? <p style={{ color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', padding:'40px 0', textAlign:'center' }}>Nenhum projeto com este status.</p>
-          : shown.map(card)}
-      </div>
-    </div>
-  );
-}
-
-function FilterChip({ label, count, active, onClick, accent='content' }) {
-  const c  = accent === 'content' ? 'var(--accent-content)' : 'var(--accent-project)';
-  const bg = accent === 'content' ? 'var(--accent-content-subtle)' : 'var(--accent-project-subtle)';
-  return (
-    <button onClick={onClick} style={{ padding:'5px 13px', borderRadius:'var(--radius-full)', border:'1px solid', borderColor: active ? c : 'var(--border-subtle)', background: active ? bg : 'transparent', color: active ? c : 'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontWeight: active ? 600 : 400, cursor:'pointer', transition:'all 0.12s', display:'flex', alignItems:'center', gap:5 }}>
-      {label}<span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', opacity:0.65 }}>{count}</span>
+    <button onClick={onClick} title="Hoje"
+      style={{ display: 'flex', alignItems: 'center', gap: 9, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+      {conteudo}
     </button>
   );
 }
 
-// ── VIEW: BACKLOG DE LEITURA ────────────────────────────────────────────────
-// Quanto tempo um item está parado na fila. Fila sem pressão vira depósito.
-function waitingDays(e) {
-  const c = (e.dates || {}).captured || (e.createdAt || '').slice(0, 10);
-  if (!c) return null;
-  const d = Math.floor((Date.now() - new Date(c + 'T00:00:00').getTime()) / 86400000);
-  return d >= 0 ? d : null;
+// ── PRIMITIVAS ───────────────────────────────────────────────────────────────
+const _TYPE_STYLES = {
+  artigo: 'artigo', livro: 'livro', 'vídeo': 'video', curso: 'curso',
+  treinamento: 'treinamento', 'notícia': 'noticia', projeto: 'projeto', escrito: 'escrito',
+};
+const _STATUS_STYLES = {
+  consumido: 'consumed', 'em andamento': 'progress', 'em progresso': 'progress',
+  abandonado: 'abandoned', ideia: 'idea', iniciado: 'started', 'lançado': 'launched',
+  pausado: 'paused', arquivado: 'archived', 'quero ler': 'idea', 'na fila': 'idea',
+  rascunho: 'started', publicado: 'launched',
+};
+function tipoToken(chave, campo) {
+  const k = _TYPE_STYLES[chave];
+  return k ? `var(--type-${k}-${campo})` : `var(--${campo === 'bg' ? 'bg-elevated' : campo === 'fg' ? 'fg-muted' : 'border-subtle'})`;
+}
+function statusToken(chave, campo) {
+  const k = _STATUS_STYLES[String(chave || '').toLowerCase()];
+  return k ? `var(--status-${k}-${campo})` : `var(--${campo === 'bg' ? 'bg-elevated' : campo === 'fg' ? 'fg-muted' : 'border-subtle'})`;
 }
 
-function BacklogView() {
-  const books = ENTRIES.filter(e => e.subtype === 'livro');
-  const reading   = books.filter(b => b.status === 'em andamento');
-  // Fila ordenada pelo que espera há mais tempo — o que apodrece aparece primeiro.
-  const queued    = books.filter(b => b.status === 'quero ler' || b.status === 'na fila')
-                         .sort((a, b) => (waitingDays(b) || 0) - (waitingDays(a) || 0));
-  const done      = books.filter(b => b.status === 'consumido').sort(byDateDesc);
-  const abandoned = books.filter(b => b.status === 'abandonado');
+// Badge de 3 letras (ART/LIV/PRJ/ESC) — a marcação do log e da timeline.
+function TypeTag({ tipo }) {
+  return (
+    <span style={{
+      fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.06em', padding: '2px 5px',
+      borderRadius: 3, background: tipoToken(tipo, 'bg'), color: tipoToken(tipo, 'fg'),
+      border: `1px solid ${tipoToken(tipo, 'border')}`, flexShrink: 0, lineHeight: 1.3,
+    }}>{ABBR[tipo] || String(tipo || '').slice(0, 3).toUpperCase()}</span>
+  );
+}
+function Badge({ subtype, status, dot = false }) {
+  const isStatus = status !== undefined;
+  const chave = isStatus ? status : subtype;
+  const bg = isStatus ? statusToken(chave, 'bg') : tipoToken(chave, 'bg');
+  const fg = isStatus ? statusToken(chave, 'fg') : tipoToken(chave, 'fg');
+  const bd = isStatus ? statusToken(chave, 'border') : tipoToken(chave, 'border');
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: dot ? 5 : 0, padding: '2px 8px',
+      fontFamily: 'var(--font-body)', fontSize: 10.5, fontWeight: 600, letterSpacing: '0.05em',
+      textTransform: 'uppercase', lineHeight: 1.5, borderRadius: 'var(--radius-full)',
+      background: bg, color: fg, border: `1px solid ${bd}`, whiteSpace: 'nowrap',
+    }}>
+      {dot && <span style={{ width: 5, height: 5, borderRadius: '50%', background: fg, opacity: 0.75 }} />}
+      {chave || '—'}
+    </span>
+  );
+}
+function Tag({ children, onClick, active = false }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <span onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'inline-block', padding: '3px 9px', fontSize: 11.5, fontFamily: 'var(--font-body)',
+        borderRadius: 'var(--radius-full)', whiteSpace: 'nowrap', userSelect: 'none',
+        cursor: onClick ? 'pointer' : 'default', transition: 'background 0.12s ease, border-color 0.12s ease',
+        background: active ? 'var(--accent-content-subtle)' : (hov && onClick ? 'var(--bg-elevated)' : 'var(--bg-surface)'),
+        color: active ? 'var(--accent-content-hover)' : 'var(--fg-secondary)',
+        border: `1px solid ${active ? 'var(--accent-content-border)' : 'var(--border-subtle)'}`,
+      }}>{children}</span>
+  );
+}
+// Pill de ação: neutra, amber, verde ou vermelha.
+function Pill({ children, onClick, tom = 'neutro', style }) {
+  const [hov, setHov] = React.useState(false);
+  const tons = {
+    neutro: { bg: 'var(--bg-base)', fg: 'var(--fg-secondary)', bd: 'var(--border-default)', hover: 'var(--bg-elevated)' },
+    amber: { bg: 'var(--accent-content-subtle)', fg: 'var(--accent-content-hover)', bd: 'var(--amber-300)', hover: 'var(--accent-content-light)' },
+    verde: { bg: 'var(--green-50)', fg: 'var(--green-700)', bd: 'var(--green-200)', hover: 'var(--green-100)' },
+    vermelho: { bg: 'var(--red-50)', fg: 'var(--red-700)', bd: 'var(--red-200)', hover: 'var(--red-100)' },
+    slate: { bg: 'var(--accent-project-subtle)', fg: 'var(--accent-project-hover)', bd: 'var(--accent-project-border)', hover: 'var(--accent-project-light)' },
+  };
+  const t = tons[tom] || tons.neutro;
+  return (
+    <button onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        padding: '4px 10px', borderRadius: 'var(--radius-full)', fontSize: 11.5,
+        fontFamily: 'var(--font-body)', cursor: 'pointer', whiteSpace: 'nowrap',
+        background: hov ? t.hover : t.bg, color: t.fg, border: `1px solid ${t.bd}`,
+        transition: 'background 0.12s ease, border-color 0.12s ease', ...style,
+      }}>{children}</button>
+  );
+}
+function Chip({ label, count, active, onClick, tom = 'amber' }) {
+  const cor = tom === 'slate' ? 'var(--accent-project-hover)' : 'var(--accent-content-hover)';
+  const bg = tom === 'slate' ? 'var(--accent-project-subtle)' : 'var(--accent-content-subtle)';
+  const bd = tom === 'slate' ? 'var(--accent-project-border)' : 'var(--amber-300)';
+  return (
+    <button onClick={onClick} aria-pressed={active}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 5, padding: '5px 13px',
+        borderRadius: 'var(--radius-full)', fontSize: 13, fontFamily: 'var(--font-body)',
+        fontWeight: active ? 600 : 400, cursor: 'pointer',
+        background: active ? bg : 'transparent', color: active ? cor : 'var(--fg-secondary)',
+        border: `1px solid ${active ? bd : 'var(--border-default)'}`,
+        transition: 'background 0.12s ease, border-color 0.12s ease',
+      }}>
+      {label}
+      {count != null && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, opacity: 0.7 }}>{count}</span>}
+    </button>
+  );
+}
+function Dots({ value, max = 5, size = 5 }) {
+  if (!(value > 0)) return null;
+  return (
+    <span style={{ display: 'inline-flex', gap: 3, alignItems: 'center', flexShrink: 0 }}>
+      {Array.from({ length: max }).map((_, i) => (
+        <span key={i} style={{ width: size, height: size, borderRadius: '50%', background: i < value ? 'var(--accent-content)' : 'var(--border-default)' }} />
+      ))}
+    </span>
+  );
+}
+// Label de seção: mono em caixa alta + régua ocupando o resto da linha.
+function SectionLabel({ children, tom = 'sand', acao }) {
+  const cor = tom === 'amber' ? 'var(--accent-content-hover)' : tom === 'slate' ? 'var(--accent-project-hover)' : 'var(--fg-muted)';
+  const regua = tom === 'amber' ? 'var(--accent-content-border)' : tom === 'slate' ? 'var(--accent-project-border)' : 'var(--border-subtle)';
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: cor, whiteSpace: 'nowrap' }}>{children}</span>
+      <span style={{ flex: 1, height: 1, background: regua }} />
+      {acao}
+    </div>
+  );
+}
+function PageHead({ titulo, meta, sub, tomMeta = 'sand' }) {
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 600, letterSpacing: '-0.03em', color: 'var(--fg-primary)', margin: 0 }}>{titulo}</h1>
+        {meta && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11.5, color: tomMeta === 'slate' ? 'var(--accent-project-hover)' : 'var(--fg-muted)' }}>{meta}</span>}
+      </div>
+      {sub && <p style={{ margin: '6px 0 0', fontSize: 13, color: 'var(--fg-secondary)', fontFamily: 'var(--font-body)' }}>{sub}</p>}
+    </div>
+  );
+}
+const Vazio = ({ children }) => (
+  <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontStyle: 'italic', color: 'var(--fg-muted)', margin: '10px 0' }}>{children}</p>
+);
+function Progresso({ dados, mostrarTexto = true }) {
+  if (!dados) return null;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'var(--border-subtle)', overflow: 'hidden' }}>
+        <div style={{ width: `${dados.pct}%`, height: '100%', background: 'var(--accent-content)', borderRadius: 2 }} />
+      </div>
+      {mostrarTexto && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-muted)', flexShrink: 0 }}>{dados.lidas}/{dados.total}</span>}
+    </div>
+  );
+}
+let _onDetail = null;
+const abrirFicha = (e) => { if (e) location.hash = hashFor('e', e.id); };
 
-  const BookCard = ({ b }) => (
-    <div onClick={() => _onDetail && _onDetail(b)} style={{ display:'flex', gap:16, padding:'14px 18px', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-sm)', alignItems:'flex-start', cursor:'pointer' }}>
-      <div style={{ width:4, alignSelf:'stretch', borderRadius:2, background: b.status==='em andamento' ? 'var(--accent-content)' : b.status==='consumido' ? '#22c55e' : 'var(--border-default)', flexShrink:0 }} />
-      {b.image && <img src={b.image} alt='' loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }} style={{ width:44, height:60, objectFit:'cover', borderRadius:4, flexShrink:0 }} />}
-      <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:8, marginBottom:4 }}>
-          <h3 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', fontWeight:500, color:'var(--fg-primary)', margin:0, lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{b.title}</h3>
-          {b.rating > 0 && <span style={{ display:'inline-flex', gap:2, flexShrink:0, marginTop:2 }}>{Array.from({length:5}).map((_,i) => <span key={i} style={{ width:6,height:6,borderRadius:'50%',background: i<b.rating ? '#f59e0b' : 'var(--sand-300,#d6d3cd)' }} />)}</span>}
+// ── TELA: HOJE ───────────────────────────────────────────────────────────────
+// Em cinco segundos: o que estou lendo e o que fiz com isso.
+function HojeView({ prefs }) {
+  const abertos = lendo();
+  const fila = naFila();
+  const temas = mainThemes();
+  const producao = producaoItems();
+  const lidos = consumidos().length;
+
+  return (
+    <div className="lb-hoje">
+      <div>
+        <header className="lb-hoje-head" style={{ borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'baseline', gap: 14, flexWrap: 'wrap' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 600, letterSpacing: '-0.03em', color: 'var(--fg-primary)', margin: 0 }}>Hoje</h1>
+          <span className="lb-so-desktop" style={{ fontFamily: 'var(--font-mono)', fontSize: 11.5, color: 'var(--fg-muted)', letterSpacing: '0.04em' }}>{hojeLabel()}</span>
+          <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 11.5, color: 'var(--fg-muted)' }}>
+            {lidos} consumidos · {fila.length} na fila · {temas.length} temas
+          </span>
+        </header>
+
+        <div className="lb-hoje-corpo">
+          <section style={{ marginBottom: 34 }}>
+            <SectionLabel tom="amber">Lendo agora</SectionLabel>
+            {abertos.length === 0
+              ? <Vazio>Nada em andamento. Puxe um item da fila para começar.</Vazio>
+              : <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {abertos.map(e => <CardLendo key={e.id} entry={e} />)}
+                </div>}
+          </section>
+
+          <section>
+            <SectionLabel acao={<span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-disabled)' }}>últimos 30 dias</span>}>O log</SectionLabel>
+            <LogDias dias={30} />
+          </section>
         </div>
-        {(b.author || b.source) && <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)', margin:'0 0 6px 0' }}>
-          {[b.author, b.source].filter(Boolean).join(' · ')}
-          {b.status !== 'consumido' && waitingDays(b) != null && <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color: waitingDays(b) > 90 ? 'var(--amber-500)' : 'var(--fg-disabled)' }}> · {waitingDays(b)}d na fila</span>}
-        </p>}
-        {b.notes && <p style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', fontStyle:'italic', margin:'6px 0 0 0', lineHeight:'var(--leading-relaxed)', borderLeft:'2px solid var(--border-subtle)', paddingLeft:10 }}>{b.notes}</p>}
-        {(b.tags||[]).length > 0 && <div style={{ display:'flex', gap:4, flexWrap:'wrap', marginTop:8 }}>{b.tags.map((t,i) => <Tag key={i} size="sm">{t}</Tag>)}</div>}
+      </div>
+
+      <aside className="lb-hoje-aside" style={{ padding: '24px 24px 32px', display: 'flex', flexDirection: 'column', gap: 26 }}>
+        {prefs.showConexoes && (
+          <section>
+            <SectionLabel tom="slate">Deu em algo</SectionLabel>
+            {producao.length === 0
+              ? <Vazio>Nada produzido ainda. Quando um projeto ou escrito citar uma leitura, ele aparece aqui.</Vazio>
+              : <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {producao.slice(0, 3).map(i => <CardProducao key={i.id} item={i} compacto />)}
+                </div>}
+          </section>
+        )}
+
+        {prefs.showFila && fila.length > 0 && (
+          <section>
+            <SectionLabel tom="amber">A fila pressiona</SectionLabel>
+            <p style={{ fontSize: 12.5, color: 'var(--fg-secondary)', margin: '0 0 12px', fontFamily: 'var(--font-body)' }}>
+              {fila.length} esperando. O mais antigo há{' '}
+              <strong style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-content-hover)', fontWeight: 400 }}>{waitingDays(fila[0])} dias</strong>.
+            </p>
+            <div style={{ marginBottom: 12 }}>
+              {fila.slice(0, 3).map(e => {
+                const d = waitingDays(e);
+                return (
+                  <button key={e.id} onClick={() => abrirFicha(e)}
+                    style={{ display: 'flex', alignItems: 'baseline', gap: 10, width: '100%', textAlign: 'left', padding: '8px 0', background: 'none', border: 'none', borderBottom: '1px solid var(--border-subtle)', cursor: 'pointer' }}>
+                    <span style={{ flex: 1, fontFamily: 'var(--font-display)', fontSize: 13.5, color: 'var(--fg-primary)', lineHeight: 1.35 }}>{tituloCurto(e.title, 46)}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: d > 30 ? 'var(--accent-content-hover)' : 'var(--fg-muted)', flexShrink: 0 }}>{d}d</span>
+                  </button>
+                );
+              })}
+            </div>
+            <Pill onClick={() => { location.hash = hashFor('consumo', 'fila'); }} style={{ width: '100%', padding: '7px 10px', fontSize: 12.5, background: 'var(--bg-surface)' }}>
+              Puxar um para «lendo»
+            </Pill>
+          </section>
+        )}
+
+        {temas.length > 0 && (
+          <section>
+            <SectionLabel>Temas do mês</SectionLabel>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {temas.slice(0, 8).map(([t, n], i) => (
+                <Tag key={t} active={i === 0} onClick={() => { location.hash = hashFor('temas', t); }}>{t} · {n}</Tag>
+              ))}
+            </div>
+          </section>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+const tituloCurto = (t, n) => (String(t || '').length > n ? String(t).slice(0, n).trim() + '…' : String(t || ''));
+
+// Card de "lendo agora": capa, progresso e as ações que reduzem fricção.
+// Anotar/atualizar abrem um campo aqui mesmo; salvar vai por issue, porque o
+// site é estático e não tem como escrever no repositório.
+function CardLendo({ entry, compacto = false }) {
+  const [modo, setModo] = React.useState(null);   // null | 'pagina' | 'trecho'
+  const [valor, setValor] = React.useState('');
+  const p = progresso(entry);
+  const capa = compacto ? { w: 40, h: 58 } : { w: 52, h: 74 };
+
+  const enviar = () => {
+    if (!valor.trim()) return;
+    abrirIssue('atualizar.yml', {
+      title: `atualizar: ${tituloCurto(entry.title, 50)}`,
+      id: entry.id,
+      acao: modo === 'pagina' ? 'progresso' : 'trecho',
+      pagina: modo === 'pagina' ? valor.trim() : '',
+      texto: modo === 'trecho' ? valor.trim() : '',
+    });
+    setModo(null); setValor('');
+  };
+
+  return (
+    <article style={{
+      background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
+      borderLeft: '3px solid var(--accent-content)', borderRadius: 'var(--radius-lg)',
+      padding: compacto ? '13px 15px' : '16px 18px', boxShadow: 'var(--shadow-sm)',
+      display: 'flex', gap: compacto ? 12 : 16, flex: compacto ? 1 : undefined, minWidth: 0,
+    }}>
+      {entry.image && <img src={entry.image} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }}
+        style={{ width: capa.w, height: capa.h, objectFit: 'cover', borderRadius: 3, flexShrink: 0, boxShadow: 'var(--shadow-sm)' }} />}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 4 }}>
+          <button onClick={() => abrirFicha(entry)}
+            style={{ flex: 1, textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: compacto ? 15 : 16.5, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--fg-primary)', lineHeight: 1.3 }}>
+            {tituloCurto(entry.title, compacto ? 40 : 70)}
+          </button>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-disabled)', flexShrink: 0 }}>
+            {compacto ? (p ? `${p.pct}%` : '') : relTime((entry.dates || {}).started || (entry.dates || {}).captured)}
+          </span>
+        </div>
+        {!compacto && (
+          <p style={{ margin: '0 0 10px', fontSize: 13, color: 'var(--fg-secondary)', fontFamily: 'var(--font-body)' }}>
+            {[entry.author, entry.subtype, entry.source].filter(Boolean).join(' · ')}
+          </p>
+        )}
+        {p && <div style={{ marginBottom: compacto ? 0 : 12 }}><Progresso dados={p} mostrarTexto={!compacto} /></div>}
+
+        {!compacto && modo === null && (
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <Pill onClick={() => { setModo('trecho'); setValor(''); }}>Anotar trecho</Pill>
+            <Pill onClick={() => { setModo('pagina'); setValor(p ? String(p.lidas) : ''); }}>Atualizar página</Pill>
+            <Pill tom="verde" onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'terminei' })}>Terminei</Pill>
+            {p && p.pct < 25 && (
+              <Pill tom="vermelho" onClick={() => { if (confirm(`Abandonar "${tituloCurto(entry.title, 40)}"?`)) abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'abandonei' }); }}>Abandonar</Pill>
+            )}
+          </div>
+        )}
+
+        {!compacto && modo !== null && (
+          <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+            {modo === 'pagina'
+              ? <input autoFocus type="number" min="0" value={valor} onChange={e => setValor(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') enviar(); if (e.key === 'Escape') setModo(null); }}
+                  placeholder="página atual"
+                  style={{ width: 110, padding: '5px 9px', fontSize: 12.5, fontFamily: 'var(--font-body)', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--fg-primary)' }} />
+              : <textarea autoFocus rows={2} value={valor} onChange={e => setValor(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Escape') setModo(null); }}
+                  placeholder="o trecho que vale guardar"
+                  style={{ flex: 1, padding: '6px 9px', fontSize: 13, fontFamily: 'var(--font-display)', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--fg-primary)', resize: 'vertical' }} />}
+            <Pill tom="amber" onClick={enviar}>Salvar</Pill>
+            <Pill onClick={() => setModo(null)}>Cancelar</Pill>
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}
+
+// O log: um bloco por dia, coluna de data à esquerda.
+function LogDias({ dias = 30, escopo = 'tudo', densidade = 'confortavel' }) {
+  const registros = [];
+  ENTRIES.forEach(e => {
+    if (escopo === 'producao' && e.type !== 'projeto') return;
+    if (escopo === 'consumo' && e.type === 'projeto') return;
+    registros.push({ date: entryDate(e), kind: e.type === 'projeto' ? 'projeto' : 'consumo', entry: e });
+  });
+  if (escopo !== 'consumo') {
+    POSTS.forEach(p => registros.push({ date: p.date, kind: 'escrito', post: p }));
+  }
+
+  const limite = dias ? Date.now() - dias * 86400000 : null;
+  const validos = registros.filter(r => r.date && (!limite || new Date(r.date + 'T00:00:00').getTime() >= limite));
+  if (!validos.length) return <Vazio>Nada registrado neste período.</Vazio>;
+
+  const porDia = {};
+  validos.forEach(r => { (porDia[r.date] = porDia[r.date] || []).push(r); });
+  const ordenados = Object.entries(porDia).sort((a, b) => b[0].localeCompare(a[0]));
+
+  return (
+    <div>
+      {ordenados.map(([data, itens]) => {
+        const { dia, semana } = dayParts(data);
+        return (
+          <div key={data} className="lb-log-dia" style={{ padding: densidade === 'compacta' ? '9px 0 8px' : '14px 0 12px', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.06em' }}>
+              <div style={{ color: 'var(--fg-muted)' }}>{dia}</div>
+              <div style={{ color: 'var(--fg-disabled)' }}>{semana}</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: densidade === 'compacta' ? 8 : 14, minWidth: 0 }}>
+              {itens.map((r, i) => <LinhaLog key={i} reg={r} densidade={densidade} />)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function LinhaLog({ reg, densidade = 'confortavel' }) {
+  const compacta = densidade === 'compacta';
+  if (reg.kind === 'escrito') {
+    const p = reg.post;
+    return (
+      <div style={{ display: 'flex', gap: 9, minWidth: 0 }}>
+        <TypeTag tipo="escrito" />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <button onClick={() => { location.hash = hashFor('p', p.slug); }}
+            style={{ textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '-0.015em', color: 'var(--fg-primary)', lineHeight: 1.35 }}>
+            {p.title}
+          </button>
+          {!compacta && (p.refs || []).length > 0 && (
+            <div style={{ marginTop: 4, paddingLeft: 8, borderLeft: '2px solid var(--accent-project-border)', fontSize: 12.5, color: 'var(--accent-project-hover)', fontFamily: 'var(--font-body)' }}>
+              ↳ cita {p.refs.length} {p.refs.length === 1 ? 'leitura' : 'leituras'}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const e = reg.entry;
+  const tipo = e.type === 'projeto' ? 'projeto' : e.subtype;
+  const proc = e.type === 'projeto' ? procedencia({ kind: 'projeto', entry: e }) : [];
+  return (
+    <div style={{ display: 'flex', gap: 9, minWidth: 0, alignItems: 'flex-start' }}>
+      <TypeTag tipo={tipo} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <button onClick={() => abrirFicha(e)}
+          style={{ textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '-0.015em', color: 'var(--fg-primary)', lineHeight: 1.35 }}>
+          {e.title}
+        </button>
+        <div style={{ fontSize: 12.5, color: 'var(--fg-muted)', fontFamily: 'var(--font-body)', marginTop: 2 }}>
+          {[e.author, e.source].filter(Boolean).join(' · ')}
+        </div>
+        {!compacta && e.notes && (
+          <p style={{ margin: '6px 0 0', paddingLeft: 10, borderLeft: '2px solid var(--accent-content-border)', fontFamily: 'var(--font-display)', fontSize: 13, fontStyle: 'italic', color: 'var(--fg-secondary)', lineHeight: 1.55 }}>
+            {e.notes}
+          </p>
+        )}
+        {!compacta && proc.length > 0 && (
+          <div style={{ marginTop: 4, paddingLeft: 8, borderLeft: '2px solid var(--accent-project-border)', fontSize: 12.5, color: 'var(--accent-project-hover)' }}>
+            ↳ nasceu de {proc.map(x => tituloCurto(x.title, 30)).join(' e ')}
+          </div>
+        )}
+        {!compacta && (e.tags || []).length > 0 && (
+          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 8 }}>
+            {e.tags.slice(0, 4).map(t => <Tag key={t} onClick={() => { location.hash = hashFor('temas', t); }}>{t}</Tag>)}
+          </div>
+        )}
+      </div>
+      <Dots value={e.rating} />
+    </div>
+  );
+}
+
+// ── TELA: CONSUMO ────────────────────────────────────────────────────────────
+// Junta o que era Backlog + Por tipo + Agora. O objetivo é a fila andar.
+function ConsumoView({ arg }) {
+  const [tipo, setTipo] = React.useState('all');
+  const foco = arg === 'fila' || arg === 'lendo' ? arg : null;
+  const abertos = lendo();
+  const fila = naFila();
+  const lidos = consumidos();
+  const todos = ENTRIES.filter(e => e.type !== 'projeto');
+
+  const filtra = (lista) => (tipo === 'all' ? lista : lista.filter(e => e.subtype === tipo));
+  const filaFiltrada = filtra(fila);
+  const parados = filaFiltrada.filter(e => (waitingDays(e) || 0) > 30).length;
+
+  return (
+    <div className="lb-tela" style={{ maxWidth: 900 }}>
+      <PageHead
+        titulo="Consumo"
+        meta={`${todos.length} materiais · ${lidos.length} lidos · ${abertos.length} abertos · ${fila.length} esperando`}
+        sub="A fila só faz sentido se andar. O que está parado há mais tempo sobe."
+      />
+
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', marginBottom: 26 }}>
+        <Chip label="Tudo" count={todos.length} active={tipo === 'all'} onClick={() => setTipo('all')} />
+        {TYPE_META.map(t => {
+          const n = todos.filter(e => e.subtype === t.key).length;
+          if (!n) return null;
+          return <Chip key={t.key} label={t.label} count={n} active={tipo === t.key} onClick={() => setTipo(t.key)} />;
+        })}
+        <span style={{ marginLeft: 'auto', padding: '4px 11px', borderRadius: 'var(--radius-full)', border: '1px dashed var(--border-default)', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-muted)' }}>
+          ordenar: mais parado primeiro
+        </span>
+      </div>
+
+      {foco !== 'fila' && (
+        <section style={{ marginBottom: 32 }}>
+          <SectionLabel tom="amber">Abertos · {abertos.length}</SectionLabel>
+          {abertos.length === 0
+            ? <Vazio>Nada em andamento. Comece um item da fila abaixo.</Vazio>
+            : <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                {filtra(abertos).map(e => <CardLendo key={e.id} entry={e} compacto />)}
+              </div>}
+        </section>
+      )}
+
+      <section style={{ marginBottom: 32 }}>
+        <SectionLabel acao={parados > 0 ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--accent-content-hover)' }}>{parados} parados há mais de 30 dias</span> : undefined}>
+          Esperando · {filaFiltrada.length}
+        </SectionLabel>
+        {filaFiltrada.length === 0
+          ? <Vazio>Fila vazia — adicione materiais com status "quero ler".</Vazio>
+          : filaFiltrada.map((e, i) => <LinhaFila key={e.id} entry={e} destaque={i === 0} />)}
+      </section>
+
+      {foco !== 'fila' && (
+        <section>
+          <SectionLabel>Já li · {filtra(lidos).length}</SectionLabel>
+          {filtra(lidos).length === 0
+            ? <Vazio>Nada consumido ainda.</Vazio>
+            : filtra(lidos).sort(byDateDesc).map(e => <LinhaBiblioteca key={e.id} entry={e} />)}
+        </section>
+      )}
+    </div>
+  );
+}
+
+function LinhaFila({ entry, destaque }) {
+  const d = waitingDays(entry) || 0;
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr auto auto', gap: 14, alignItems: 'center', padding: '12px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: d > 30 ? 'var(--accent-content-hover)' : 'var(--fg-muted)' }}>{d}d</span>
+      <div style={{ minWidth: 0 }}>
+        <button onClick={() => abrirFicha(entry)}
+          style={{ textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '-0.015em', color: 'var(--fg-primary)', lineHeight: 1.35 }}>
+          {entry.title}
+        </button>
+        <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginTop: 2, fontFamily: 'var(--font-body)' }}>
+          {[entry.author, entry.source].filter(Boolean).join(' · ')}
+          {(entry.tags || []).length > 0 && ` · ${entry.tags.slice(0, 3).join(', ')}`}
+        </div>
+      </div>
+      <TypeTag tipo={entry.subtype} />
+      <Pill tom={destaque ? 'amber' : 'neutro'} style={{ padding: '7px 13px' }}
+        onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'comecei' })}>
+        Começar
+      </Pill>
+    </div>
+  );
+}
+
+function LinhaBiblioteca({ entry }) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr auto auto', gap: 14, alignItems: 'center', padding: '12px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-muted)' }}>{shortDate(entryDate(entry))}</span>
+      <div style={{ minWidth: 0 }}>
+        <button onClick={() => abrirFicha(entry)}
+          style={{ textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: '-0.015em', color: 'var(--fg-primary)', lineHeight: 1.35 }}>
+          {entry.title}
+        </button>
+        <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginTop: 2, fontFamily: 'var(--font-body)' }}>
+          {[entry.author, entry.source].filter(Boolean).join(' · ')}
+        </div>
+      </div>
+      <TypeTag tipo={entry.subtype} />
+      <Dots value={entry.rating} />
+    </div>
+  );
+}
+
+// ── TELA: PRODUÇÃO ───────────────────────────────────────────────────────────
+// Cada item mostra de onde veio — é o que separa isto de uma lista de links.
+function ProducaoView() {
+  const itens = producaoItems();
+  const projetos = itens.filter(i => i.kind === 'projeto').length;
+  const escritos = itens.filter(i => i.kind === 'escrito').length;
+
+  return (
+    <div className="lb-tela" style={{ maxWidth: 760 }}>
+      <PageHead
+        titulo="Produção"
+        tomMeta="slate"
+        meta={`${projetos} ${projetos === 1 ? 'projeto' : 'projetos'} · ${escritos} ${escritos === 1 ? 'escrito' : 'escritos'}`}
+        sub="Cada item mostra de onde veio. É o que separa isto de uma lista de links."
+      />
+      {itens.length === 0
+        ? <Vazio>Nada produzido ainda. Registre um projeto na extensão ou escreva um artigo em posts/.</Vazio>
+        : <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {itens.map(i => <CardProducao key={i.id} item={i} />)}
+          </div>}
+    </div>
+  );
+}
+
+// A borda esquerda codifica o que é: sólida = projeto, tracejada = escrito.
+function CardProducao({ item, compacto = false }) {
+  const [hov, setHov] = React.useState(false);
+  const escrito = item.kind === 'escrito';
+  const status = escrito ? (item.post.draft ? 'rascunho' : 'publicado') : item.entry.status;
+  const titulo = escrito ? item.post.title : item.entry.title;
+  const resumo = escrito ? item.post.excerpt : (item.entry.pitch || item.entry.notes || '');
+  const proc = procedencia(item);
+  const borda = escrito
+    ? '3px dashed var(--accent-project)'
+    : `3px solid ${status === 'ideia' ? 'var(--slate-300)' : 'var(--accent-project)'}`;
+
+  const abrir = () => { if (escrito) location.hash = hashFor('p', item.post.slug); else abrirFicha(item.entry); };
+
+  return (
+    <article onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        background: 'var(--bg-surface)', border: '1px solid var(--accent-project-border)', borderLeft: borda,
+        borderRadius: 'var(--radius-lg)', padding: compacto ? '13px 15px' : '16px 18px',
+        boxShadow: hov ? 'var(--card-hover-shadow)' : 'var(--shadow-sm)',
+        transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
+      }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7, flexWrap: 'wrap' }}>
+        {compacto
+          ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.06em', color: 'var(--accent-project-hover)', textTransform: 'lowercase' }}>
+              {escrito ? 'Escrito' : 'Projeto'} · {status}
+            </span>
+          : <>
+              <Badge subtype={escrito ? 'escrito' : 'projeto'} />
+              {status && <Badge status={status} dot />}
+              <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-muted)' }}>{shortDate(item.date)}</span>
+            </>}
+      </div>
+
+      <button onClick={abrir}
+        style={{ display: 'block', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-display)', fontSize: compacto ? 14.5 : 17, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--fg-primary)', lineHeight: 1.3, marginBottom: resumo ? 6 : 0 }}>
+        {titulo}
+      </button>
+
+      {!compacto && resumo && (
+        <p style={{ margin: '0 0 4px', fontSize: 13, color: 'var(--fg-secondary)', fontFamily: 'var(--font-body)', lineHeight: 1.5 }}>{tituloCurto(resumo, 180)}</p>
+      )}
+
+      {proc.length > 0 && (
+        <div style={{ marginTop: 10, paddingTop: 9, borderTop: '1px dashed var(--border-default)', fontSize: 12.5, color: 'var(--fg-muted)', fontFamily: 'var(--font-body)' }}>
+          ↳ {escrito ? 'cita' : 'nasceu de'}{' '}
+          {proc.slice(0, 2).map((x, i) => (
+            <React.Fragment key={x.id}>
+              {i > 0 && ' e '}
+              <button onClick={() => abrirFicha(x)}
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--accent-project-hover)', fontWeight: 500, fontFamily: 'inherit', fontSize: 'inherit' }}>
+                {tituloCurto(x.title, 34)}
+              </button>
+            </React.Fragment>
+          ))}
+          {proc.length > 2 && ` e mais ${proc.length - 2}`}
+        </div>
+      )}
+    </article>
+  );
+}
+
+// ── TELA: TIMELINE ───────────────────────────────────────────────────────────
+// O que entrou e o que saiu, na mesma coluna do tempo.
+function TimelineView({ prefs, setPrefs }) {
+  const [escopo, setEscopo] = React.useState('tudo');
+  const densidade = prefs.density === 'compacta' ? 'compacta' : 'confortavel';
+
+  const registros = [];
+  ENTRIES.forEach(e => registros.push({ date: entryDate(e), kind: e.type === 'projeto' ? 'projeto' : 'consumo', entry: e }));
+  POSTS.forEach(p => registros.push({ date: p.date, kind: 'escrito', post: p }));
+  const visiveis = registros.filter(r => {
+    if (!r.date) return false;
+    if (escopo === 'consumo') return r.kind === 'consumo';
+    if (escopo === 'producao') return r.kind !== 'consumo';
+    return true;
+  });
+
+  const meses = {};
+  visiveis.forEach(r => { (meses[r.date.slice(0, 7)] = meses[r.date.slice(0, 7)] || []).push(r); });
+  const ordenados = Object.entries(meses).sort((a, b) => b[0].localeCompare(a[0]));
+  const periodo = ordenados.length
+    ? `${monthLabel(ordenados[ordenados.length - 1][0] + '-01')} → hoje · ${visiveis.length} registros`
+    : 'nada registrado';
+
+  return (
+    <div className="lb-tela" style={{ maxWidth: 820 }}>
+      <PageHead titulo="Timeline" meta={periodo} sub="O que entrou e o que saiu, lado a lado. Marcas em slate são coisas que eu produzi." />
+
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', marginBottom: 24 }}>
+        <button onClick={() => setEscopo('tudo')} aria-pressed={escopo === 'tudo'}
+          style={{ padding: '5px 13px', borderRadius: 'var(--radius-full)', fontSize: 12.5, fontFamily: 'var(--font-body)', cursor: 'pointer', fontWeight: escopo === 'tudo' ? 600 : 400, background: escopo === 'tudo' ? 'var(--fg-primary)' : 'transparent', color: escopo === 'tudo' ? 'var(--bg-base)' : 'var(--fg-secondary)', border: `1px solid ${escopo === 'tudo' ? 'var(--fg-primary)' : 'var(--border-default)'}` }}>
+          Tudo
+        </button>
+        <Chip label="Só consumo" active={escopo === 'consumo'} onClick={() => setEscopo('consumo')} />
+        <Chip label="Só produção" tom="slate" active={escopo === 'producao'} onClick={() => setEscopo('producao')} />
+        <button onClick={() => setPrefs({ density: densidade === 'compacta' ? 'confortavel' : 'compacta' })}
+          style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-muted)' }}>
+          densidade: {densidade === 'compacta' ? 'compacta' : 'confortável'}
+        </button>
+      </div>
+
+      {ordenados.length === 0
+        ? <Vazio>Nada registrado ainda.</Vazio>
+        : ordenados.map(([mes, itens]) => (
+            <div key={mes} style={{ marginBottom: 30 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 10 }}>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--fg-primary)', margin: 0 }}>{monthLabel(mes + '-01')}</h2>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-disabled)' }}>{itens.length} registros</span>
+                <span style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} />
+              </div>
+              <DiasDoMes itens={itens} densidade={densidade} />
+            </div>
+          ))}
+    </div>
+  );
+}
+
+function DiasDoMes({ itens, densidade }) {
+  const porDia = {};
+  itens.forEach(r => { (porDia[r.date] = porDia[r.date] || []).push(r); });
+  return (
+    <div>
+      {Object.entries(porDia).sort((a, b) => b[0].localeCompare(a[0])).map(([data, lista]) => {
+        const { dia, semana } = dayParts(data);
+        return (
+          <div key={data} className="lb-log-dia" style={{ padding: densidade === 'compacta' ? '10px 0 4px' : '16px 0 6px', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.06em' }}>
+              <div style={{ color: 'var(--fg-muted)' }}>{dia}</div>
+              <div style={{ color: 'var(--fg-disabled)' }}>{semana}</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: densidade === 'compacta' ? 8 : 14, minWidth: 0 }}>
+              {lista.map((r, i) => <LinhaLog key={i} reg={r} densidade={densidade} />)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── TELA: TEMAS ──────────────────────────────────────────────────────────────
+// A barra mostra a proporção entre o que eu li e o que eu construí sobre o tema.
+function TemasView({ tema }) {
+  const principais = mainThemes();
+  const avulsas = minorThemes();
+
+  if (tema) {
+    const st = themeStats(tema);
+    return (
+      <div className="lb-tela" style={{ maxWidth: 820 }}>
+        <button onClick={() => { location.hash = hashFor('temas'); }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontFamily: 'var(--font-body)', fontSize: 13, marginBottom: 14 }}>
+          <span style={{ transform: 'rotate(180deg)', display: 'flex' }}><IcoArrow /></span> Todos os temas
+        </button>
+        <PageHead titulo={tema} meta={`${st.consumo.length} de consumo · ${st.producao.length} de produção`} />
+        {st.producao.length > 0 && (
+          <section style={{ marginBottom: 28 }}>
+            <SectionLabel tom="slate">Deu em</SectionLabel>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {st.producao.map(i => <CardProducao key={i.id} item={i} />)}
+            </div>
+          </section>
+        )}
+        <section>
+          <SectionLabel>O que eu li</SectionLabel>
+          {st.consumo.sort(byDateDesc).map(e => <LinhaBiblioteca key={e.id} entry={e} />)}
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    <div className="lb-tela" style={{ maxWidth: 820 }}>
+      <PageHead
+        titulo="Temas"
+        meta={`${principais.length} recorrentes · ${themeCounts().length} tags no total`}
+        sub="A barra mostra a proporção entre o que eu li e o que eu construí sobre o tema."
+      />
+      {principais.length === 0
+        ? <Vazio>Nenhum tema com duas entradas ainda.</Vazio>
+        : <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {principais.map(([t, n]) => <CardTema key={t} tema={t} n={n} />)}
+          </div>}
+      {avulsas.length > 0 && (
+        <div style={{ marginTop: 30 }}>
+          <SectionLabel>Tags com uma entrada · {avulsas.length}</SectionLabel>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {avulsas.map(([t]) => <Tag key={t} onClick={() => { location.hash = hashFor('temas', t); }}>{t}</Tag>)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CardTema({ tema, n }) {
+  const [hov, setHov] = React.useState(false);
+  const st = themeStats(tema);
+  const total = st.consumo.length + st.producao.length || 1;
+  const pctConsumo = (st.consumo.length / total) * 100;
+  const pctProducao = (st.producao.length / total) * 100;
+
+  const ultimo = [...st.consumo].sort(byDateDesc)[0];
+  const diagnostico = st.fila > st.consumo.length - st.fila
+    ? `${st.fila} dos ${st.consumo.length} ainda na fila — tema mais acumulado que digerido`
+    : ultimo ? `último: ${tituloCurto(ultimo.title, 52)} · ${shortDate(entryDate(ultimo))}` : null;
+
+  const gerou = st.projetos || st.escritos
+    ? [st.projetos && `${st.projetos} ${st.projetos === 1 ? 'projeto' : 'projetos'}`, st.escritos && `${st.escritos} ${st.escritos === 1 ? 'escrito' : 'escritos'}`].filter(Boolean).join(' · ')
+    : 'nada ainda';
+
+  return (
+    <button onClick={() => { location.hash = hashFor('temas', tema); }}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        textAlign: 'left', background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)',
+        border: `1px solid ${hov ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+        padding: '15px 17px', cursor: 'pointer', boxShadow: hov ? 'var(--card-hover-shadow)' : 'var(--shadow-sm)',
+        transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
+      }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 9, marginBottom: 10 }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--fg-primary)' }}>{tema}</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-disabled)' }}>{n} entradas</span>
+        <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-body)', fontSize: 12, color: gerou === 'nada ainda' ? 'var(--fg-disabled)' : 'var(--accent-project-hover)' }}>{gerou}</span>
+      </div>
+      <div style={{ display: 'flex', height: 5, borderRadius: 3, overflow: 'hidden', background: 'var(--border-subtle)', marginBottom: 9 }}>
+        <div style={{ width: `${pctConsumo}%`, background: 'var(--accent-content)' }} />
+        <div style={{ width: `${pctProducao}%`, background: 'var(--accent-project)' }} />
+      </div>
+      {diagnostico && <div style={{ fontSize: 12, color: 'var(--fg-secondary)', fontFamily: 'var(--font-body)' }}>{diagnostico}</div>}
+    </button>
+  );
+}
+
+// ── TELA: AUTORES ────────────────────────────────────────────────────────────
+function AutoresView({ slug }) {
+  const todos = authorCounts();
+
+  if (slug) {
+    const hit = todos.find(([k]) => k === slug);
+    const itens = ENTRIES.filter(e => authorsOf(e).some(a => authorSlug(a) === slug)).sort(byDateDesc);
+    return (
+      <div className="lb-tela" style={{ maxWidth: 820 }}>
+        <button onClick={() => { location.hash = hashFor('autores'); }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontFamily: 'var(--font-body)', fontSize: 13, marginBottom: 14 }}>
+          <span style={{ transform: 'rotate(180deg)', display: 'flex' }}><IcoArrow /></span> Todos os autores
+        </button>
+        <PageHead titulo={hit ? hit[1].name : slug} meta={`${itens.length} ${itens.length === 1 ? 'entrada' : 'entradas'}`} />
+        {itens.map(e => <LinhaBiblioteca key={e.id} entry={e} />)}
+      </div>
+    );
+  }
+
+  const recorrentes = todos.filter(([, v]) => v.n >= 2);
+  const avulsos = todos.filter(([, v]) => v.n < 2).sort((a, b) => a[1].name.localeCompare(b[1].name));
+
+  return (
+    <div className="lb-tela" style={{ maxWidth: 820 }}>
+      <PageHead titulo="Autores" meta={`${todos.length} no total`} sub="Quem escreveu o que passou por aqui." />
+      {recorrentes.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10, marginBottom: 28 }}>
+          {recorrentes.map(([k, { name, n }]) => (
+            <button key={k} onClick={() => { location.hash = hashFor('autores', k); }}
+              style={{ textAlign: 'left', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: '14px 16px', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--fg-primary)', marginBottom: 4 }}>{name}</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-muted)' }}>{n} entradas</div>
+            </button>
+          ))}
+        </div>
+      )}
+      {avulsos.length > 0 && (
+        <div>
+          <SectionLabel>Com uma entrada · {avulsos.length}</SectionLabel>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {avulsos.map(([k, { name }]) => <Tag key={k} onClick={() => { location.hash = hashFor('autores', k); }}>{name}</Tag>)}
+          </div>
+        </div>
+      )}
+      {todos.length === 0 && <Vazio>Nenhum autor registrado ainda.</Vazio>}
+    </div>
+  );
+}
+
+// ── TELA: ESCRITOS ───────────────────────────────────────────────────────────
+function EscritosView() {
+  if (!POSTS.length) return (
+    <div className="lb-tela" style={{ maxWidth: 760 }}>
+      <PageHead titulo="Escritos" sub="O que sai da leitura: artigos escritos a partir do que está aqui." />
+      <Vazio>Nada publicado ainda. Escreva um .md em posts/ e rode ./build.sh.</Vazio>
+    </div>
+  );
+  return (
+    <div className="lb-tela" style={{ maxWidth: 760 }}>
+      <PageHead titulo="Escritos" tomMeta="slate" meta={`${POSTS.length} ${POSTS.length === 1 ? 'artigo' : 'artigos'}`}
+        sub="O que sai da leitura: artigos escritos a partir do que está aqui." />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {POSTS.map(p => <CardProducao key={p.slug} item={{ kind: 'escrito', id: 'post:' + p.slug, post: p, date: p.date }} />)}
       </div>
     </div>
   );
+}
 
-  const Section = ({ title, items, emptyText, accent }) => (
-    <section style={{ marginBottom:36 }}>
-      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
-        <h2 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', fontWeight:600, color: accent || 'var(--fg-primary)', letterSpacing:'var(--tracking-tight)', whiteSpace:'nowrap', margin:0 }}>{title}</h2>
-        <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-disabled)' }}>{items.length}</span>
-        <div style={{ flex:1, height:1, background:'var(--border-subtle)' }} />
-      </div>
-      {items.length === 0
-        ? <p style={{ color:'var(--fg-disabled)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>{emptyText}</p>
-        : <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{items.map((b,i) => <BookCard key={b.id||i} b={b} />)}</div>
-      }
-    </section>
+function PostView({ slug }) {
+  const post = POSTS.find(p => p.slug === slug);
+  React.useEffect(() => { document.querySelector('.lb-main')?.scrollTo(0, 0); }, [slug]);
+  if (!post) return (
+    <div style={{ padding: '60px 32px', textAlign: 'center', color: 'var(--fg-muted)', fontFamily: 'var(--font-body)', fontSize: 13 }}>
+      Artigo não encontrado. <a href="#/escritos" style={{ color: 'var(--accent-content)' }}>Ver todos</a>.
+    </div>
   );
 
   return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:680, margin:'0 auto' }}>
-      <div style={{ marginBottom:28 }}>
-        <h1 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-2xl)', fontWeight:500, color:'var(--fg-primary)', letterSpacing:'var(--tracking-tight)', marginBottom:4 }}>Backlog de leitura</h1>
-        <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)' }}>{books.length} livros · {done.length} lidos · {reading.length} lendo · {queued.length} na fila</p>
+    <article className="lb-tela" style={{ maxWidth: 680 }}>
+      <button onClick={() => { location.hash = hashFor('escritos'); }}
+        style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontFamily: 'var(--font-body)', fontSize: 13, marginBottom: 16 }}>
+        <span style={{ transform: 'rotate(180deg)', display: 'flex' }}><IcoArrow /></span> Escritos
+      </button>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.2, color: 'var(--fg-primary)', margin: '0 0 10px' }}>{post.title}</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 28, paddingBottom: 18, borderBottom: '1px solid var(--border-subtle)' }}>
+        {post.date && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-muted)' }}>{shortDate(post.date)}</span>}
+        {(post.tags || []).map(t => <Tag key={t} onClick={() => { location.hash = hashFor('temas', t); }}>{t}</Tag>)}
       </div>
-      <Section title="Lendo agora" items={reading} emptyText="Nenhum livro em andamento." accent="var(--accent-content)" />
-      <Section title="Na fila" items={queued} emptyText="Fila vazia — adicione livros com status 'quero ler'." />
-      <Section title="Já li" items={done} emptyText="Nenhum livro concluído ainda." />
-      {abandoned.length > 0 && <Section title="Abandonados" items={abandoned} emptyText="" />}
-    </div>
+
+      <div className="cb-prose" dangerouslySetInnerHTML={{ __html: post.html }} />
+
+      {(post.refs || []).length > 0 && (
+        <section style={{ marginTop: 40, paddingTop: 22, borderTop: '1px solid var(--border-subtle)' }}>
+          <SectionLabel tom="slate">Referências · {post.refs.length}</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {post.refs.map((r, i) => {
+              const e = r.id && ENTRIES.find(x => x.id === r.id);
+              if (e) return <LinhaBiblioteca key={e.id} entry={e} />;
+              return (
+                <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--accent-content)', wordBreak: 'break-all', padding: '10px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                  {r.url}
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
+    </article>
   );
 }
 
-
-// ── VIEW: BUSCA ─────────────────────────────────────────────────────────────
-function SearchView({ query, onDetail }) {
+// ── BUSCA ────────────────────────────────────────────────────────────────────
+function SearchView({ query }) {
   const q = query.toLowerCase().trim();
-  const results = q.length < 2 ? [] : ENTRIES.filter(e =>
-    [e.title, e.author, e.notes, e.source, ...(e.tags||[])].join(' ')
-      .toLowerCase().includes(q)
+  const resultados = q.length < 2 ? [] : ENTRIES.filter(e =>
+    [e.title, e.author, e.notes, e.source, ...(e.tags || [])].join(' ').toLowerCase().includes(q)
   ).sort(byDateDesc);
-  const content = results.filter(e => e.type !== 'projeto');
-  const projects = results.filter(e => e.type === 'projeto');
+  const posts = q.length < 2 ? [] : POSTS.filter(p =>
+    [p.title, p.excerpt, ...(p.tags || [])].join(' ').toLowerCase().includes(q));
 
-  // Texto guardado na captura: carregado só quando alguém busca de verdade,
-  // porque o índice cresce com o acervo e não faz falta em nenhuma outra tela.
+  // Texto guardado na captura: índice carregado só quando alguém busca de verdade.
   const [fullText, setFullText] = React.useState(null);
   React.useEffect(() => {
     if (q.length < 3 || fullText !== null) return;
@@ -553,61 +1135,64 @@ function SearchView({ query, onDetail }) {
 
   const achados = React.useMemo(() => {
     if (q.length < 3 || !fullText) return [];
-    const jaListados = new Set(results.map(e => e.id));
+    const listados = new Set(resultados.map(e => e.id));
     const out = [];
     for (const [id, texto] of Object.entries(fullText)) {
-      if (jaListados.has(id)) continue;
+      if (listados.has(id)) continue;
       const pos = texto.toLowerCase().indexOf(q);
       if (pos === -1) continue;
       const entry = ENTRIES.find(e => e.id === id);
-      if (entry) out.push({ entry, trecho: texto.slice(Math.max(0, pos - 90), pos + 160).trim(), pos });
+      if (entry) out.push({ entry, trecho: texto.slice(Math.max(0, pos - 90), pos + 160).trim() });
     }
     return out;
-  }, [q, fullText, results.length]);
+  }, [q, fullText, resultados.length]);
 
   if (q.length < 2) return (
-    <div style={{ padding:'60px 40px', textAlign:'center', color:'var(--fg-disabled)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)' }}>
+    <div style={{ padding: '60px 32px', textAlign: 'center', color: 'var(--fg-disabled)', fontFamily: 'var(--font-body)', fontSize: 13 }}>
       Digite ao menos 2 caracteres para buscar.
     </div>
   );
-  if (!results.length && !achados.length) return (
-    <div style={{ padding:'60px 40px', textAlign:'center', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)' }}>
+  if (!resultados.length && !posts.length && !achados.length) return (
+    <div style={{ padding: '60px 32px', textAlign: 'center', color: 'var(--fg-muted)', fontFamily: 'var(--font-body)', fontSize: 13 }}>
       Nenhum resultado para <strong>"{query}"</strong>.
     </div>
   );
+
   return (
-    <div style={{ padding:'32px 40px 64px', maxWidth:860, margin:'0 auto' }}>
-      <p style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)', marginBottom:28 }}>
-        {results.length} resultado{results.length !== 1 ? 's' : ''} para <strong style={{ color:'var(--fg-primary)' }}>"{query}"</strong>
+    <div className="lb-tela" style={{ maxWidth: 820 }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-muted)', marginBottom: 24 }}>
+        {resultados.length + posts.length} resultado{resultados.length + posts.length !== 1 ? 's' : ''} para <strong style={{ color: 'var(--fg-primary)' }}>"{query}"</strong>
         {achados.length > 0 && ` · ${achados.length} no texto guardado`}
       </p>
-      {projects.length > 0 && (
-        <section style={{ marginBottom:32 }}>
-          <SectionHeader count={projects.length}>Projetos</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{projects.map(e => card(e))}</div>
+
+      {posts.length > 0 && (
+        <section style={{ marginBottom: 28 }}>
+          <SectionLabel tom="slate">Escritos · {posts.length}</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {posts.map(p => <CardProducao key={p.slug} item={{ kind: 'escrito', id: 'post:' + p.slug, post: p, date: p.date }} />)}
+          </div>
         </section>
       )}
-      {content.length > 0 && (
-        <section>
-          <SectionHeader count={content.length}>Conteúdo</SectionHeader>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:10 }}>{content.map(e => card(e))}</div>
+
+      {resultados.length > 0 && (
+        <section style={{ marginBottom: 28 }}>
+          <SectionLabel>Materiais · {resultados.length}</SectionLabel>
+          {resultados.map(e => <LinhaBiblioteca key={e.id} entry={e} />)}
         </section>
       )}
 
       {achados.length > 0 && (
-        <section style={{ marginTop:32 }}>
-          <SectionHeader count={achados.length}>No texto guardado</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        <section>
+          <SectionLabel tom="amber">No texto guardado · {achados.length}</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {achados.map(({ entry, trecho }) => (
-              <button key={entry.id} onClick={() => _onDetail && _onDetail(entry)}
-                style={{ textAlign:'left', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', padding:'14px 18px', cursor:'pointer', boxShadow:'var(--shadow-sm)' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
-                  <Badge subtype={entry.subtype} size="sm" />
-                  <span style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', color:'var(--fg-primary)' }}>{entry.title}</span>
+              <button key={entry.id} onClick={() => abrirFicha(entry)}
+                style={{ textAlign: 'left', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: '14px 17px', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <TypeTag tipo={entry.subtype} />
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: 'var(--fg-primary)' }}>{entry.title}</span>
                 </div>
-                <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', lineHeight:'var(--leading-relaxed)', margin:0 }}>
-                  …{destacar(trecho, q)}…
-                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--fg-secondary)', lineHeight: 1.6, margin: 0 }}>…{destacar(trecho, q)}…</p>
               </button>
             ))}
           </div>
@@ -624,154 +1209,152 @@ function destacar(texto, termo) {
   return (
     <>
       {texto.slice(0, i)}
-      <mark style={{ background:'var(--accent-content-light)', color:'var(--fg-primary)', padding:'0 2px', borderRadius:2 }}>{texto.slice(i, i + termo.length)}</mark>
+      <mark style={{ background: 'var(--accent-content-light)', color: 'var(--fg-primary)', padding: '0 2px', borderRadius: 2 }}>{texto.slice(i, i + termo.length)}</mark>
       {texto.slice(i + termo.length)}
     </>
   );
 }
 
-// ── DETAIL MODAL ─────────────────────────────────────────────────────────────
-function DetailModal({ entry, onClose }) {
+// ── FICHA DA ENTRADA ─────────────────────────────────────────────────────────
+// As conexões ficam no fim do fluxo de leitura: nota → trechos → o que isso gerou.
+function FichaModal({ entry, onClose }) {
   React.useEffect(() => {
     const fn = e => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', fn);
     return () => document.removeEventListener('keydown', fn);
   }, []);
-
   if (!entry) return null;
-  const isProject = entry.type === 'projeto';
-  const subtypeKey = isProject ? 'projeto' : (entry.subtype || 'artigo');
-  // A IA já sugere conexões na captura; aqui elas finalmente aparecem.
-  const related = (entry.related || [])
+
+  const projeto = entry.type === 'projeto';
+  const tipo = projeto ? 'projeto' : (entry.subtype || 'artigo');
+  const p = progresso(entry);
+  const relacionadas = (entry.related || [])
     .map(r => ({ entry: ENTRIES.find(e => e.id === r.id), why: r.why }))
     .filter(r => r.entry);
-  const cited = citedIn(entry.id);
-  const ratings = entry.rating > 0 ? Array.from({length:5}).map((_,i) => (
-    <span key={i} style={{ width:8,height:8,borderRadius:'50%',display:'inline-block',background: i<entry.rating ? 'var(--amber-500,#f59e0b)' : 'var(--sand-300,#d6d3cd)',marginRight:3 }} />
-  )) : null;
+  const citam = citedIn(entry.id);
+  const secao = { marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border-subtle)' };
+  const labelSecao = { fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 8 };
 
   return (
-    <div className="cb-modal-bd" onClick={onClose}>
-      <div className="cb-modal" onClick={e => e.stopPropagation()}>
-        <div className="cb-modal-header">
-          {entry.image && <img src={entry.image} alt='' onError={e => { e.currentTarget.style.display = 'none'; }} style={{ width:64, height:88, objectFit:'cover', borderRadius:6, flexShrink:0, marginTop:2 }} />}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8, flexWrap:'wrap' }}>
-              <Badge subtype={subtypeKey} size="sm" />
-              {entry.status && <Badge status={entry.status} size="sm" dot />}
-              {entryDate(entry) && <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)', marginLeft:'auto' }}>{shortDate(entryDate(entry))}</span>}
+    <div className="lb-sheet-bd" onClick={onClose}>
+      <div className="lb-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 620 }}>
+        <div style={{ display: 'flex', gap: 16, padding: '22px 22px 0' }}>
+          {entry.image && <img src={entry.image} alt="" onError={e => { e.currentTarget.style.display = 'none'; }}
+            style={{ width: 74, height: 106, objectFit: 'cover', borderRadius: 4, flexShrink: 0, boxShadow: 'var(--shadow-sm)' }} />}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8, flexWrap: 'wrap' }}>
+              <Badge subtype={tipo} />
+              {entry.status && <Badge status={p && entry.status === 'em andamento' ? `${entry.status} · ${p.pct}%` : entry.status} dot />}
+              {entryDate(entry) && <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-muted)' }}>{shortDate(entryDate(entry))}</span>}
             </div>
-            <h2 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-xl)', fontWeight:500, color:'var(--fg-primary)', margin:0, lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{entry.title}</h2>
-          </div>
-          <button className="cb-modal-close" onClick={onClose} aria-label="Fechar">✕</button>
-        </div>
-
-        <div className="cb-modal-body">
-          {(entry.author || entry.source) && (
-            <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)', marginTop:8, marginBottom:0 }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 23, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--fg-primary)', margin: 0, lineHeight: 1.25 }}>{entry.title}</h2>
+            <p style={{ margin: '7px 0 0', fontSize: 13, color: 'var(--fg-muted)', fontFamily: 'var(--font-body)' }}>
               {authorsOf(entry).map((a, i) => (
                 <React.Fragment key={a}>
                   {i > 0 && ', '}
                   <button onClick={() => { onClose(); location.hash = hashFor('autores', authorSlug(a)); }}
-                    style={{ background:'none', border:'none', padding:0, cursor:'pointer', color:'var(--accent-content)', fontFamily:'inherit', fontSize:'inherit' }}>{a}</button>
+                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--accent-content-hover)', fontFamily: 'inherit', fontSize: 'inherit' }}>{a}</button>
                 </React.Fragment>
               ))}
               {entry.source && (entry.author ? ' · ' : '') + entry.source}
+              {p && ` · ${p.total} páginas`}
             </p>
-          )}
-          {/* pitch e descrição só existem em projeto */}
-          {entry.pitch && (
-            <p style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', marginTop:8, fontStyle:'italic' }}>{entry.pitch}</p>
-          )}
-          {entry.description && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">Descrição</div>
-              <p className="cb-modal-notes">{entry.description}</p>
-            </div>
-          )}
+          </div>
+          <button onClick={onClose} aria-label="Fechar"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontSize: 18, lineHeight: 1, padding: 4, alignSelf: 'flex-start' }}>✕</button>
+        </div>
 
-          {(entry.tags||[]).length > 0 && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">Tags</div>
-              <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                {(entry.tags||[]).map((t,i) => <Tag key={i} size="sm">{t}</Tag>)}
+        <div style={{ padding: '14px 22px 26px' }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <Pill onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'progresso' })}
+              style={{ background: 'var(--fg-primary)', color: 'var(--bg-base)', borderColor: 'var(--fg-primary)' }}>
+              Atualizar progresso
+            </Pill>
+            <Pill onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'trecho' })}>Anotar trecho</Pill>
+            <Pill tom="slate" onClick={() => abrirIssue('atualizar.yml', { title: `atualizar: ${tituloCurto(entry.title, 50)}`, id: entry.id, acao: 'ligar' })}>Ligar a um projeto</Pill>
+          </div>
+
+          {p && <div style={{ ...secao }}><div style={labelSecao}>Progresso</div><Progresso dados={p} /></div>}
+
+          {(entry.tags || []).length > 0 && (
+            <div style={secao}>
+              <div style={labelSecao}>Temas</div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {entry.tags.map(t => <Tag key={t} onClick={() => { onClose(); location.hash = hashFor('temas', t); }}>{t}</Tag>)}
               </div>
             </div>
           )}
 
-          {ratings && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">Avaliação</div>
-              <div style={{ display:'flex', alignItems:'center', gap:3 }}>{ratings}</div>
-            </div>
+          {entry.rating > 0 && (
+            <div style={secao}><div style={labelSecao}>Avaliação</div><Dots value={entry.rating} size={8} /></div>
           )}
 
           {entry.notes && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">Minhas notas</div>
-              <p className="cb-modal-notes">{entry.notes}</p>
+            <div style={secao}>
+              <div style={labelSecao}>Minhas notas</div>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: 14.5, lineHeight: 1.65, color: 'var(--fg-secondary)', margin: 0, whiteSpace: 'pre-wrap' }}>{entry.notes}</p>
             </div>
           )}
 
-          {(entry.quotes||[]).length > 0 && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">Trechos ({entry.quotes.length})</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {(entry.quotes || []).length > 0 && (
+            <div style={secao}>
+              <div style={labelSecao}>Trechos · {entry.quotes.length}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {entry.quotes.map((q, i) => (
-                  <blockquote key={i} style={{ margin:0, borderLeft:'2px solid var(--accent-content-border)', paddingLeft:12 }}>
-                    <p style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-primary)', lineHeight:'var(--leading-relaxed)', margin:0 }}>{q.text}</p>
-                    {q.page && <cite style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-2xs)', color:'var(--fg-muted)', fontStyle:'normal' }}>{q.page}</cite>}
+                  <blockquote key={i} style={{ margin: 0, paddingLeft: 12, borderLeft: '2px solid var(--amber-300)' }}>
+                    <p style={{ fontFamily: 'var(--font-display)', fontSize: 13.5, lineHeight: 1.6, color: 'var(--fg-primary)', margin: 0 }}>{q.text}</p>
+                    {q.page && <cite style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-disabled)', fontStyle: 'normal' }}>{q.page}</cite>}
                   </blockquote>
                 ))}
               </div>
             </div>
           )}
 
+          {entry.description && (
+            <div style={secao}><div style={labelSecao}>Descrição</div>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: 14, lineHeight: 1.6, color: 'var(--fg-secondary)', margin: 0, whiteSpace: 'pre-wrap' }}>{entry.description}</p>
+            </div>
+          )}
+
+          {(relacionadas.length > 0 || citam.length > 0) && (
+            <div style={secao}>
+              <div style={{ ...labelSecao, color: 'var(--accent-project-hover)' }}>Isso me levou a</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {citam.map(post => (
+                  <button key={post.slug} onClick={() => { onClose(); location.hash = hashFor('p', post.slug); }}
+                    style={{ textAlign: 'left', background: 'var(--accent-project-subtle)', border: '1px solid var(--accent-project-border)', borderRadius: 'var(--radius-md)', padding: '10px 12px', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
+                      <TypeTag tipo="escrito" />
+                      <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: 'var(--fg-primary)' }}>{post.title}</span>
+                    </div>
+                    <div style={{ fontSize: 12.5, color: 'var(--fg-muted)' }}>Cita este material.</div>
+                  </button>
+                ))}
+                {relacionadas.map(({ entry: r, why }) => (
+                  <button key={r.id} onClick={() => abrirFicha(r)}
+                    style={{ textAlign: 'left', background: r.type === 'projeto' ? 'var(--accent-project-subtle)' : 'var(--bg-elevated)', border: `1px solid ${r.type === 'projeto' ? 'var(--accent-project-border)' : 'var(--border-subtle)'}`, borderRadius: 'var(--radius-md)', padding: '10px 12px', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: why ? 3 : 0 }}>
+                      <TypeTag tipo={r.type === 'projeto' ? 'projeto' : r.subtype} />
+                      <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: 'var(--fg-primary)' }}>{tituloCurto(r.title, 52)}</span>
+                    </div>
+                    {why && <div style={{ fontSize: 12.5, color: 'var(--fg-muted)', lineHeight: 1.5 }}>{why}</div>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {entry.archived && (
-            <div className="cb-modal-section">
+            <div style={secao}>
               <a href={`./archive/${entry.id}.md`} target="_blank" rel="noopener noreferrer"
-                style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--accent-content)' }}>
-                ↓ Texto arquivado no dia da captura
-              </a>
-            </div>
-          )}
-
-          {cited.length > 0 && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">Citado em</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                {cited.map(p => (
-                  <button key={p.slug} onClick={() => { onClose(); location.hash = hashFor('p', p.slug); }}
-                    style={{ textAlign:'left', background:'var(--bg-elevated)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-md)', padding:'10px 12px', cursor:'pointer', fontFamily:'var(--font-body)' }}>
-                    <div style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-primary)' }}>{p.title}</div>
-                    {p.date && <div style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)', marginTop:3 }}>{shortDate(p.date)}</div>}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {related.length > 0 && (
-            <div className="cb-modal-section">
-              <div className="cb-modal-label">{isProject ? 'Inspirado por' : 'Isso me levou a'}</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                {related.map(({ entry: r, why }) => (
-                  <button key={r.id} onClick={() => _onDetail && _onDetail(r)}
-                    style={{ textAlign:'left', background:'var(--bg-elevated)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-md)', padding:'10px 12px', cursor:'pointer', fontFamily:'var(--font-body)' }}>
-                    <div style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-sm)', color:'var(--fg-primary)', marginBottom: why ? 3 : 0 }}>{r.title}</div>
-                    {why && <div style={{ fontSize:'var(--text-xs)', color:'var(--fg-muted)', lineHeight:'var(--leading-normal)' }}>{why}</div>}
-                  </button>
-                ))}
-              </div>
+                style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--accent-content)' }}>↓ Trecho do texto guardado na captura</a>
             </div>
           )}
 
           {entry.url && (
-            <div className="cb-modal-section">
+            <div style={secao}>
               <a href={entry.url} target="_blank" rel="noopener noreferrer"
-                style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--accent-content)', wordBreak:'break-all' }}>
-                {entry.url}
-              </a>
+                style={{ fontFamily: 'var(--font-body)', fontSize: 12.5, color: 'var(--accent-content)', wordBreak: 'break-all' }}>{entry.url}</a>
             </div>
           )}
         </div>
@@ -780,253 +1363,268 @@ function DetailModal({ entry, onClose }) {
   );
 }
 
-// ── VIEW: AUTORES ───────────────────────────────────────────────────────────
-function AuthorsView({ slug }) {
-  const all = authorCounts();
+// ── REGISTRAR (⌘K) ───────────────────────────────────────────────────────────
+// Três campos e pronto. O site é estático: salvar abre uma issue pré-preenchida
+// que a Action `captura` converte em commit — funciona no celular, sem token.
+const TIPOS_REGISTRO = ['artigo', 'livro', 'vídeo', 'curso', 'treinamento', 'notícia'];
+const STATUS_REGISTRO = [['quero ler', 'quero ler'], ['em andamento', 'estou lendo'], ['consumido', 'já consumi']];
 
-  if (slug) {
-    const hit = all.find(([k]) => k === slug);
-    const items = ENTRIES.filter(e => authorsOf(e).some(a => authorSlug(a) === slug)).sort(byDateDesc);
-    return (
-      <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
-        <button onClick={() => { location.hash = hashFor('autores'); }}
-          style={{ display:'flex', alignItems:'center', gap:6, background:'none', border:'none', cursor:'pointer', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', marginBottom:14 }}>
-          <span style={{ transform:'rotate(180deg)', display:'flex' }}><IcoArrow /></span> Todos os autores
-        </button>
-        <PageTitle sub={`${items.length} ${items.length === 1 ? 'entrada' : 'entradas'}`}>{hit ? hit[1].name : slug}</PageTitle>
-        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{items.map(card)}</div>
-      </div>
-    );
-  }
+function Registrar({ onClose }) {
+  const [url, setUrl] = React.useState('');
+  const [tipo, setTipo] = React.useState('artigo');
+  const [status, setStatus] = React.useState('quero ler');
+  const [nota, setNota] = React.useState('');
+  const [tags, setTags] = React.useState('');
+  const [rating, setRating] = React.useState(0);
+  const notaRef = React.useRef(null);
 
-  // Paper com 10 coautores enchia a página de gente com 1 entrada só —
-  // mesmo critério de Temas: destaque para quem repete, o resto vira lista.
-  const recorrentes = all.filter(([, v]) => v.n >= 2);
-  const avulsos     = all.filter(([, v]) => v.n < 2).sort((a, b) => a[1].name.localeCompare(b[1].name));
+  const salvar = (soFila) => {
+    if (!url.trim()) return;
+    abrirIssue('captura.yml', {
+      title: 'captura: ',
+      url: url.trim(),
+      tipo,
+      status: soFila ? 'quero ler' : status,
+      tags: tags.trim(),
+      nota: soFila ? '' : nota.trim(),
+      avaliacao: rating || '',
+    });
+    onClose();
+  };
+
+  React.useEffect(() => {
+    const fn = e => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) salvar(false);
+    };
+    document.addEventListener('keydown', fn);
+    return () => document.removeEventListener('keydown', fn);
+  });
+
+  const label = { fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 7, display: 'flex', gap: 7, alignItems: 'baseline' };
 
   return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:860, margin:'0 auto' }}>
-      <PageTitle sub="Quem escreveu o que passou por aqui.">Autores</PageTitle>
-      {all.length === 0
-        ? <p style={{ color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>Nenhum autor registrado ainda.</p>
-        : <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(240px, 1fr))', gap:10 }}>
-            {recorrentes.map(([k, { name, n }]) => (
-              <button key={k} onClick={() => { location.hash = hashFor('autores', k); }}
-                style={{ textAlign:'left', background:'var(--bg-surface)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-lg)', padding:'14px 16px', cursor:'pointer', boxShadow:'var(--shadow-sm)' }}>
-                <div style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', color:'var(--fg-primary)', marginBottom:4 }}>{name}</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{n} {n === 1 ? 'entrada' : 'entradas'}</div>
-              </button>
-            ))}
-          </div>}
-      {avulsos.length > 0 && (
-        <div style={{ marginTop: recorrentes.length ? 32 : 0 }}>
-          <SectionHeader count={avulsos.length}>Com uma entrada</SectionHeader>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-            {avulsos.map(([k, { name }]) => (
-              <Tag key={k} size="sm" onClick={() => { location.hash = hashFor('autores', k); }}>{name}</Tag>
-            ))}
+    <div className="lb-sheet-bd" onClick={onClose}>
+      <div className="lb-sheet" onClick={e => e.stopPropagation()}>
+        <div className="lb-sheet-alca" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', borderBottom: '1px solid var(--border-subtle)' }}>
+          <span style={{ color: 'var(--fg-muted)', display: 'flex' }}><IcoSearch /></span>
+          <input autoFocus value={url} onChange={e => setUrl(e.target.value)} placeholder="cole a URL do que você leu"
+            style={{ flex: 1, border: 'none', background: 'none', outline: 'none', fontSize: 14, fontFamily: 'var(--font-body)', color: 'var(--fg-primary)' }} />
+          <button onClick={onClose} aria-label="Fechar" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontSize: 16 }}>✕</button>
+        </div>
+
+        <div style={{ padding: '18px' }}>
+          <div style={{ marginBottom: 18 }}>
+            <div style={label}>Isso é</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {TIPOS_REGISTRO.map(t => (
+                <button key={t} onClick={() => setTipo(t)}
+                  style={{ padding: '8px 14px', minHeight: 36, borderRadius: 'var(--radius-full)', fontSize: 12.5, fontFamily: 'var(--font-body)', cursor: 'pointer', fontWeight: tipo === t ? 600 : 400, background: tipo === t ? 'var(--accent-content)' : 'var(--bg-elevated)', color: tipo === t ? '#fff' : 'var(--fg-secondary)', border: `1px solid ${tipo === t ? 'var(--accent-content)' : 'var(--border-subtle)'}`, transition: 'background 0.12s ease' }}>
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 18 }}>
+            <div style={label}>Onde entra</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {STATUS_REGISTRO.map(([valor, texto]) => (
+                <button key={valor} onClick={() => setStatus(valor)}
+                  style={{ padding: '8px 14px', minHeight: 36, borderRadius: 'var(--radius-full)', fontSize: 12.5, fontFamily: 'var(--font-body)', cursor: 'pointer', fontWeight: status === valor ? 600 : 400, background: status === valor ? statusToken(valor, 'bg') : 'var(--bg-elevated)', color: status === valor ? statusToken(valor, 'fg') : 'var(--fg-secondary)', border: `1px solid ${status === valor ? statusToken(valor, 'border') : 'var(--border-subtle)'}` }}>
+                  {texto}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 18 }}>
+            <div style={label}>Valeu?</div>
+            <div style={{ display: 'flex', gap: 7 }}>
+              {[1, 2, 3, 4, 5].map(n => (
+                <button key={n} onClick={() => setRating(n === rating ? 0 : n)} aria-label={`${n} de 5`}
+                  style={{ width: 22, height: 22, padding: 0, border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ width: 9, height: 9, borderRadius: '50%', background: n <= rating ? 'var(--accent-content)' : 'var(--border-default)' }} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 18 }}>
+            <div style={label}>O que eu tiro disso <span style={{ textTransform: 'none', letterSpacing: 0, color: 'var(--fg-disabled)' }}>— o campo que importa</span></div>
+            <textarea ref={notaRef} value={nota} onChange={e => setNota(e.target.value)} rows={3}
+              placeholder="uma frase serve"
+              style={{ width: '100%', minHeight: 62, padding: '10px 12px', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-display)', fontSize: 14, color: 'var(--fg-primary)', resize: 'vertical', caretColor: 'var(--accent-content)', boxSizing: 'border-box' }} />
+          </div>
+
+          <div style={{ marginBottom: 4 }}>
+            <div style={label}>Temas</div>
+            <input value={tags} onChange={e => setTags(e.target.value)} placeholder="separados por vírgula"
+              style={{ width: '100%', padding: '8px 12px', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--fg-primary)', boxSizing: 'border-box' }} />
           </div>
         </div>
-      )}
-    </div>
-  );
-}
 
-// ── VIEW: AGORA ─────────────────────────────────────────────────────────────
-// Convenção de blog pessoal (nownownow.com): o que estou fazendo neste momento.
-// Deriva inteiramente do que já existe — nenhum dado novo para manter.
-function NowView() {
-  const reading = ENTRIES.filter(e => e.status === 'em andamento');
-  const queued  = ENTRIES.filter(e => e.status === 'quero ler')
-                         .sort((a, b) => (waitingDays(b) || 0) - (waitingDays(a) || 0));
-  const lastPost = POSTS[0];
-  const recent = [...ENTRIES].filter(e => e.status === 'consumido').sort(byDateDesc).slice(0, 3);
-  const active = PROJECTS.filter(p => ['em andamento','iniciado'].includes(p.status));
-
-  const Bloco = ({ titulo, children }) => (
-    <section style={{ marginBottom:32 }}>
-      <SectionHeader>{titulo}</SectionHeader>
-      {children}
-    </section>
-  );
-  const vazio = (t) => <p style={{ color:'var(--fg-disabled)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>{t}</p>;
-
-  return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
-      <PageTitle sub="O que estou lendo e escrevendo neste momento.">Agora</PageTitle>
-      <Bloco titulo="Lendo">
-        {reading.length ? <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{reading.map(card)}</div>
-          : vazio('Nada em andamento — marque um item como "em andamento" na extensão.')}
-      </Bloco>
-      {active.length > 0 && <Bloco titulo="Construindo"><div style={{ display:'flex', flexDirection:'column', gap:10 }}>{active.map(card)}</div></Bloco>}
-      <Bloco titulo="Escrevendo">
-        {lastPost ? <PostCard post={lastPost} /> : vazio('Nenhum artigo publicado ainda.')}
-      </Bloco>
-      <Bloco titulo="Terminei há pouco">
-        {recent.length ? <div style={{ display:'flex', flexDirection:'column', gap:10 }}>{recent.map(card)}</div> : vazio('Nada consumido ainda.')}
-      </Bloco>
-      {queued.length > 0 && (
-        <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-muted)' }}>
-          E {queued.length} {queued.length === 1 ? 'item esperando' : 'itens esperando'} na fila — o mais antigo há {waitingDays(queued[0])} dias.
-        </p>
-      )}
-    </div>
-  );
-}
-
-// ── VIEW: ESCRITOS ──────────────────────────────────────────────────────────
-function PostsView() {
-  if (!POSTS.length) return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
-      <PageTitle sub="O que sai da leitura: artigos escritos a partir do que está aqui.">Escritos</PageTitle>
-      <p style={{ color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontStyle:'italic' }}>
-        Nada publicado ainda. Escreva um <code>.md</code> em <code>posts/</code> e rode <code>./build.sh</code>.
-      </p>
-    </div>
-  );
-  return (
-    <div style={{ padding:'40px 40px 64px', maxWidth:720, margin:'0 auto' }}>
-      <PageTitle sub="O que sai da leitura: artigos escritos a partir do que está aqui.">Escritos</PageTitle>
-      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-        {POSTS.map(p => <PostCard key={p.slug} post={p} />)}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '14px 18px', borderTop: '1px solid var(--border-subtle)' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-disabled)', flex: 1 }}>
+            abre uma issue no GitHub · a Action grava no log
+          </span>
+          <Pill onClick={() => salvar(true)} style={{ padding: '9px 14px', fontSize: 12.5 }}>Só na fila</Pill>
+          <Pill tom="amber" onClick={() => salvar(false)}
+            style={{ padding: '9px 16px', fontSize: 12.5, fontWeight: 600, background: 'var(--accent-content)', color: '#fff', borderColor: 'var(--accent-content)' }}>
+            Registrar · ⏎
+          </Pill>
+        </div>
       </div>
     </div>
   );
 }
 
-function PostCard({ post }) {
-  const [hov, setHov] = React.useState(false);
-  return (
-    <article onClick={() => { location.hash = hashFor('p', post.slug); }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background:'var(--bg-surface)', border:`1px solid ${hov ? 'var(--border-default)' : 'var(--border-subtle)'}`, borderRadius:'var(--radius-lg)', padding:'var(--space-5) var(--space-6)', cursor:'pointer', boxShadow: hov ? 'var(--card-hover-shadow)' : 'var(--shadow-sm)', transition:'box-shadow 0.15s ease, border-color 0.15s ease' }}>
-      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-        <Badge subtype="escrito" size="sm" />
-        {post.date && <span style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{shortDate(post.date)}</span>}
-      </div>
-      <h3 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-lg)', fontWeight:500, color:'var(--fg-primary)', margin:'0 0 6px 0', lineHeight:'var(--leading-snug)', letterSpacing:'var(--tracking-tight)' }}>{post.title}</h3>
-      {post.excerpt && <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--fg-secondary)', margin:'0 0 10px 0', lineHeight:'var(--leading-relaxed)' }}>{post.excerpt}</p>}
-      <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
-        {(post.tags||[]).map((t,i) => <Tag key={i} size="sm">{t}</Tag>)}
-        {(post.refs||[]).length > 0 && <span style={{ marginLeft:'auto', fontSize:'var(--text-xs)', color:'var(--fg-muted)', fontFamily:'var(--font-mono)' }}>{post.refs.length} ref{post.refs.length === 1 ? '' : 's'}</span>}
-      </div>
-    </article>
-  );
-}
+// ── ROTAS ────────────────────────────────────────────────────────────────────
+// #/consumo/fila, #/temas/gestão, #/e/<id>, #/p/<slug> — tudo linkável.
+const TABS = ['hoje', 'consumo', 'producao', 'escritos', 'timeline', 'temas', 'autores'];
+// Rotas da versão anterior continuam funcionando.
+const LEGADO = { inicio: 'hoje', agora: 'consumo/lendo', backlog: 'consumo/fila', tipos: 'consumo', projetos: 'producao' };
 
-function PostView({ slug }) {
-  const post = POSTS.find(p => p.slug === slug);
-  React.useEffect(() => { document.querySelector('.cb-main')?.scrollTo(0, 0); }, [slug]);
-  if (!post) return (
-    <div style={{ padding:'60px 40px', textAlign:'center', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)' }}>
-      Artigo não encontrado. <a href="#/escritos" style={{ color:'var(--accent-content)' }}>Ver todos</a>.
-    </div>
-  );
-
-  return (
-    <article style={{ padding:'40px 40px 64px', maxWidth:680, margin:'0 auto' }}>
-      <button onClick={() => { location.hash = hashFor('escritos'); }}
-        style={{ display:'flex', alignItems:'center', gap:6, background:'none', border:'none', cursor:'pointer', color:'var(--fg-muted)', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', marginBottom:16 }}>
-        <span style={{ transform:'rotate(180deg)', display:'flex' }}><IcoArrow /></span> Escritos
-      </button>
-      <h1 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-3xl)', fontWeight:600, color:'var(--fg-primary)', letterSpacing:'var(--tracking-tight)', lineHeight:'var(--leading-tight)', marginBottom:10 }}>{post.title}</h1>
-      <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:28, paddingBottom:20, borderBottom:'1px solid var(--border-subtle)' }}>
-        {post.date && <span style={{ fontFamily:'var(--font-mono)', fontSize:'var(--text-xs)', color:'var(--fg-muted)' }}>{shortDate(post.date)}</span>}
-        {(post.tags||[]).map((t,i) => <Tag key={i} size="sm">{t}</Tag>)}
-      </div>
-
-      {/* HTML gerado na build a partir do seu próprio markdown */}
-      <div className="cb-prose" dangerouslySetInnerHTML={{ __html: post.html }} />
-
-      {(post.refs||[]).length > 0 && (
-        <section style={{ marginTop:40, paddingTop:24, borderTop:'1px solid var(--border-subtle)' }}>
-          <SectionHeader count={post.refs.length}>Referências</SectionHeader>
-          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-            {post.refs.map((r, i) => {
-              const e = r.id && ENTRIES.find(x => x.id === r.id);
-              if (e) return card(e);
-              return (
-                <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
-                  style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', color:'var(--accent-content)', wordBreak:'break-all', padding:'10px 12px', background:'var(--bg-elevated)', border:'1px solid var(--border-subtle)', borderRadius:'var(--radius-md)' }}>
-                  {r.url}
-                </a>
-              );
-            })}
-          </div>
-        </section>
-      )}
-    </article>
-  );
-}
-
-// ── SIDEBAR ────────────────────────────────────────────────────────────────
-// Backlog subiu: é o que o logbook mais tem. Projetos só aparece se existir projeto.
-const NAV = [['inicio','Início',IcoHome],['agora','Agora',IcoNow],['escritos','Escritos',IcoWrite],['backlog','Backlog',IcoBook],['timeline','Timeline',IcoTimeline],['tipos','Por tipo',IcoType],['temas','Temas',IcoTheme],['autores','Autores',IcoAuthor],['projetos','Projetos',IcoProject]];
-function Sidebar({ tab, onTab, open, onClose, searchQuery, onSearch, searchOpen, setSearchOpen }) {
-  React.useEffect(() => { if (!searchQuery) setSearchOpen(false); }, [searchQuery]);
-  const nav = NAV.filter(([id]) => id !== 'projetos' || PROJECTS.length > 0);
-  return (
-    <>
-      {open && <div className="cb-overlay" onClick={onClose} />}
-      <aside className={`cb-sidebar${open ? ' open' : ''}`} style={{ flexShrink:0, display:'flex', flexDirection:'column' }}>
-      <button onClick={() => onTab('inicio')} style={{ padding:'18px 16px 14px', borderBottom:'1px solid var(--border-subtle)', display:'flex', alignItems:'center', gap:9, background:'none', border:'none', borderBottomStyle:'solid', cursor:'pointer', width:'100%' }}>
-        <span style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-base)', fontWeight:600, color:'var(--fg-primary)', letterSpacing:'-0.01em' }}>
-          Log<span style={{ fontFamily:'var(--font-body)', fontWeight:400, color:'var(--fg-muted)' }}>Book</span>
-        </span>
-      </button>
-      <nav style={{ padding:'10px 8px', flex:1 }}>
-        {nav.map(([id, label, Ico]) => {
-          const active = tab === id;
-          return (
-            <button key={id} onClick={() => onTab(id)} style={{ display:'flex', alignItems:'center', gap:9, width:'100%', padding:'8px 10px', borderRadius:'var(--radius-md)', background: active ? 'var(--accent-content-subtle)' : 'transparent', color: active ? 'var(--accent-content)' : 'var(--fg-secondary)', border:'none', cursor:'pointer', fontFamily:'var(--font-body)', fontSize:'var(--text-sm)', fontWeight: active ? 600 : 400, marginBottom:2, transition:'background 0.12s, color 0.12s', textAlign:'left' }}>
-              <Ico />{label}
-            </button>
-          );
-        })}
-      </nav>
-      <div className="cb-side-search">
-        {searchOpen
-          ? <div className="cb-side-search-wrap">
-              <span className="cb-side-search-ico">🔍</span>
-              <input autoFocus className="cb-side-search-input" type="text" value={searchQuery} onChange={e => onSearch(e.target.value)} placeholder="Buscar..." />
-              {searchQuery && <button className="cb-side-search-clear" onClick={() => { onSearch(''); }}>✕</button>}
-            </div>
-          : <button className="cb-search-toggle" onClick={() => setSearchOpen(true)}>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.4"/><path d="M9 9l3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
-              Buscar
-            </button>
-        }
-      </div>
-    </aside>
-    </>
-  );
-}
-
-// ── ROTAS ──────────────────────────────────────────────────────────────────
-// #/timeline, #/temas/ia, #/tipos/livro, #/e/<id> — links compartilháveis e
-// botão voltar funcionando, que é o mínimo para um site público.
-const TABS = ['inicio','agora','escritos','timeline','tipos','temas','autores','projetos','backlog'];
 function parseHash() {
-  const parts = location.hash.replace(/^#\/?/, '').split('/').map(p => {
-    try { return decodeURIComponent(p); } catch { return p; }
-  });
-  const seg = parts[0] || 'inicio';
-  const arg = parts.slice(1).join('/');
+  const cru = location.hash.replace(/^#\/?/, '');
+  const partes = cru.split('/').map(p => { try { return decodeURIComponent(p); } catch { return p; } });
+  const seg = partes[0] || 'hoje';
+  const arg = partes.slice(1).join('/');
   if (seg === 'e') return { tab: null, entryId: arg, arg: '' };
   if (seg === 'p') return { tab: 'escritos', postSlug: arg, arg: '', entryId: null };
-  return { tab: TABS.includes(seg) ? seg : 'inicio', arg, entryId: null };
+  if (LEGADO[seg]) return { redirect: LEGADO[seg] + (arg ? '/' + arg : '') };
+  return { tab: TABS.includes(seg) ? seg : 'hoje', arg, entryId: null };
 }
 const hashFor = (to, arg) => '#/' + to + (arg ? '/' + encodeURIComponent(arg) : '');
 
-// ── APP ────────────────────────────────────────────────────────────────────
+// ── SIDEBAR ──────────────────────────────────────────────────────────────────
+function Sidebar({ tab, arg, onRegistrar, onBuscar, query }) {
+  const grupos = [
+    { titulo: 'Consumo', itens: [
+      { id: 'consumo/lendo', label: 'Lendo', n: lendo().length, ico: IcoClock },
+      { id: 'consumo/fila', label: 'Fila', n: naFila().length, ico: IcoLayers },
+      { id: 'consumo', label: 'Biblioteca', n: ENTRIES.filter(e => e.type !== 'projeto').length, ico: IcoBook },
+    ] },
+    { titulo: 'Produção', itens: [
+      { id: 'producao', label: 'Projetos', n: PROJECTS.length, ico: IcoGrid },
+      { id: 'escritos', label: 'Escritos', n: POSTS.length, ico: IcoPencil },
+    ] },
+    { titulo: 'Descobrir', itens: [
+      { id: 'timeline', label: 'Timeline', ico: IcoLayers },
+      { id: 'temas', label: 'Temas', n: mainThemes().length, ico: IcoTheme },
+      { id: 'autores', label: 'Autores', ico: IcoUser },
+    ] },
+  ];
+  const atual = tab + (arg ? '/' + arg : '');
+
+  return (
+    <aside className="lb-side">
+      <div style={{ padding: '0 4px 18px' }}>
+        <Marca onClick={() => { location.hash = hashFor('hoje'); }} />
+      </div>
+
+      <button onClick={onRegistrar}
+        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '9px 12px', marginBottom: 20, background: 'var(--accent-content)', color: '#fff', border: 'none', borderRadius: 'var(--radius-md)', fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'background 0.12s ease' }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-content-hover)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-content)'; }}>
+        <IcoPlus />Registrar
+        <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10, opacity: 0.75 }}>⌘K</span>
+      </button>
+
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        {grupos.map(g => (
+          <div key={g.titulo}>
+            <div className="lb-group-label">{g.titulo}</div>
+            {g.itens.map(it => (
+              <button key={it.id} className="lb-nav-item"
+                aria-current={atual === it.id ? 'page' : undefined}
+                onClick={() => { location.hash = '#/' + it.id; }}>
+                <span style={{ display: 'flex', opacity: 0.75 }}><it.ico /></span>
+                {it.label}
+                {it.n != null && <span className="lb-nav-count">{it.n}</span>}
+              </button>
+            ))}
+          </div>
+        ))}
+      </nav>
+
+      <div style={{ marginTop: 'auto', paddingTop: 14 }}>
+        <button onClick={onBuscar}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 10px', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12.5, color: query ? 'var(--fg-primary)' : 'var(--fg-muted)', textAlign: 'left' }}>
+          <span style={{ display: 'flex' }}><IcoSearch /></span>
+          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{query || 'Buscar no que eu li'}</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-disabled)' }}>/</span>
+        </button>
+      </div>
+    </aside>
+  );
+}
+
+// ── BARRA DE BUSCA (aparece quando ativada) ──────────────────────────────────
+function BarraBusca({ query, onChange, onClose }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 32px', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)', position: 'sticky', top: 0, zIndex: 15 }}>
+      <span style={{ color: 'var(--fg-muted)', display: 'flex' }}><IcoSearch /></span>
+      <input autoFocus value={query} onChange={e => onChange(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Escape') onClose(); }}
+        placeholder="Buscar no que eu li"
+        style={{ flex: 1, border: 'none', background: 'none', outline: 'none', fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-primary)' }} />
+      <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fg-muted)', fontSize: 14 }}>✕</button>
+    </div>
+  );
+}
+
+// ── MOBILE ───────────────────────────────────────────────────────────────────
+function TabBar({ tab, onRegistrar, onBuscar }) {
+  const tabs = [
+    { id: 'hoje', label: 'Hoje' },
+    { id: 'consumo', label: 'Consumo' },
+  ];
+  const tabsDir = [
+    { id: 'producao', label: 'Produção', prod: true },
+    { id: 'buscar', label: 'Buscar' },
+  ];
+  const botao = (t) => (
+    <button key={t.id} className={`lb-tab${t.prod ? ' lb-tab-prod' : ''}`}
+      aria-current={tab === t.id ? 'page' : undefined}
+      onClick={() => { if (t.id === 'buscar') onBuscar(); else location.hash = hashFor(t.id); }}>
+      {t.label}
+    </button>
+  );
+  return (
+    <nav className="lb-tabbar">
+      {tabs.map(botao)}
+      <button className="lb-fab" onClick={onRegistrar} aria-label="Registrar">+</button>
+      {tabsDir.map(botao)}
+    </nav>
+  );
+}
+
+// ── APP ──────────────────────────────────────────────────────────────────────
+const PREFS_PADRAO = { showConexoes: true, showFila: true, density: 'confortavel' };
+function lerPrefs() {
+  try { return { ...PREFS_PADRAO, ...JSON.parse(localStorage.getItem('logbook:prefs') || '{}') }; }
+  catch { return { ...PREFS_PADRAO }; }
+}
+
 function App() {
   const [route, setRoute] = React.useState(parseHash);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [searchOpen, setSearchOpen] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [_loaded, _setLoaded] = React.useState(false);
-  const lastTab = React.useRef(route.tab || 'inicio');
-  const openedDeep = React.useRef(!!route.entryId);
+  const [query, setQuery] = React.useState('');
+  const [buscando, setBuscando] = React.useState(false);
+  const [registrando, setRegistrando] = React.useState(false);
+  const [prefs, setPrefsState] = React.useState(lerPrefs);
+  const [carregado, setCarregado] = React.useState(false);
+  const ultimaTab = React.useRef(route.tab || 'hoje');
+  const entrouDireto = React.useRef(!!route.entryId);
+
+  const setPrefs = (parcial) => {
+    setPrefsState(atual => {
+      const novo = { ...atual, ...parcial };
+      try { localStorage.setItem('logbook:prefs', JSON.stringify(novo)); } catch { /* modo privado */ }
+      return novo;
+    });
+  };
 
   React.useEffect(() => {
     // posts.json e aliases.json são opcionais: podem simplesmente não existir.
@@ -1039,69 +1637,90 @@ function App() {
       .then(r => r.ok ? r.json() : { entries: [] })
       .then(d => {
         ENTRIES = d.entries || [];
-        // Normaliza caixa/espaço e aplica aliases.json ('ia' -> 'inteligência
-        // artificial'). Sinônimo exige julgamento humano; o mapa é manual de propósito.
+        // Normaliza caixa/espaço e aplica aliases.json. Sinônimo exige julgamento
+        // humano; o mapa é manual de propósito.
         const canon = (t) => {
           const k = String(t).trim().toLowerCase();
           return (ALIASES[k] || k).trim().toLowerCase();
         };
-        ENTRIES.forEach(e => { e.tags = [...new Set((e.tags||[]).map(canon).filter(Boolean))]; });
-        POSTS.forEach(p => { p.tags = [...new Set((p.tags||[]).map(canon).filter(Boolean))]; });
+        ENTRIES.forEach(e => { e.tags = [...new Set((e.tags || []).map(canon).filter(Boolean))]; });
+        POSTS.forEach(p => { p.tags = [...new Set((p.tags || []).map(canon).filter(Boolean))]; });
         CONTENT = ENTRIES.filter(e => e.type === 'conteudo');
         PROJECTS = ENTRIES.filter(e => e.type === 'projeto');
-        _setLoaded(true);
+        setCarregado(true);
       })
-      .catch(() => _setLoaded(true));
+      .catch(() => setCarregado(true));
   }, []);
 
   React.useEffect(() => {
-    const on = () => { setRoute(parseHash()); setMobileOpen(false); };
+    const on = () => {
+      const r = parseHash();
+      if (r.redirect) { location.replace('#/' + r.redirect); return; }
+      setRoute(r);
+      setBuscando(false);
+    };
+    on();
     window.addEventListener('hashchange', on);
     return () => window.removeEventListener('hashchange', on);
   }, []);
 
-  if (!_loaded) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center',
-      height:'100vh', fontFamily:'var(--font-body)', color:'var(--fg-muted)', fontSize:'14px' }}>
-      Carregando entradas...
+  // ⌘K abre Registrar de qualquer tela; "/" foca a busca.
+  React.useEffect(() => {
+    const fn = (e) => {
+      const digitando = /^(INPUT|TEXTAREA)$/.test(e.target.tagName);
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setRegistrando(true); return; }
+      if (e.key === '/' && !digitando && !registrando) { e.preventDefault(); setBuscando(true); }
+    };
+    document.addEventListener('keydown', fn);
+    return () => document.removeEventListener('keydown', fn);
+  }, [registrando]);
+
+  if (!carregado) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'var(--font-body)', color: 'var(--fg-muted)', fontSize: 14 }}>
+      Carregando o log...
     </div>
   );
 
-  const selectedEntry = route.entryId ? ENTRIES.find(e => e.id === route.entryId) : null;
-  const tab = route.tab || lastTab.current;
-  if (route.tab) lastTab.current = route.tab;
+  const entradaAberta = route.entryId ? ENTRIES.find(e => e.id === route.entryId) : null;
+  const tab = route.tab || ultimaTab.current;
+  if (route.tab) ultimaTab.current = route.tab;
+  _onDetail = abrirFicha;
 
-  _onDetail = (e) => { location.hash = hashFor('e', e.id); };
-  const closeDetail = () => {
-    if (openedDeep.current) { openedDeep.current = false; location.hash = hashFor(lastTab.current); }
+  const fecharFicha = () => {
+    if (entrouDireto.current) { entrouDireto.current = false; location.hash = hashFor(ultimaTab.current); }
     else history.back();
   };
-  const nav = (to, args = {}) => {
-    setSearchQuery('');
-    location.hash = hashFor(to, to === 'tipos' ? (args.type || '') : to === 'temas' ? (args.theme || '') : '');
-  };
+  const fecharBusca = () => { setBuscando(false); setQuery(''); };
 
   return (
-    <div className="cb-app" style={{ fontFamily:'var(--font-body)' }}>
-      <Sidebar tab={tab} onTab={nav} open={mobileOpen} onClose={() => setMobileOpen(false)} searchQuery={searchQuery} onSearch={setSearchQuery} searchOpen={searchOpen} setSearchOpen={setSearchOpen} />
-      <main className="cb-main">
-        <div className="cb-topbar">
-          <button className="cb-hamburger" onClick={() => setMobileOpen(true)} aria-label="Menu">☰</button>
-          <span className="cb-topbar-title">Log<span>Book</span></span>
-          <button style={{ marginLeft:'auto', background:'none', border:'none', cursor:'pointer', color: searchQuery ? 'var(--accent-content)' : 'var(--fg-muted)', padding:'4px 8px', borderRadius:'var(--radius-md)', fontSize:14 }} onClick={() => { setMobileOpen(true); setSearchOpen(true); }} aria-label="Buscar"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5"/><path d="M10 10l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></button>
-        </div>
+    <div className="lb-app">
+      <Sidebar tab={tab} arg={route.arg} query={query}
+        onRegistrar={() => setRegistrando(true)} onBuscar={() => setBuscando(true)} />
 
-        {searchQuery ? <SearchView query={searchQuery} /> : tab === 'inicio'   && <HomeView onNav={nav} />}
-        {!searchQuery && tab === 'agora'    && <NowView />}
-        {!searchQuery && tab === 'autores'  && <AuthorsView slug={route.arg || null} />}
-        {!searchQuery && tab === 'escritos' && (route.postSlug ? <PostView slug={route.postSlug} /> : <PostsView />)}
-        {!searchQuery && tab === 'timeline' && <TimelineView />}
-        {!searchQuery && tab === 'tipos'    && <TypeView initialType={route.arg || 'all'} />}
-        {!searchQuery && tab === 'temas'    && <ThemesView initialTheme={route.arg || null} />}
-        {!searchQuery && tab === 'projetos' && <ProjectsView />}
-        {!searchQuery && tab === 'backlog'  && <BacklogView />}
+      <div className="lb-mobile-top">
+        <Marca size={16} iconSize={22} onClick={() => { location.hash = hashFor('hoje'); }} />
+        <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-muted)' }}>{hojeLabel()}</span>
+      </div>
+
+      <main className="lb-main">
+        {buscando && <BarraBusca query={query} onChange={setQuery} onClose={fecharBusca} />}
+        {buscando && query
+          ? <SearchView query={query} />
+          : <>
+              {tab === 'hoje' && <HojeView prefs={prefs} />}
+              {tab === 'consumo' && <ConsumoView arg={route.arg} />}
+              {tab === 'producao' && <ProducaoView />}
+              {tab === 'escritos' && (route.postSlug ? <PostView slug={route.postSlug} /> : <EscritosView />)}
+              {tab === 'timeline' && <TimelineView prefs={prefs} setPrefs={setPrefs} />}
+              {tab === 'temas' && <TemasView tema={route.arg || null} />}
+              {tab === 'autores' && <AutoresView slug={route.arg || null} />}
+            </>}
       </main>
-      {selectedEntry && <DetailModal entry={selectedEntry} onClose={closeDetail} />}
+
+      <TabBar tab={buscando ? 'buscar' : tab} onRegistrar={() => setRegistrando(true)} onBuscar={() => setBuscando(true)} />
+
+      {entradaAberta && <FichaModal entry={entradaAberta} onClose={fecharFicha} />}
+      {registrando && <Registrar onClose={() => setRegistrando(false)} />}
     </div>
   );
 }
