@@ -897,6 +897,27 @@ function scrapePage() {
   else if (ld?.['@type'] === 'Course')      detectedType = 'curso';
   else if (ld?.['@type'] === 'VideoObject') detectedType = 'vídeo';
 
+  // O texto que vai para o archive/. `document.body.innerText` trazia a página
+  // inteira — menu, rodapé, "Pular navegação". Num vídeo isso é só interface.
+  const limpar = (t) => String(t || '').replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ').trim();
+
+  function corpoDaPagina() {
+    if (detectedType === 'vídeo') {
+      // A página de um vídeo é player + navegação; o conteúdo é a descrição.
+      const desc = document.querySelector('#description-inline-expander, ytd-text-inline-expander, #description, .video-description, [itemprop="description"]')?.innerText
+        || ld?.description || meta('description') || '';
+      const canal = document.querySelector('#owner #channel-name a, ytd-channel-name a, .ytd-channel-name a')?.innerText || ld?.author?.name || '';
+      const dur = ld?.duration || '';
+      return limpar([canal && `Canal: ${canal}`, dur && `Duração: ${dur}`, desc].filter(Boolean).join('\n\n'));
+    }
+    // ponytail: pega o container de conteúdo e confia que nav/rodapé ficam fora
+    // dele. Sem heurística de legibilidade — se o site não marcar o conteúdo,
+    // cai no corpo inteiro, como antes.
+    const alvo = document.querySelector('article, [itemprop="articleBody"], main, [role="main"], .post-content, .entry-content, .article-body');
+    const texto = limpar(alvo?.innerText);
+    return texto.length >= 200 ? texto : limpar(document.body?.innerText);
+  }
+
   return {
     title:       document.title || meta('title') || ld?.headline || '',
     description: meta('description') || ld?.description || '',
@@ -905,7 +926,7 @@ function scrapePage() {
     image:       meta('og:image') || meta('twitter:image') || '',
     url,
     detectedType,
-    bodyText:    (document.body?.innerText || '').slice(0, 3000),
+    bodyText:    corpoDaPagina().slice(0, 3000),
     isBook:      detectedType === 'livro',
   };
 }
