@@ -298,7 +298,13 @@ A busca da barra lateral olha título, autor, notas e tags. A partir de 3 caract
 
 ## Instalar no celular
 
-O site é um PWA: abra no navegador do celular e use **Adicionar à tela de início**. Depois disso ele abre como app e funciona sem internet, com os dados da última visita. O service worker busca a rede primeiro e só cai para o cache quando ela falha — assim você nunca vê uma versão velha depois de um deploy.
+1. Abra `https://SEU-USUARIO.github.io/logbook/` no **Safari** do iPhone
+2. Botão de compartilhar → **Adicionar à Tela de Início**
+3. Abra pelo ícone e, no rodapé da tela Hoje, toque em **modo edição** → **Ligar neste aparelho**
+
+O passo 3 importa: instalado, o app roda sem barra de endereço, e o armazenamento dele é separado do Safari — ligar o modo edição no Safari antes de instalar não vale para o app. Por isso o atalho fica no rodapé da Hoje.
+
+Funciona sem internet, com os dados da última visita. O service worker busca a rede primeiro e só cai para o cache quando ela falha — assim você nunca vê uma versão velha depois de um deploy.
 
 ## Rotinas automáticas
 

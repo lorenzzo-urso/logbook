@@ -420,6 +420,14 @@ function HojeView({ prefs }) {
             <SectionLabel acao={<span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-disabled)' }}>últimos 30 dias</span>}>O log</SectionLabel>
             <LogDias dias={30} />
           </section>
+
+          <footer style={{ marginTop: 40, paddingTop: 16, borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 14, alignItems: 'center' }}>
+            <a href="./feed.xml" style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--fg-disabled)', textDecoration: 'none' }}>rss</a>
+            <button onClick={() => { location.hash = hashFor('editor'); }}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--fg-disabled)' }}>
+              modo edição
+            </button>
+          </footer>
         </div>
       </div>
 
