@@ -1,5 +1,38 @@
 {
   "version": 1,
   "lastUpdated": "2026-07-26",
-  "entries": []
+  "entries": [
+    {
+      "author": "Mario Sergio Cortella",
+      "createdAt": "2026-07-26T19:53:06.407Z",
+      "dates": {
+        "captured": "2026-07-26",
+        "consumed": "2026-07-26",
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "fea36953-c300-4a50-b52d-c0cd90a5ae2e",
+      "image": "https://i.ytimg.com/vi/SOY2BIapESA/maxresdefault.jpg",
+      "notes": "Discussão sobre a relação entre o chope e a ética, destacando a importância da reflexão filosófica na vida cotidiana.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 5,
+      "related": [],
+      "source": "YouTube",
+      "status": "consumido",
+      "subtype": "vídeo",
+      "tags": [
+        "filosofia",
+        "ética",
+        "cortella",
+        "karnal"
+      ],
+      "title": "O chope e a ética - Mario Sergio Cortella - YouTube",
+      "type": "conteudo",
+      "url": "https://www.youtube.com/watch?v=SOY2BIapESA"
+    }
+  ]
 }
