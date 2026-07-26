@@ -35,6 +35,9 @@ jobs:
           TITULO: ${{ github.event.issue.title }}
         run: python3 tools/issue_to_entry.py /tmp/issue.txt "$TITULO" | tee /tmp/saida.txt
 
+      - name: Validar o resultado
+        run: python3 tools/validate_data.py
+
       - name: Commitar
         run: |
           git config user.name  "github-actions[bot]"

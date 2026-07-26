@@ -22,6 +22,9 @@ jobs:
         with:
           node-version: '22'
 
+      # Data inválida não pode virar site: falha aqui é ruidosa e barata.
+      - run: python3 tools/validate_data.py
+
       # posts.json, páginas em p/ e as imagens og/ dependem de npx (marked, resvg).
       - run: python3 tools/build_posts.py
       - run: python3 tools/gen_feed.py
