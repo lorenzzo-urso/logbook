@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LogBook Capture",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Captura conteúdo para o LogBook pessoal",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": [
