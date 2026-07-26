@@ -46,6 +46,7 @@ Sem backend. Sem banco de dados. O `data.json` no repositório é o único stora
 ├── aliases.json        # Sinônimos de tag ("ia" → "inteligência artificial")
 ├── feed.xml            # RSS de artigos + materiais
 ├── build.sh            # JSX → app.js, artigos, imagens e feed
+├── CHANGELOG.md        # O que mudou (só no repositório, não vai para o site)
 ├── tools/
 │   ├── validate_data.py# Schema do data.json (roda no build e na CI)
 │   ├── build_posts.py  # posts/*.md → posts.json + páginas + og:image
