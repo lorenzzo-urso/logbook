@@ -92,6 +92,9 @@ function readForm() {
   if (type === 'projeto') {
     e.pitch = $('f-pitch').value.trim();
     e.description = $('f-desc').value.trim();
+    // Sem isto, projeto lançado aparece na timeline com a data em que foi
+    // cadastrado. É o equivalente ao dates.consumed do que eu leio.
+    e.dates = { ...e.dates, ...datasDoProjeto(status, currentEntry?.dates, today) };
   }
   e.pages = Math.max(0, parseInt($('f-pages').value, 10) || 0);
   e.pagesRead = Math.min(Math.max(0, parseInt($('f-pages-read').value, 10) || 0), e.pages || Infinity);
@@ -99,6 +102,15 @@ function readForm() {
   if (quotes.length) e.quotes = quotes;
   if ($('f-private').checked) e.private = true;
   return e;
+}
+
+// Status de projeto vira data: iniciado marca started, lançado marca launched.
+// Nunca sobrescreve uma data que já existe.
+function datasDoProjeto(status, atuais = {}, hoje) {
+  const d = {};
+  if (['iniciado', 'em andamento', 'pausado', 'lançado'].includes(status) && !atuais.started) d.started = hoje;
+  if (status === 'lançado' && !atuais.launched) d.launched = hoje;
+  return d;
 }
 
 // Uma linha = um trecho. "texto — p. 42" separa a localização, se você escrever.
@@ -472,6 +484,7 @@ async function saveEdit() {
         dates: {
           ...(entries[i].dates || {}),
           consumed: $('e-consumed').value || (status === 'consumido' ? today : null),
+          ...(entries[i].type === 'projeto' ? datasDoProjeto(status, entries[i].dates, today) : {}),
         },
       };
       return entries;

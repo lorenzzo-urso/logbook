@@ -182,6 +182,14 @@ Clique em 🗂 no header → busque pelo título → **✎**. Dá para mudar sta
 
 🗑 no mesmo lugar deleta.
 
+### Registrar um projeto
+
+Projeto é entrada como qualquer outra, só com `type: projeto`. Na extensão, mude o primeiro seletor de **Conteúdo** para **Projeto**: o formulário troca sozinho — o status vira `ideia / iniciado / em andamento / pausado / lançado / arquivado`, e aparecem **Pitch** (uma frase) e **Descrição**.
+
+A URL é opcional: apague se o projeto ainda não tem link. O status vira data automaticamente — `iniciado` marca `dates.started`, `lançado` marca `dates.launched` — que é o que posiciona o projeto na Timeline. Datas já preenchidas nunca são sobrescritas.
+
+Para a procedência (`↳ nasceu de`) aparecer, marque as **conexões sugeridas** na captura, ou use `Ligar a um projeto` na ficha de uma leitura.
+
 ### Escrever um artigo
 
 O ciclo fecha aqui: você junta material, escreve, e referencia o que leu.
