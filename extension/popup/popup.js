@@ -588,6 +588,18 @@ async function exportPrivate() {
   URL.revokeObjectURL(a.href);
 }
 
+// ── Novo projeto ───────────────────────────────────────────────────────────
+// A captura nasce colada na aba aberta. Projeto quase nunca tem página, então
+// aqui o formulário começa limpo, já no tipo certo.
+function novoProjeto() {
+  currentEntry = createEntry({ type: 'projeto', subtype: 'projeto', status: 'ideia' });
+  selectedConnections.clear();
+  toggle('field-connections', false);
+  fillForm(currentEntry);
+  showView('capture');
+  $('f-title').focus();
+}
+
 // ── Captura em lote ────────────────────────────────────────────────────────
 async function addBulkToQueue() {
   const urls = $('bulk-urls').value.split('\n').map(u => u.trim()).filter(u => /^https?:\/\//i.test(u));
@@ -745,6 +757,7 @@ function bindAll() {
   $('btn-push').addEventListener('click', pushToGitHub);
   $('btn-save-settings').addEventListener('click', saveSettingsFromForm);
 
+  $('btn-project').addEventListener('click', novoProjeto);
   $('btn-bulk').addEventListener('click', () => showView('bulk'));
   $('btn-draft').addEventListener('click', () => showView('draft'));
   $('btn-bulk-back').addEventListener('click', () => showView('capture'));

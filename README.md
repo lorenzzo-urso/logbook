@@ -184,11 +184,18 @@ Clique em 🗂 no header → busque pelo título → **✎**. Dá para mudar sta
 
 ### Registrar um projeto
 
-Projeto é entrada como qualquer outra, só com `type: projeto`. Na extensão, mude o primeiro seletor de **Conteúdo** para **Projeto**: o formulário troca sozinho — o status vira `ideia / iniciado / em andamento / pausado / lançado / arquivado`, e aparecem **Pitch** (uma frase) e **Descrição**.
+Clique em **◱** no header da extensão: abre o formulário limpo, já com tipo `Projeto` e status `ideia`. Preencha título, **Pitch** (uma frase: o que é), **Descrição** (que problema resolve) e tags. Sem URL, se ainda não houver. Adicionar à fila → push.
 
-A URL é opcional: apague se o projeto ainda não tem link. O status vira data automaticamente — `iniciado` marca `dates.started`, `lançado` marca `dates.launched` — que é o que posiciona o projeto na Timeline. Datas já preenchidas nunca são sobrescritas.
+O status vira data sozinho: `iniciado` marca `dates.started`, `lançado` marca `dates.launched` — é isso que posiciona o projeto na Timeline. Data já preenchida nunca é sobrescrita.
 
-Para a procedência (`↳ nasceu de`) aparecer, marque as **conexões sugeridas** na captura, ou use `Ligar a um projeto` na ficha de uma leitura.
+### Ligar leituras a um projeto
+
+O vínculo mora **no projeto**: `related` é a lista das leituras que o originaram. Dois jeitos de preencher:
+
+- **Na ficha da leitura** (site, modo edição ligado): `Ligar a um projeto`. Informe o id ou o título do projeto e, se quiser, por quê. A Action grava.
+- **Na captura**, quando a IA sugere conexões: marque as caixas. Isso grava o vínculo na entrada que você está capturando.
+
+Feito o vínculo, ele aparece dos dois lados: o card do projeto ganha `↳ nasceu de <leitura>`, e a ficha da leitura ganha o projeto em **Isso me levou a**.
 
 ### Escrever um artigo
 

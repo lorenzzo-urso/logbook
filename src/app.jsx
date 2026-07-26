@@ -53,7 +53,10 @@ function alternarModoEdicao() {
 }
 
 // Quem cita esta entrada — fecha o ciclo leitura → produção.
+// O vínculo mora do lado de quem produziu (projeto.related, post.refs), então a
+// leitura descobre o que gerou procurando quem aponta para ela.
 const citedIn = (id) => POSTS.filter(p => (p.refs || []).some(r => r.id === id));
+const projetosDe = (id) => PROJECTS.filter(p => (p.related || []).some(r => r.id === id));
 
 const TYPE_META = [
   { key: 'artigo', label: 'Artigos' },
@@ -1257,6 +1260,7 @@ function FichaModal({ entry, onClose }) {
     .map(r => ({ entry: ENTRIES.find(e => e.id === r.id), why: r.why }))
     .filter(r => r.entry);
   const citam = citedIn(entry.id);
+  const virouProjeto = projetosDe(entry.id);
   const secao = { marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border-subtle)' };
   const labelSecao = { fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 8 };
 
@@ -1341,10 +1345,23 @@ function FichaModal({ entry, onClose }) {
             </div>
           )}
 
-          {(relacionadas.length > 0 || citam.length > 0) && (
+          {(relacionadas.length > 0 || citam.length > 0 || virouProjeto.length > 0) && (
             <div style={secao}>
               <div style={{ ...labelSecao, color: 'var(--accent-project-hover)' }}>Isso me levou a</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {virouProjeto.map(p => {
+                  const porque = (p.related || []).find(r => r.id === entry.id)?.why;
+                  return (
+                    <button key={p.id} onClick={() => abrirFicha(p)}
+                      style={{ textAlign: 'left', background: 'var(--accent-project-subtle)', border: '1px solid var(--accent-project-border)', borderRadius: 'var(--radius-md)', padding: '10px 12px', cursor: 'pointer' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: porque ? 3 : 0 }}>
+                        <TypeTag tipo="projeto" />
+                        <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: 'var(--fg-primary)' }}>{p.title}</span>
+                      </div>
+                      <div style={{ fontSize: 12.5, color: 'var(--fg-muted)', lineHeight: 1.5 }}>{porque || 'Nasceu desta leitura.'}</div>
+                    </button>
+                  );
+                })}
                 {citam.map(post => (
                   <button key={post.slug} onClick={() => { onClose(); location.hash = hashFor('p', post.slug); }}
                     style={{ textAlign: 'left', background: 'var(--accent-project-subtle)', border: '1px solid var(--accent-project-border)', borderRadius: 'var(--radius-md)', padding: '10px 12px', cursor: 'pointer' }}>
