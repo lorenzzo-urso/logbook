@@ -41,8 +41,7 @@ body {
   z-index: 10;
 }
 
-.logo { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
-.logo span { font-weight: 300; color: var(--fg-muted); }
+.logo { font-family: Lora, Georgia, serif; font-size: 16px; font-weight: 600; letter-spacing: -0.04em; }
 
 .header-actions { display: flex; align-items: center; gap: 6px; }
 

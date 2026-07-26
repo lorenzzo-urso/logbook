@@ -28,6 +28,10 @@ body:
       options: ["quero ler", "em andamento", "consumido"]
       default: 0
   - type: input
+    id: avaliacao
+    attributes:
+      label: Avaliação (0 a 5)
+  - type: input
     id: tags
     attributes:
       label: Tags

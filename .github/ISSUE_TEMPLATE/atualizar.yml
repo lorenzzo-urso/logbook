@@ -1,0 +1,50 @@
+name: Atualizar entrada
+description: Marcar como lido, atualizar página, anotar trecho (funciona do celular)
+title: "atualizar: "
+labels: [atualizar]
+body:
+  - type: input
+    id: id
+    attributes:
+      label: ID da entrada
+      description: Vem preenchido quando você clica pelo site
+    validations:
+      required: true
+  - type: dropdown
+    id: acao
+    attributes:
+      label: Ação
+      options:
+        - comecei
+        - progresso
+        - terminei
+        - abandonei
+        - trecho
+        - ligar
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: pagina
+    attributes:
+      label: Página atual
+      description: Só para as ações progresso/terminei
+  - type: input
+    id: total
+    attributes:
+      label: Total de páginas
+      description: Preencha uma vez; depois só a página atual
+  - type: textarea
+    id: texto
+    attributes:
+      label: Trecho ou nota
+      description: Para a ação trecho, o texto que vale guardar
+  - type: input
+    id: avaliacao
+    attributes:
+      label: Avaliação (0 a 5)
+  - type: input
+    id: alvo
+    attributes:
+      label: Ligar a
+      description: Para a ação ligar — id do projeto, ou o título dele

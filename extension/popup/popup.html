@@ -9,7 +9,7 @@
 
 <!-- ── Header ──────────────────────────────────────────────────────────── -->
 <header class="header">
-  <div class="logo">Log<span>Book</span></div>
+  <div class="logo">logbook</div>
   <div class="header-actions">
     <button class="icon-btn" id="btn-book" title="Adicionar livro manualmente">📚</button>
     <button class="icon-btn" id="btn-bulk" title="Captura em lote">⿻</button>
@@ -100,6 +100,14 @@
     <div class="field hidden" id="field-desc">
       <label>Descrição / Problema</label>
       <textarea id="f-desc" rows="3" placeholder="Qual problema resolve? Contexto do projeto..."></textarea>
+    </div>
+
+    <div class="field" id="field-pages">
+      <label>Páginas <span class="hint">total e onde parei</span></label>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="f-pages" min="0" placeholder="total">
+        <input type="number" id="f-pages-read" min="0" placeholder="lidas">
+      </div>
     </div>
 
     <div class="field">
@@ -318,6 +326,14 @@
         <span data-v="5">★</span>
       </div>
     </div>
+    <div class="field">
+      <label>Páginas <span class="hint">total e onde parei</span></label>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="e-pages" min="0" placeholder="total">
+        <input type="number" id="e-pages-read" min="0" placeholder="lidas">
+      </div>
+    </div>
+
     <div class="field">
       <label>Tags</label>
       <input type="text" id="e-tags" placeholder="ia, produtividade">

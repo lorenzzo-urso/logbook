@@ -60,6 +60,8 @@ function fillForm(e) {
   $('f-tags').value      = (e.tags || []).join(', ');
   $('f-notes').value     = e.notes   || '';
   $('f-desc').value      = e.description || '';
+  $('f-pages').value      = e.pages || '';
+  $('f-pages-read').value = e.pagesRead || '';
   $('f-quotes').value  = (e.quotes || []).map(q => q.page ? `${q.text} — ${q.page}` : q.text).join('\n');
   $('f-private').checked = !!e.private;
   setRating(e.rating || 0);
@@ -91,6 +93,8 @@ function readForm() {
     e.pitch = $('f-pitch').value.trim();
     e.description = $('f-desc').value.trim();
   }
+  e.pages = Math.max(0, parseInt($('f-pages').value, 10) || 0);
+  e.pagesRead = Math.min(Math.max(0, parseInt($('f-pages-read').value, 10) || 0), e.pages || Infinity);
   const quotes = parseQuotes($('f-quotes').value);
   if (quotes.length) e.quotes = quotes;
   if ($('f-private').checked) e.private = true;
@@ -432,6 +436,8 @@ function openEdit(entry) {
     .map(v => `<option value="${v}">${cap(v)}</option>`).join('');
   $('e-status').value = entry.status || 'quero ler';
   $('e-consumed').value = (entry.dates || {}).consumed || '';
+  $('e-pages').value = entry.pages || '';
+  $('e-pages-read').value = entry.pagesRead || '';
   $('e-tags').value = (entry.tags || []).join(', ');
   $('e-notes').value = entry.notes || '';
   setEditRating(editRating);
@@ -459,6 +465,8 @@ async function saveEdit() {
         ...entries[i],
         status,
         rating: editRating,
+        pages: Math.max(0, parseInt($('e-pages').value, 10) || 0),
+        pagesRead: Math.max(0, parseInt($('e-pages-read').value, 10) || 0),
         tags: [...new Set($('e-tags').value.split(',').map(normTag).filter(Boolean))],
         notes: $('e-notes').value.trim(),
         dates: {

@@ -13,6 +13,10 @@ export function createEntry(overrides = {}) {
     status: 'quero ler',
     rating: 0,
     notes: '',
+    // Progresso de leitura. 0 = sem controle de páginas; a barra só aparece
+    // no site quando pages > 0.
+    pages: 0,
+    pagesRead: 0,
     // Conexões com outras entradas: [{ id, why }]. A IA sugere, você confirma.
     related: [],
     dates: {

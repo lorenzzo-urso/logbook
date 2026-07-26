@@ -27,7 +27,7 @@ STATUS = {
 OBRIGATORIOS = {'id', 'type', 'subtype', 'title', 'status', 'tags', 'dates', 'createdAt'}
 CONHECIDOS = OBRIGATORIOS | {
     'url', 'author', 'source', 'image', 'rating', 'notes', 'related', 'quotes',
-    'archived', 'captureVia', 'pitch', 'description',
+    'archived', 'captureVia', 'pitch', 'description', 'pages', 'pagesRead',
 }
 DATA_ISO = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 
@@ -120,6 +120,15 @@ def validar(data):
                 avisos.append(f'{rot}: consumido sem dates.consumed')
             if e['status'] != 'consumido' and d.get('consumed'):
                 erros.append(f'{rot}: tem dates.consumed mas status é "{e["status"]}"')
+
+        pags, lidas = e.get('pages'), e.get('pagesRead')
+        for nome, v in (('pages', pags), ('pagesRead', lidas)):
+            if v is not None and (not isinstance(v, int) or isinstance(v, bool) or v < 0):
+                erros.append(f'{rot}: {nome} = "{v}" precisa ser inteiro >= 0')
+        if isinstance(pags, int) and isinstance(lidas, int) and lidas > pags:
+            erros.append(f'{rot}: pagesRead ({lidas}) maior que pages ({pags})')
+        if lidas and not pags:
+            avisos.append(f'{rot}: pagesRead sem pages — a barra de progresso não aparece')
 
         for q in e.get('quotes', []) or []:
             if not isinstance(q, dict) or not str(q.get('text', '')).strip():

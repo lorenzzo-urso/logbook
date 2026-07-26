@@ -48,6 +48,14 @@ def parse_body(corpo):
     return campos
 
 
+def nota_de(campos):
+    """Avaliação vem do Registrar (⌘K) no site; ausente vale 0."""
+    bruto = (campos.get('avaliação (0 a 5)') or campos.get('avaliacao') or '').strip()
+    m = re.search(r'\d', bruto)
+    n = int(m.group(0)) if m else 0
+    return n if 0 <= n <= 5 else 0
+
+
 def main():
     corpo = Path(sys.argv[1]).read_text(encoding='utf-8') if len(sys.argv) > 1 else ''
     titulo_issue = sys.argv[2].strip() if len(sys.argv) > 2 else ''
@@ -83,7 +91,7 @@ def main():
         'title': titulo, 'url': url, 'author': '', 'source': host, 'image': '',
         'tags': [t.strip().lower() for t in (campos.get('tags') or '').split(',') if t.strip()],
         'status': status if status in STATUS_VALIDOS else 'quero ler',
-        'rating': 0,
+        'rating': nota_de(campos),
         'notes': (campos.get('nota') or campos.get('notas') or '').strip(),
         'related': [], 'quotes': [],
         'dates': {'captured': hoje,

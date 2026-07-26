@@ -1,0 +1,52 @@
+name: atualizar
+
+# As ações do site (Começar, Terminei, Atualizar página, Anotar trecho) abrem
+# uma issue pré-preenchida; aqui ela vira commit. É o que faz o redesign
+# funcionar do celular sem token no aparelho.
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  aplicar:
+    if: contains(github.event.issue.labels.*.name, 'atualizar')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Só o dono do repositório pode alterar o log — as issues são públicas.
+      - name: Conferir autor
+        if: github.event.issue.user.login != github.repository_owner
+        run: |
+          echo "Issue de terceiro, ignorada."
+          exit 1
+
+      - name: Corpo da issue para arquivo
+        env:
+          CORPO: ${{ github.event.issue.body }}
+        run: printf '%s' "$CORPO" > /tmp/issue.txt
+
+      - name: Aplicar a alteração
+        run: python3 tools/issue_update.py /tmp/issue.txt | tee /tmp/saida.txt
+
+      - name: Validar o resultado
+        run: python3 tools/validate_data.py
+
+      - name: Commitar
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "update: via issue #${{ github.event.issue.number }}"
+          git push
+
+      - name: Fechar a issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} --body "$(cat /tmp/saida.txt)"
+          gh issue close ${{ github.event.issue.number }}
