@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-07-26",
+  "lastUpdated": "2026-08-03",
   "entries": [
     {
       "author": "Mario Sergio Cortella",
@@ -364,6 +364,39 @@
       "title": "Human Therapists Do What AI Can’t | by Kelly Werner, PhD | Medium",
       "type": "conteudo",
       "url": "https://medium.com/@kelly.h.werner/human-therapists-do-what-ai-cant-9fa5a1bb9f22",
+      "archived": true
+    },
+    {
+      "author": "Professor Dr.-Ing. Klaus Schwab, Satya Nadella",
+      "createdAt": "2026-08-03T11:17:30.430Z",
+      "dates": {
+        "captured": "2026-08-03",
+        "consumed": null,
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "a8eadfaf-1772-4e41-a8b6-40c242e7ff92",
+      "image": "https://m.media-amazon.com/images/I/81ZRGb6wqcL._SY466_.jpg",
+      "notes": "O livro explora como a tecnologia redefine interações e instituições, ressaltando a responsabilidade coletiva para um futuro sustentável e ético.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 0,
+      "related": [],
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "tecnologia",
+        "futuro",
+        "indústria 4.0",
+        "ética"
+      ],
+      "title": "Shaping the Future of the Fourth Industrial Revolution (English Edition)",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Shaping-Future-Industrial-Revolution-English-ebook/dp/B07BJL719P",
       "archived": true
     }
   ]
