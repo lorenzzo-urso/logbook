@@ -398,6 +398,39 @@
       "type": "conteudo",
       "url": "https://www.amazon.com.br/Shaping-Future-Industrial-Revolution-English-ebook/dp/B07BJL719P",
       "archived": true
+    },
+    {
+      "author": "Professor Dr.-Ing. Klaus Schwab",
+      "createdAt": "2026-08-03T11:20:09.042Z",
+      "dates": {
+        "captured": "2026-08-03",
+        "consumed": null,
+        "end": null,
+        "idea": null,
+        "launched": null,
+        "start": null,
+        "started": null
+      },
+      "id": "7d93c52f-8680-4332-8562-54e2438ca489",
+      "image": "https://m.media-amazon.com/images/I/413uRWM00NL._SY466_.jpg",
+      "notes": "O livro discute a necessidade de um capitalismo voltado para os stakeholders, propondo soluções para desigualdade e sustentabilidade. Importa para entender a nova economia.",
+      "pages": 0,
+      "pagesRead": 0,
+      "rating": 0,
+      "related": [],
+      "source": "Amazon",
+      "status": "quero ler",
+      "subtype": "livro",
+      "tags": [
+        "filosofia",
+        "ética",
+        "cidadania",
+        "tecnologia"
+      ],
+      "title": "Stakeholder Capitalism: A Global Economy that Works for Progress, People and Planet (English Edition)",
+      "type": "conteudo",
+      "url": "https://www.amazon.com.br/Stakeholder-Capitalism-Economy-Progress-English-ebook/dp/B08SJPC1XC",
+      "archived": true
     }
   ]
 }
